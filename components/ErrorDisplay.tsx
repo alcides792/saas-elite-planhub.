@@ -1,0 +1,38 @@
+'use client';
+
+interface ErrorDisplayProps {
+    error: string;
+}
+
+export default function ErrorDisplay({ error }: ErrorDisplayProps) {
+    return (
+        <div className="max-w-6xl mx-auto">
+            <div className="plan-hub-card p-12 text-center">
+                <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="text-red-500"
+                    >
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                </div>
+                <h3 className="text-xl font-black mb-2 text-white">Erro ao Carregar Subscrições</h3>
+                <p className="text-sm text-zinc-300 font-medium mb-4">{error}</p>
+                <button
+                    onClick={() => window.location.reload()}
+                    className="px-6 py-2 rounded-xl bg-indigo-500 text-white font-bold text-sm hover:bg-indigo-600 transition-all"
+                >
+                    Tentar Novamente
+                </button>
+            </div>
+        </div>
+    );
+}

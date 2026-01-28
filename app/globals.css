@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --color-primary: #6366f1;
+  --color-accent: #ec4899;
+}
+
+@layer base {
+  body {
+    @apply transition-colors duration-300;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Dark Mode Base Styles */
+  .dark body {
+    @apply text-zinc-100 bg-black;
+  }
+
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6 {
+    @apply text-white;
+  }
+
+  .dark p,
+  .dark span,
+  .dark div {
+    @apply text-zinc-300;
+  }
+
+  /* Light Mode Base Styles */
+  .light body {
+    @apply text-zinc-900 bg-white;
+  }
+
+  .light h1,
+  .light h2,
+  .light h3,
+  .light h4,
+  .light h5,
+  .light h6 {
+    @apply text-zinc-900;
+  }
+
+  .light p,
+  .light span,
+  .light div {
+    @apply text-zinc-900;
+  }
+}
+
+@layer components {
+
+  /* Plan Hub Card */
+  .plan-hub-card {
+    @apply bg-clip-padding backdrop-blur-[16px] backdrop-saturate-150 backdrop-contrast-200 border shadow-2xl rounded-xl relative transition-all duration-300;
+  }
+
+  .dark .plan-hub-card {
+    @apply bg-zinc-900 border-white/10 text-white;
+  }
+
+  .light .plan-hub-card {
+    @apply bg-white/80 bg-clip-padding backdrop-blur-[20px] backdrop-saturate-[160%] border-white/50 text-zinc-900 shadow-xl shadow-cyan-900/5;
+  }
+
+  /* Plan Hub Input */
+  .plan-hub-input {
+    @apply rounded-xl px-4 py-2 transition-all focus:outline-none focus:ring-1 focus:ring-violet-500 border;
+  }
+
+  .dark .plan-hub-input {
+    @apply bg-zinc-900/50 border-white/10 text-white placeholder:text-zinc-500 focus:border-violet-500;
+  }
+
+  .light .plan-hub-input {
+    @apply bg-slate-50 border-slate-200 text-black placeholder:text-slate-400 focus:border-violet-500;
+  }
+}
+
+/* Legacy Styles compatibility (Optional but keeping them consistent) */
+.glass-card,
+.glass-panel {
+  @apply bg-gray-900/50;
+  @apply bg-clip-padding backdrop-blur-[16px] backdrop-saturate-150 backdrop-contrast-200;
+  @apply border border-white/10 shadow-2xl rounded-xl text-white relative overflow-hidden;
+}
+
+/* Plan Hub Glass Effect - Refined Recipe */
+.plan-hub-glass {
+  @apply bg-gray-900/50 bg-clip-padding backdrop-blur-[16px] backdrop-saturate-150 backdrop-contrast-200 border border-white/10;
+}
+
+/* Custom Utilities */
+.text-dim {
+  @apply transition-colors duration-300;
+}
+
+.dark .text-dim {
+  @apply text-zinc-400;
+}
+
+.light .text-dim {
+  @apply text-zinc-500;
+}
+
+.premium-gradient {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Extension Connection Card Styles */
+.extension-connection-card {
+  @apply bg-gray-900/50 bg-clip-padding backdrop-blur-[16px] backdrop-saturate-150 backdrop-contrast-200 border border-white/10 shadow-2xl rounded-xl text-white relative overflow-hidden p-8;
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(31, 41, 55, 0.95) 100%);
+}
+
+.extension-connection-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #8b5cf6 20%, #ec4899 50%, #8b5cf6 80%, transparent 100%);
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
