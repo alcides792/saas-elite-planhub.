@@ -84,7 +84,6 @@ export async function createSubscription(
         // Insert into database
         const { data, error } = await supabase
             .from('subscriptions')
-            
             .insert(insertPayload as TablesInsert<'subscriptions'>)
             .select()
             .single();
@@ -139,7 +138,6 @@ export async function updateSubscription(
         // Update in database (RLS ensures user owns this subscription)
         const { data, error } = await supabase
             .from('subscriptions')
-            
             .update(updatePayload)
             .eq('id', id)
             .eq('user_id', session.user.id)
@@ -233,7 +231,6 @@ export async function toggleSubscriptionStatus(id: string): Promise<{ data: Subs
         // Update in database
         const { data, error } = await supabase
             .from('subscriptions')
-            
             .update({ status: newStatus } as TablesUpdate<'subscriptions'>)
             .eq('id', id)
             .eq('user_id', session.user.id)
