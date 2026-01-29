@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { createUIMessageStream, createUIMessageStreamResponse, generateId } from 'ai';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/utils/supabase/server';
 
 export const maxDuration = 30;
 
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    let textoSistema = `You are Plan Hub Assistant, a financial specialist. Respond in English. Be direct and concise.`;
+    let textoSistema = `You are Kovr Assistant, a financial specialist. Respond in English. Be direct and concise.`;
 
     if (user) {
       const { data: assinaturas } = await supabase

@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/utils/supabase/server';
 import { dbToSubscription, subscriptionToDb, type Subscription } from '@/types';
 import type { TablesInsert, TablesUpdate } from '@/types/database.types';
 

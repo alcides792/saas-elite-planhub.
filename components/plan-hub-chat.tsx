@@ -34,7 +34,7 @@ export default function PlanHubChat() {
             {/* Header */}
             <div className="p-4 bg-zinc-900 border-b border-white/10 flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="font-bold text-white text-sm">Plan Hub Financial AI</span>
+                <span className="font-bold text-white text-sm">Kovr Financial AI</span>
             </div>
 
             {/* Mensagens */}
@@ -59,7 +59,7 @@ export default function PlanHubChat() {
                                 : 'bg-zinc-800 text-zinc-200 border border-white/10'
                                 }`}>
                                 <strong className="block text-[10px] opacity-50 mb-1 uppercase">
-                                    {m.role === 'user' ? 'You' : 'Plan Hub AI'}
+                                    {m.role === 'user' ? 'You' : 'Kovr AI'}
                                 </strong>
                                 {/* Renderiza Markdown (Negrito, Listas) */}
                                 <ReactMarkdown>{textContent}</ReactMarkdown>
@@ -74,7 +74,7 @@ export default function PlanHubChat() {
                         <div className="w-8 h-8 rounded-full bg-violet-600 flex items-center justify-center text-white">
                             <Bot size={16} />
                         </div>
-                        <span className="font-bold text-sm text-zinc-900 dark:text-white">Plan Hub AI is thinking...</span>
+                        <span className="font-bold text-sm text-zinc-900 dark:text-white">Kovr AI is thinking...</span>
                     </div>
                 )}
 

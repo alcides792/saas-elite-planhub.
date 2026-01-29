@@ -1,7 +1,7 @@
 import LegalLayout from '@/components/legal-layout';
 
 export const metadata = {
-    title: 'Cookie Policy | Plan Hub',
+    title: 'Cookie Policy | Kovr',
 };
 
 export default function CookiePolicy() {

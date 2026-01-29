@@ -25,7 +25,7 @@ import {
     Sun,
     Moon
 } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/utils/supabase/client';
 
 interface NavItem {
     label: string;
@@ -163,7 +163,7 @@ export default function Sidebar() {
 
     const handleCopyEmail = (e: React.MouseEvent) => {
         e.preventDefault();
-        navigator.clipboard.writeText('support@saaselite.com');
+        navigator.clipboard.writeText('support@kovr.ai');
     };
 
     const handleLogout = async () => {
@@ -210,8 +210,8 @@ export default function Sidebar() {
                 {/* Header with Toggles */}
                 <div className="p-6 border-b border-black/10 dark:border-white/10 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <Image src="/logo.png" width={32} height={32} alt="Plan Hub Logo" className="rounded-lg shadow-sm" />
-                        <h1 className="text-xl font-bold tracking-tight">Plan Hub</h1>
+                        <Image src="/logo.png" width={32} height={32} alt="Kovr Logo" className="rounded-lg shadow-sm" />
+                        <h1 className="text-xl font-bold tracking-tight">Kovr</h1>
                     </div>
                     <div className="flex items-center gap-2">
                         <button
@@ -278,7 +278,7 @@ export default function Sidebar() {
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className={`text-xs font-bold truncate ${theme === 'dark' ? 'text-white' : 'text-zinc-900'}`}>
-                                {userEmail || 'elitequality'}
+                                {userEmail || 'user@kovr.ai'}
                             </p>
                             <p className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Free Plan</p>
                         </div>

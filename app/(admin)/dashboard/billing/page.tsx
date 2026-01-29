@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/utils/supabase/client';
 import { Check, CreditCard, AlertCircle, Loader2, Sparkles, Zap, ArrowRight, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 

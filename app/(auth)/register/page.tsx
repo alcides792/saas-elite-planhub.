@@ -22,14 +22,14 @@ export default function RegisterPage() {
                 {/* CONTEÚDO (Branding) */}
                 <div className="relative z-10">
                     <Link href="/" className="flex items-center gap-3 w-fit">
-                        <Image src="/logo.png" width={40} height={40} alt="Plan Hub" />
-                        <span className="text-2xl font-bold text-white tracking-tight">Plan Hub</span>
+                        <Image src="/logo.png" width={40} height={40} alt="Kovr" />
+                        <span className="text-2xl font-bold text-white tracking-tight">Kovr</span>
                     </Link>
                 </div>
 
                 <div className="relative z-10 max-w-lg">
                     <h1 className="text-5xl font-extrabold text-white leading-tight mb-4">
-                        Join Plan Hub.
+                        Join Kovr.
                     </h1>
                     <p className="text-zinc-400 text-lg">
                         Start your journey to financial freedom and stop wasting money on forgotten subscriptions.
@@ -52,7 +52,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="relative z-10">
-                    <p className="text-xs text-zinc-600 uppercase tracking-widest">© 2026 Plan Hub</p>
+                    <p className="text-xs text-zinc-600 uppercase tracking-widest">© 2026 Kovr</p>
                 </div>
             </div>
 

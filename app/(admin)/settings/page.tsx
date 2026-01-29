@@ -18,10 +18,12 @@ import {
     Calendar,
     ArrowRight,
     Terminal,
-    Settings2
+    Settings2,
+    Download,
+    Youtube
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getProfile, updateProfile, rotateApiKey } from '@/app/actions/settings';
+import { getProfile, updateProfile } from '@/app/actions/settings';
 import { useUser } from '@/contexts/UserContext';
 import ConnectExtension from '@/components/ConnectExtension';
 
@@ -157,19 +159,6 @@ export default function SettingsPage() {
         setIsSaving(false);
     };
 
-    const handleRotateKey = async () => {
-        if (!confirm('Do you really want to generate a new key? The current connection will be closed.')) return;
-        setIsRotating(true);
-        const res = await rotateApiKey();
-        if (res.success && res.apiKey) {
-            showToast('Key updated!');
-            setProfile({ ...profile, extension_api_key: res.apiKey });
-        } else {
-            showToast('Error updating key', 'error');
-        }
-        setIsRotating(false);
-    };
-
     const copyKey = () => {
         if (profile?.extension_api_key) {
             navigator.clipboard.writeText(profile.extension_api_key);
@@ -202,7 +191,7 @@ export default function SettingsPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-1 border border-purple-500 animate-pulse rounded-full" />
-                        <span className="text-purple-500 font-black uppercase tracking-[0.4em] text-[11px]">Plan Hub Command Center</span>
+                        <span className="text-purple-500 font-black uppercase tracking-[0.4em] text-[11px]">Kovr Command Center</span>
                     </div>
                     <h1 className="text-6xl font-black text-white tracking-tighter leading-none">Settings <br /><span className="text-zinc-800">Panel</span></h1>
                 </div>
@@ -250,7 +239,7 @@ export default function SettingsPage() {
                                 value={formData.full_name}
                                 onChange={(e: any) => setFormData({ ...formData, full_name: e.target.value })}
                                 icon={User}
-                                placeholder="Your elite name"
+                                placeholder="Your name"
                             />
                             <CustomInput
                                 label="Email Address"
@@ -262,12 +251,12 @@ export default function SettingsPage() {
                     </div>
                 </BentoCard>
 
-                {/* 2. Neural Terminal (Top Right - 7 columns) */}
+                {/* 2. Chrome Extension Section (Top Right - 7 columns) */}
                 <BentoCard
-                    title="Neural Center"
-                    icon={Terminal}
-                    description="External connection protocols"
-                    badge="Certified"
+                    title="Kovr Extension"
+                    icon={Download}
+                    description="Manage your subscriptions directly from the browser"
+                    badge="Manual Installation"
                     className="md:col-span-7 bg-black/40 border-purple-500/10 shadow-[inner_0_0_80px_rgba(139,92,246,0.05)]"
                 >
                     <div className="mt-6 space-y-8">
@@ -275,60 +264,35 @@ export default function SettingsPage() {
                             {/* Animated Circuit Line */}
                             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-30 animate-pulse" />
 
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
-                                <div className="space-y-1 text-center md:text-left">
-                                    <p className="text-[10px] font-black text-purple-400 uppercase tracking-[0.4em]">API Access Key</p>
-                                    <h4 className="text-2xl font-black text-white font-mono break-all">
-                                        {profile?.extension_api_key ? (
-                                            <>
-                                                ph_sk_<span className="opacity-10">••••••••••••••••</span>
-                                            </>
-                                        ) : "VOID_KEY"}
-                                    </h4>
-                                </div>
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={copyKey}
-                                        className="p-5 bg-white text-black rounded-[1.5rem] hover:bg-zinc-200 transition-all active:scale-90"
-                                    >
-                                        {copied ? <Check size={20} /> : <Copy size={20} />}
-                                    </button>
-                                    <button
-                                        onClick={handleRotateKey}
-                                        disabled={isRotating}
-                                        className="p-5 bg-zinc-800 border border-white/10 text-white rounded-[1.5rem] hover:bg-zinc-700 transition-all active:scale-90"
-                                    >
-                                        {isRotating ? <Loader2 size={20} className="animate-spin" /> : <RefreshCw size={20} />}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-3 p-4 bg-purple-500/5 border border-purple-500/10 rounded-2xl">
-                                <ShieldCheck className="text-purple-400 mt-1 shrink-0" size={16} />
-                                <p className="text-[11px] text-zinc-400 leading-relaxed uppercase tracking-wider font-bold">
-                                    This key must be kept in total secrecy. Any data leakage via API Key is the sole responsibility of the operator.
+                            <div className="space-y-4 mb-8">
+                                <p className="text-sm text-zinc-300 font-medium leading-relaxed">
+                                    Download our extension to manage your subscriptions directly from the browser. Since we are not yet in the Chrome Store, you need to install it manually.
                                 </p>
                             </div>
+
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <a
+                                    href="/extension.zip"
+                                    download
+                                    className="flex-1 flex items-center justify-center gap-3 bg-purple-600 text-white px-6 py-4 rounded-2xl font-black text-sm transition-all hover:bg-purple-700 hover:scale-[1.02] active:scale-95 shadow-lg shadow-purple-500/20"
+                                >
+                                    <Download size={20} />
+                                    DOWNLOAD EXTENSION (.ZIP)
+                                </a>
+                                <a
+                                    href="https://youtube.com"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1 flex items-center justify-center gap-3 bg-zinc-800 border border-white/10 text-white px-6 py-4 rounded-2xl font-black text-sm transition-all hover:bg-zinc-700 hover:scale-[1.02] active:scale-95"
+                                >
+                                    <Youtube size={20} className="text-red-500" />
+                                    WATCH INSTALLATION TUTORIAL
+                                </a>
+                            </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="p-6 bg-zinc-900/50 rounded-3xl border border-white/5 space-y-2">
-                                <p className="text-[10px] font-black text-zinc-600 tracking-widest uppercase">Chrome Integration</p>
-                                <p className="text-xs text-zinc-400">Plan Hub v1.0</p>
-                                <div className="flex items-center gap-2 text-emerald-500 text-[10px] font-black tracking-widest mt-3">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                    ENCRYPTED CONNECTION
-                                </div>
-                            </div>
-                            <div className="p-6 bg-zinc-900/50 rounded-3xl border border-white/5 space-y-2">
-                                <p className="text-[10px] font-black text-zinc-600 tracking-widest uppercase">Last Rotation</p>
-                                <p className="text-xs text-zinc-400">Today at 18:45</p>
-                                <p className="text-[10px] text-zinc-500 font-bold mt-3">Protocol SHA-256 Enabled</p>
-                            </div>
-                        </div>
-
-                        {/* Extension Connection Section */}
-                        <div className="mt-8 border-t border-white/5 pt-8">
+                        {/* Extension Connection Section - Keeping ConnectExtension for the API Key display/checking */}
+                        <div className="mt-2 border-t border-white/5 pt-8">
                             <ConnectExtension />
                         </div>
                     </div>
@@ -424,7 +388,7 @@ export default function SettingsPage() {
                                 ))}
                             </div>
                             <p className="text-[10px] text-zinc-600 font-bold leading-relaxed px-2">
-                                * Plan Hub AI will trigger alerts according to the selected lead time to avoid unplanned charges.
+                                * Kovr AI will trigger alerts according to the selected lead time to avoid unplanned charges.
                             </p>
                         </div>
                     </div>

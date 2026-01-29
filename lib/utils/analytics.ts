@@ -16,7 +16,7 @@ export interface CategoryData {
     color: string;
 }
 
-// Plan Hub color palette for categories
+// Kovr color palette for categories
 export const CATEGORY_COLORS: Record<string, string> = {
     Entertainment: '#8b5cf6', // Purple
     Music: '#3b82f6',         // Blue
@@ -118,7 +118,7 @@ export function calculateMonthlyTrend(
 }
 
 /**
- * Calculate category breakdown with Plan Hub colors
+ * Calculate category breakdown with Kovr colors
  */
 export function calculateCategoryBreakdown(subscriptions: Subscription[]): CategoryData[] {
     const activeSubscriptions = subscriptions.filter(sub => sub.status === 'active');

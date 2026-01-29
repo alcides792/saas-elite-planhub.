@@ -48,7 +48,7 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
                 {/* Footer info */}
                 <footer className="mt-20 pt-8 border-t border-white/5 text-center">
                     <p className="text-zinc-600 text-xs">
-                        &copy; {new Date().getFullYear()} Plan Hub - Smart Subscription Manager. All rights reserved.
+                        &copy; {new Date().getFullYear()} Kovr - Smart Subscription Manager. All rights reserved.
                     </p>
                 </footer>
             </div>

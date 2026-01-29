@@ -17,11 +17,11 @@ export default function ConnectExtension() {
             const res = await fetch('/api/extension/connect/generate', { method: 'POST' });
             const data = await res.json();
 
-            if (!res.ok) throw new Error(data.error || 'Erro ao gerar código');
+            if (!res.ok) throw new Error(data.error || 'Error generating code');
 
             setCode(data.code);
         } catch (err: any) {
-            setError(err.message || "Erro ao gerar código");
+            setError(err.message || "Error generating code");
         } finally {
             setLoading(false);
         }
@@ -43,15 +43,15 @@ export default function ConnectExtension() {
             <div className="relative z-10 flex justify-between items-start mb-6">
                 <div>
                     <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                        Conectar Extensão
+                        Connect Extension
                         {code && (
                             <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase tracking-widest rounded-full border border-emerald-500/20">
-                                Gerado
+                                Generated
                             </span>
                         )}
                     </h3>
                     <p className="text-sm text-zinc-400 mt-1 max-w-sm">
-                        Gere um código temporário de 6 dígitos para sincronizar suas assinaturas automaticamente com a extensão.
+                        Generate a temporary 6-digit code to automatically sync your subscriptions with the extension.
                     </p>
                 </div>
 
@@ -70,12 +70,12 @@ export default function ConnectExtension() {
                         {loading ? (
                             <>
                                 <RefreshCw size={18} className="animate-spin" />
-                                GERANDO...
+                                GENERATING...
                             </>
                         ) : (
                             <>
                                 <RefreshCw size={18} />
-                                GERAR CÓDIGO DE CONEXÃO
+                                GENERATE CONNECTION CODE
                             </>
                         )}
                     </button>
@@ -84,7 +84,7 @@ export default function ConnectExtension() {
                         <div className="bg-black/40 border border-zinc-800 rounded-2xl p-5 flex items-center justify-between group/code">
                             <div>
                                 <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] block mb-1">
-                                    CÓDIGO DE ACESSO
+                                    ACCESS CODE
                                 </span>
                                 <code className="text-3xl font-mono font-black text-purple-400 tracking-[0.2em]">
                                     {code}
@@ -94,10 +94,10 @@ export default function ConnectExtension() {
                             <button
                                 onClick={copyToClipboard}
                                 className={`p-4 rounded-xl transition-all duration-300 ${copied
-                                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                        : 'bg-zinc-800/50 text-zinc-400 hover:text-white border border-transparent hover:border-zinc-700'
+                                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                    : 'bg-zinc-800/50 text-zinc-400 hover:text-white border border-transparent hover:border-zinc-700'
                                     }`}
-                                title="Copiar Código"
+                                title="Copy Code"
                             >
                                 {copied ? <CheckCircle2 size={24} /> : <Copy size={24} />}
                             </button>
@@ -106,7 +106,7 @@ export default function ConnectExtension() {
                         <div className="flex items-start gap-2 p-3 bg-amber-500/5 border border-amber-500/10 rounded-xl">
                             <AlertCircle size={14} className="text-amber-500 mt-0.5" />
                             <p className="text-[11px] text-amber-500/80 font-bold uppercase tracking-wider">
-                                Válido por 10 minutos. Use imediatamente na extensão.
+                                Valid for 10 minutes. Use immediately in the extension.
                             </p>
                         </div>
                     </div>

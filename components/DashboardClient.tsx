@@ -112,7 +112,7 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                             <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-[#030305] rounded-full animate-pulse" />
                         </div>
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 text-[10px] font-black uppercase tracking-wider">
-                            Operational • Plan Hub
+                            Operational • Kovr
                         </div>
                     </div>
                     <button
@@ -139,7 +139,7 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                     Command.
                 </h1>
                 <p className="text-xl font-medium text-zinc-900 dark:text-zinc-400">
-                    Today • General Overview of your Plan Hub.
+                    Today • General Overview of your Kovr.
                 </p>
             </header>
 
@@ -158,7 +158,7 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                 <div className="plan-hub-card stat-card intelligence-board border-l-4 border-indigo-500 p-6">
                     <div className="flex justify-between items-start mb-4 relative z-10">
                         <p className="text-[10px] font-black uppercase tracking-widest text-indigo-500">
-                            Plan Hub Insights
+                            Kovr Insights
                         </p>
                         <span className="smart-badge badge-ai">Active</span>
                     </div>
@@ -210,7 +210,7 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                 <div className="space-y-6">
                     <div className="plan-hub-card p-8 card-hover transition-all">
                         <div className="flex items-center justify-between mb-8">
-                            <h4 className="text-xl font-black tracking-tighter text-zinc-900 dark:text-white">Plan Hub Budget.</h4>
+                            <h4 className="text-xl font-black tracking-tighter text-zinc-900 dark:text-white">Kovr Budget.</h4>
                             <div className="flex gap-2">
                                 <button className="px-3 py-1 rounded-lg bg-indigo-500 text-white text-[10px] font-black">
                                     Monthly

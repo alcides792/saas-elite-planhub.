@@ -9,8 +9,8 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Plan Hub - Stop wasting money on forgotten subscriptions",
-  description: "The central hub for all your subscriptions and recurring plans.",
+  title: "Kovr - Smart Subscription Manager",
+  description: "Gerencie, economize e controle suas assinaturas com inteligência artificial.",
 };
 
 export default function RootLayout({

@@ -26,7 +26,7 @@ export function RealMonthlyTrendChart({ data, currency }: RealMonthlyTrendChartP
         isCurrent: item.month === currentMonthName && !item.isFuture,
     }));
 
-    // Custom tooltip with Plan Hub styling
+    // Custom tooltip with Kovr styling
     const CustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;

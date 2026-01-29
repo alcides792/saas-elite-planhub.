@@ -75,7 +75,7 @@ export default function ThemeWrapper({ children }: ThemeWrapperProps) {
                                     <Menu size={20} />
                                 </button>
                             )}
-                            <h2 className="text-sm font-bold tracking-tight">PLAN HUB</h2>
+                            <h2 className="text-sm font-bold tracking-tight">KOVR</h2>
                         </div>
                         <div className="flex items-center gap-2">
                         </div>

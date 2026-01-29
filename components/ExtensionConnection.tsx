@@ -97,7 +97,7 @@ export function ExtensionConnection() {
                     </div>
                     <div>
                         <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                            Plan Hub Extension Connection
+                            Kovr Extension Connection
                             {apiKey && (
                                 <span className="cyber-badge-success">
                                     <CheckCircle2 className="w-3 h-3" />
@@ -198,7 +198,7 @@ export function ExtensionConnection() {
                         </h4>
                         <ol className="text-xs text-zinc-300 space-y-1 list-decimal list-inside">
                             <li>Copie a API Key acima</li>
-                            <li>Abra a extensão Plan Hub no Chrome</li>
+                            <li>Abra a extensão Kovr no Chrome</li>
                             <li>Cole a chave nas configurações da extensão</li>
                             <li>Pronto! Suas assinaturas serão sincronizadas automaticamente</li>
                         </ol>
@@ -215,7 +215,7 @@ export function ExtensionConnection() {
                     </h4>
 
                     <p className="text-sm text-zinc-400 mb-6 max-w-md mx-auto">
-                        Gere uma API Key para conectar a extensão Plan Hub e começar a rastrear suas assinaturas automaticamente.
+                        Gere uma API Key para conectar a extensão Kovr e começar a rastrear suas assinaturas automaticamente.
                     </p>
 
                     <button
