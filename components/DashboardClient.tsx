@@ -11,11 +11,8 @@ import AddSubscriptionModal from '@/components/AddSubscriptionModal';
 import SubscriptionLogo from '@/components/ui/subscription-logo';
 import type { Subscription } from '@/types';
 import { createSubscription } from '@/lib/actions/subscriptions';
-import { UIMessage } from 'ai';
-import { useRef, useEffect } from 'react';
-import { useChat } from '@ai-sdk/react';
-import ReactMarkdown from 'react-markdown';
 import { useUser } from '@/contexts/UserContext';
+
 
 interface DashboardClientProps {
     subscriptions: Subscription[];
@@ -48,32 +45,6 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
         });
     };
 
-    // AI Chat Logic
-    const { messages, sendMessage, error, status } = useChat();
-    const [input, setInput] = useState('');
-    const isLoading = status === 'streaming' || status === 'submitted';
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-
-    const handleChatInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInput(e.target.value);
-    };
-
-    const handleChatSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!input.trim() || isLoading) return;
-        sendMessage({ text: input });
-        setInput('');
-    };
-
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    };
-
-    useEffect(() => {
-        if (messages.length > 0) {
-            scrollToBottom();
-        }
-    }, [messages]);
 
     // Calculate next billing
     const upcomingSubscriptions = subscriptions
@@ -315,132 +286,55 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                     </div>
                 </div>
 
-                {/* Right: AI Assistant */}
+                {/* Right: Subscription Intelligence */}
                 <div className="space-y-6">
-                    <div className="plan-hub-card p-8 relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-indigo-500/10 transition-all" />
+                    <div className="plan-hub-card p-8 relative overflow-hidden group min-h-[400px]">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-indigo-500/10 transition-all" />
 
-                        <div className="flex items-center gap-3 mb-8 relative z-10">
-                            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2.5"
-                                >
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                                </svg>
-                            </div>
+                        <div className="flex items-center justify-between mb-8 relative z-10">
                             <div>
-                                <h4 className="text-xl font-black tracking-tighter text-zinc-900 dark:text-white">Plan Hub Assistant.</h4>
-                                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">
-                                    Powered by Plan Hub AI
-                                </p>
+                                <div className="inline-flex items-center gap-2 px-2 py-1 rounded-md bg-indigo-500/10 text-indigo-500 text-[10px] font-black uppercase tracking-widest mb-2">
+                                    Intelligence Core
+                                </div>
+                                <h4 className="text-2xl font-black tracking-tighter text-zinc-900 dark:text-white">Subscription DNA.</h4>
+                            </div>
+                            <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center text-indigo-500 shadow-2xl">
+                                <TrendingUp size={24} />
                             </div>
                         </div>
 
-                        <div
-                            className="bg-gray-500/10 backdrop-blur-xl border border-white/20 dark:bg-black/5 dark:bg-white/5 rounded-3xl p-6 mb-6 relative z-10 flex flex-col"
-                            style={{ minHeight: '350px' }}
-                        >
-                            <div className="flex-1 space-y-4 overflow-y-auto pr-2 custom-scrollbar max-h-[250px]">
-                                {error && (
-                                    <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-2 text-red-200 text-[10px] font-bold mb-4">
-                                        <AlertCircle size={14} className="text-red-500" />
-                                        Connection error. Check your API Key.
-                                    </div>
-                                )}
-
-                                {messages.length === 0 ? (
-                                    <div className="bg-indigo-500 text-white rounded-2xl rounded-tl-none p-4 max-w-[85%] animate-fade-in shadow-lg">
-                                        <p className="text-sm font-medium">
-                                            Welcome to Plan Hub. How can I optimize your financial hub today?
-                                        </p>
-                                    </div>
-                                ) : (
-                                    messages.map((m: UIMessage) => (
-                                        <div
-                                            key={m.id}
-                                            className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
-                                        >
-                                            <div
-                                                className={`max-w-[85%] p-3 rounded-2xl ${m.role === 'user'
-                                                    ? 'bg-indigo-600 text-white rounded-tr-none'
-                                                    : 'bg-gray-500/20 backdrop-blur-md border border-white/20 dark:bg-white/10 text-zinc-900 dark:text-white rounded-tl-none'
-                                                    }`}
-                                            >
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    {m.role === 'user' ? <User size={12} /> : <Bot size={12} className="text-indigo-400" />}
-                                                    <span className="text-[10px] font-black uppercase tracking-widest opacity-50 text-zinc-500 dark:text-zinc-400">
-                                                        {m.role === 'user' ? 'You' : 'Plan Hub Assistant'}
-                                                    </span>
-                                                </div>
-                                                <div className="text-sm leading-relaxed prose dark:prose-invert prose-sm max-w-none whitespace-pre-wrap text-black dark:text-white">
-                                                    {m.parts ? (
-                                                        m.parts.map((part: any, i: number) => (
-                                                            part.type === 'text' ? <ReactMarkdown key={i}>{part.text}</ReactMarkdown> : null
-                                                        ))
-                                                    ) : (
-                                                        <ReactMarkdown>{(m as any).content || ''}</ReactMarkdown>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-
-                                {isLoading && (
-                                    <div className="flex justify-start animate-fade-in">
-                                        <div className="bg-gray-500/20 backdrop-blur-md border border-white/20 dark:bg-white/5 dark:border-white/10 rounded-2xl rounded-tl-none p-3 flex items-center gap-2">
-                                            <Loader2 size={14} className="animate-spin text-indigo-400" />
-                                            <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Calculating...</span>
-                                        </div>
-                                    </div>
-                                )}
-                                <div ref={messagesEndRef} />
+                        <div className="grid grid-cols-2 gap-4 mb-8 relative z-10">
+                            <div className="p-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/20 dark:border-white/5 shadow-sm">
+                                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Burn Rate</p>
+                                <p className="text-xl font-black text-zinc-900 dark:text-white">{formatMoney(stats.monthlySpend / 30)}<span className="text-[10px] font-bold text-zinc-500 ml-1">/day</span></p>
                             </div>
-
-                            <div className="mt-4 flex flex-wrap gap-2">
-                                <button
-                                    onClick={() => setInput('Invoice Summary')}
-                                    className="text-[10px] font-black px-3 py-2 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-zinc-900 dark:text-white rounded-xl transition-all"
-                                >
-                                    Invoice Summary
-                                </button>
-                                <button
-                                    onClick={() => setInput('Savings Tips')}
-                                    className="text-[10px] font-black px-3 py-2 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-zinc-900 dark:text-white rounded-xl transition-all"
-                                >
-                                    Savings Tips
-                                </button>
-                                <button
-                                    onClick={() => setInput('Spend by Category')}
-                                    className="text-[10px] font-black px-3 py-2 bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-zinc-900 dark:text-white rounded-xl transition-all"
-                                >
-                                    Spend by Category
-                                </button>
+                            <div className="p-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/20 dark:border-white/5 shadow-sm">
+                                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Optimization</p>
+                                <p className="text-xl font-black text-emerald-500">12.5%<span className="text-[10px] font-bold text-zinc-500 ml-1">Potential</span></p>
                             </div>
                         </div>
 
-                        <form onSubmit={handleChatSubmit} className="flex gap-3 relative z-10">
-                            <input
-                                type="text"
-                                value={input}
-                                onChange={handleChatInputChange}
-                                placeholder="Command your AI..."
-                                className="flex-1 plan-hub-input"
-                            />
-                            <button
-                                type="submit"
-                                disabled={isLoading || !input.trim()}
-                                className="w-14 h-14 rounded-2xl bg-indigo-500 text-white flex items-center justify-center hover:bg-indigo-600 transition-all shadow-xl disabled:opacity-50"
+                        <div className="space-y-4 relative z-10">
+                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/10">
+                                <Bot size={18} className="text-indigo-500 mt-1 shrink-0" />
+                                <div>
+                                    <p className="text-sm font-bold text-zinc-900 dark:text-white mb-1">Financial Sentiment</p>
+                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium">
+                                        Your subscription fleet is currently balanced. We detected 2 upcoming renewals that could be optimized for quarterly billing.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <a
+                                href="/dashboard/chat"
+                                className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900 text-white hover:bg-zinc-800 transition-all group/btn shadow-xl shadow-indigo-500/10"
                             >
-                                <Send size={20} strokeWidth={2.5} />
-                            </button>
-                        </form>
+                                <span className="text-sm font-bold">Open AI Consultant</span>
+                                <Send size={16} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                            </a>
+                        </div>
+
+                        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
                     </div>
 
                     {/* Next Renewals */}

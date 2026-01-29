@@ -23,12 +23,20 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     });
 
     const refreshPreferences = useCallback(async () => {
-        const res = await getProfile();
-        if (res.success && res.profile) {
-            setPreferences({
-                currency: res.profile.currency || 'EUR',
-                language: res.profile.language || 'en-US'
-            });
+        try {
+            const res = await getProfile();
+            if (res.success && res.profile) {
+                setPreferences({
+                    currency: res.profile.currency || 'EUR',
+                    language: res.profile.language || 'en-US'
+                });
+            } else {
+                console.warn('[UserContext] Failed to load profile:', res.error);
+                // Keep default preferences if profile fetch fails
+            }
+        } catch (error) {
+            console.error('[UserContext] Error fetching profile:', error);
+            // Keep default preferences on error
         }
     }, []);
 

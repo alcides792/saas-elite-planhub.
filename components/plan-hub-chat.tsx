@@ -8,7 +8,7 @@ import ReactMarkdown from 'react-markdown';
 import { Bot } from 'lucide-react'; // Assuming lucide-react is installed for the Bot icon
 
 export default function PlanHubChat() {
-    const { messages, sendMessage, status } = useChat();
+    const { messages, sendMessage, status, error } = useChat();
     const [input, setInput] = useState('');
     const isLoading = status === 'streaming' || status === 'submitted';
 
@@ -39,7 +39,7 @@ export default function PlanHubChat() {
 
             {/* Mensagens */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
-                {messages.length === 1 && ( // Only the initial welcome message
+                {messages.length === 0 && (
                     <div className="text-center text-zinc-500 mt-20 text-sm">
                         Type &quot;How to invest $100?&quot; to start.
                     </div>
@@ -79,10 +79,11 @@ export default function PlanHubChat() {
                 )}
 
                 {/* Mostra erro visual se houver */}
-                {/* The useChat hook in the provided edit does not expose 'error' directly,
-                    so this block would need adjustment if error handling is still desired.
-                    For now, removing it as per the provided edit's implied changes.
-                */}
+                {error && (
+                    <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-xs">
+                        <strong>Error:</strong> {error.message || 'Something went wrong. Please try again.'}
+                    </div>
+                )}
             </div>
 
             {/* Input */}

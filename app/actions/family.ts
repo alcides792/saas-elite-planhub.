@@ -28,7 +28,7 @@ export async function getMyFamily(): Promise<{
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
-            return { success: false, error: 'Não autenticado' };
+            return { success: false, error: 'Not authenticated' };
         }
 
         // Get user's family membership
@@ -50,7 +50,7 @@ export async function getMyFamily(): Promise<{
             .single() as { data: any; error: any };
 
         if (familyError) {
-            return { success: false, error: 'Erro ao buscar família' };
+            return { success: false, error: 'Error leaving family' };
         }
 
         // Get all family members with their profile info
@@ -64,7 +64,7 @@ export async function getMyFamily(): Promise<{
             .eq('family_id', family.id) as { data: any[]; error: any };
 
         if (membersError) {
-            return { success: false, error: 'Erro ao buscar membros' };
+            return { success: false, error: 'Error fetching members' };
         }
 
         // Get profile info for each member
@@ -94,7 +94,7 @@ export async function getMyFamily(): Promise<{
         };
     } catch (error) {
         console.error('Error in getMyFamily:', error);
-        return { success: false, error: 'Erro inesperado' };
+        return { success: false, error: 'Unexpected error' };
     }
 }
 
@@ -111,7 +111,7 @@ export async function createFamily(name: string): Promise<{
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
-            return { success: false, error: 'Não autenticado' };
+            return { success: false, error: 'Not authenticated' };
         }
 
         // Check if user already has a family
@@ -122,7 +122,7 @@ export async function createFamily(name: string): Promise<{
             .single();
 
         if (existing) {
-            return { success: false, error: 'Você já pertence a uma família' };
+            return { success: false, error: 'You already belong to a family' };
         }
 
         // Create family
@@ -137,7 +137,7 @@ export async function createFamily(name: string): Promise<{
 
         if (familyError) {
             console.error('Error creating family:', familyError);
-            return { success: false, error: 'Erro ao criar família' };
+            return { success: false, error: 'Error creating family' };
         }
 
         // Add owner as member
@@ -151,14 +151,14 @@ export async function createFamily(name: string): Promise<{
 
         if (memberError) {
             console.error('Error adding owner as member:', memberError);
-            return { success: false, error: 'Erro ao adicionar membro' };
+            return { success: false, error: 'Unexpected error' };
         }
 
         revalidatePath('/family');
         return { success: true, familyId: family.id };
     } catch (error) {
         console.error('Error in createFamily:', error);
-        return { success: false, error: 'Erro inesperado' };
+        return { success: false, error: 'Unexpected error' };
     }
 }
 
@@ -175,7 +175,7 @@ export async function inviteByEmail(email: string): Promise<{
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
-            return { success: false, error: 'Não autenticado' };
+            return { success: false, error: 'Not authenticated' };
         }
 
         // Get user's family
@@ -186,11 +186,11 @@ export async function inviteByEmail(email: string): Promise<{
             .single() as { data: any };
 
         if (!membership) {
-            return { success: false, error: 'Você não pertence a uma família' };
+            return { success: false, error: 'You don\'t belong to a family' };
         }
 
         if (membership.role !== 'owner') {
-            return { success: false, error: 'Apenas o dono pode convidar membros' };
+            return { success: false, error: 'Only the owner can invite members' };
         }
 
         // Generate token
@@ -212,7 +212,7 @@ export async function inviteByEmail(email: string): Promise<{
 
         if (inviteError) {
             console.error('Error creating invite:', inviteError);
-            return { success: false, error: 'Erro ao criar convite' };
+            return { success: false, error: 'Error creating invite' };
         }
 
         const inviteLink = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/invite/${token}`;
@@ -221,7 +221,7 @@ export async function inviteByEmail(email: string): Promise<{
         return { success: true, inviteLink };
     } catch (error) {
         console.error('Error in inviteByEmail:', error);
-        return { success: false, error: 'Erro inesperado' };
+        return { success: false, error: 'Unexpected error' };
     }
 }
 
@@ -244,7 +244,7 @@ export async function getPendingInvites(): Promise<{
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
-            return { success: false, error: 'Não autenticado' };
+            return { success: false, error: 'Not authenticated' };
         }
 
         // Get user's family
@@ -267,13 +267,13 @@ export async function getPendingInvites(): Promise<{
             .order('created_at', { ascending: false }) as { data: any[]; error: any };
 
         if (invitesError) {
-            return { success: false, error: 'Erro ao buscar convites' };
+            return { success: false, error: 'Error fetching invites' };
         }
 
         return { success: true, invites };
     } catch (error) {
         console.error('Error in getPendingInvites:', error);
-        return { success: false, error: 'Erro inesperado' };
+        return { success: false, error: 'Unexpected error' };
     }
 }
 
@@ -289,7 +289,7 @@ export async function acceptInvite(token: string): Promise<{
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
-            return { success: false, error: 'Não autenticado' };
+            return { success: false, error: 'Not authenticated' };
         }
 
         // Get invite
@@ -301,12 +301,12 @@ export async function acceptInvite(token: string): Promise<{
             .single() as { data: any; error: any };
 
         if (inviteError || !invite) {
-            return { success: false, error: 'Convite inválido ou expirado' };
+            return { success: false, error: 'Invalid or expired invite' };
         }
 
         // Check if expired
         if (new Date(invite.expires_at) < new Date()) {
-            return { success: false, error: 'Convite expirado' };
+            return { success: false, error: 'Invite expired' };
         }
 
         // Check if user already in a family
@@ -317,7 +317,7 @@ export async function acceptInvite(token: string): Promise<{
             .single();
 
         if (existing) {
-            return { success: false, error: 'Você já pertence a uma família' };
+            return { success: false, error: 'You already belong to a family' };
         }
 
         // Check family member limit (Max 5)
@@ -328,11 +328,11 @@ export async function acceptInvite(token: string): Promise<{
 
         if (countError) {
             console.error('Error checking family limit:', countError);
-            return { success: false, error: 'Erro ao verificar limite da família' };
+            return { success: false, error: 'Error checking family limit' };
         }
 
         if (count !== null && count >= 5) {
-            return { success: false, error: 'Esta família atingiu o limite de 5 membros.' };
+            return { success: false, error: 'This family has reached the limit of 5 members.' };
         }
 
         // Add user to family
@@ -346,7 +346,7 @@ export async function acceptInvite(token: string): Promise<{
 
         if (memberError) {
             console.error('Error adding member:', memberError);
-            return { success: false, error: 'Erro ao aceitar convite' };
+            return { success: false, error: 'Error accepting invite' };
         }
 
         // Upgrade user to PRO plan (Sponsored)
@@ -369,7 +369,7 @@ export async function acceptInvite(token: string): Promise<{
         return { success: true };
     } catch (error) {
         console.error('Error in acceptInvite:', error);
-        return { success: false, error: 'Erro inesperado' };
+        return { success: false, error: 'Unexpected error' };
     }
 }
 
@@ -385,7 +385,7 @@ export async function removeMember(memberId: string): Promise<{
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
-            return { success: false, error: 'Não autenticado' };
+            return { success: false, error: 'Not authenticated' };
         }
 
         // Get user's family and role
@@ -396,12 +396,12 @@ export async function removeMember(memberId: string): Promise<{
             .single() as { data: any };
 
         if (!membership || membership.role !== 'owner') {
-            return { success: false, error: 'Apenas o dono pode remover membros' };
+            return { success: false, error: 'Only the owner can remove members' };
         }
 
         // Can't remove yourself
         if (memberId === user.id) {
-            return { success: false, error: 'Você não pode se remover. Use "Sair da Família"' };
+            return { success: false, error: 'You cannot remove yourself. Use "Leave Family"' };
         }
 
         // Remove member
@@ -413,7 +413,7 @@ export async function removeMember(memberId: string): Promise<{
 
         if (removeError) {
             console.error('Error removing member:', removeError);
-            return { success: false, error: 'Erro ao remover membro' };
+            return { success: false, error: 'Error removing member' };
         }
 
         // Downgrade member to FREE plan
@@ -427,7 +427,7 @@ export async function removeMember(memberId: string): Promise<{
         return { success: true };
     } catch (error) {
         console.error('Error in removeMember:', error);
-        return { success: false, error: 'Erro inesperado' };
+        return { success: false, error: 'Unexpected error' };
     }
 }
 
@@ -443,7 +443,7 @@ export async function leaveFamily(): Promise<{
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
-            return { success: false, error: 'Não autenticado' };
+            return { success: false, error: 'Not authenticated' };
         }
 
         // Get user's family and role
@@ -454,11 +454,11 @@ export async function leaveFamily(): Promise<{
             .single() as { data: any };
 
         if (!membership) {
-            return { success: false, error: 'Você não pertence a uma família' };
+            return { success: false, error: 'You don\'t belong to a family' };
         }
 
         if (membership.role === 'owner') {
-            return { success: false, error: 'O dono não pode sair. Delete a família ou transfira a propriedade primeiro' };
+            return { success: false, error: 'The owner cannot leave. Delete the family or transfer ownership first' };
         }
 
         // Leave family
@@ -470,7 +470,7 @@ export async function leaveFamily(): Promise<{
 
         if (leaveError) {
             console.error('Error leaving family:', leaveError);
-            return { success: false, error: 'Erro ao sair da família' };
+            return { success: false, error: 'Error leaving family' };
         }
 
         // Downgrade myself to FREE plan
@@ -484,7 +484,7 @@ export async function leaveFamily(): Promise<{
         return { success: true };
     } catch (error) {
         console.error('Error in leaveFamily:', error);
-        return { success: false, error: 'Erro inesperado' };
+        return { success: false, error: 'Unexpected error' };
     }
 }
 
@@ -501,7 +501,7 @@ export async function getMemberSubscriptions(memberId: string): Promise<{
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) {
-            return { success: false, error: 'Não autenticado' };
+            return { success: false, error: 'Not authenticated' };
         }
 
         // We rely on RLS to allow the Admin to see these
@@ -514,12 +514,12 @@ export async function getMemberSubscriptions(memberId: string): Promise<{
         if (error) {
             console.error('Error in getMemberSubscriptions:', error);
             // If RLS blocks it, it's probably because requester is not the family admin
-            return { success: false, error: 'Acesso negado ou erro ao buscar assinaturas' };
+            return { success: false, error: 'Access denied or error fetching subscriptions' };
         }
 
         return { success: true, subscriptions: data || [] };
     } catch (error) {
         console.error('Error in getMemberSubscriptions:', error);
-        return { success: false, error: 'Erro inesperado' };
+        return { success: false, error: 'Unexpected error' };
     }
 }

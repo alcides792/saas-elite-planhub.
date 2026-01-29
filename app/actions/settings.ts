@@ -29,7 +29,16 @@ export async function getProfile(): Promise<{
         // Get authenticated user
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-        if (authError || !user) {
+        if (authError) {
+            console.error('[getProfile] Auth error:', authError);
+            return {
+                success: false,
+                error: 'Authentication failed: ' + (authError.message || 'Unknown error'),
+            };
+        }
+
+        if (!user) {
+            console.warn('[getProfile] No user found');
             return {
                 success: false,
                 error: 'You must be authenticated.',

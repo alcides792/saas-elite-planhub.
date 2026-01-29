@@ -1,56 +1,114 @@
-import { createOpenAI } from '@ai-sdk/openai';
-import { streamText } from 'ai';
+import OpenAI from 'openai';
+import { createUIMessageStream, createUIMessageStreamResponse, generateId } from 'ai';
+import { createClient } from '@/lib/supabase/server';
 
 export const maxDuration = 30;
+
+// Configuração do Cliente Groq
+const getGroqClient = () => {
+  const apiKey = (process.env.GROQ_API_KEY || '').trim();
+
+  if (!apiKey) {
+    console.error("❌ ERRO: GROQ_API_KEY não encontrada no ambiente.");
+  }
+
+  return new OpenAI({
+    apiKey: apiKey,
+    // Deixamos o SDK gerenciar o fetch e a baseURL padrão
+    baseURL: 'https://api.groq.com/openai/v1',
+  });
+};
 
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
+    const groqClient = getGroqClient();
 
-    const groq = createOpenAI({
-      baseURL: 'https://api.groq.com/openai/v1',
-      apiKey: process.env.GROQ_API_KEY, // CERTO
+    // 1. Contexto do Usuário (Supabase)
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    let textoSistema = `You are Plan Hub Assistant, a financial specialist. Respond in English. Be direct and concise.`;
+
+    if (user) {
+      const { data: assinaturas } = await supabase
+        .from('subscriptions')
+        .select('name, amount, currency, status, billing_type')
+        .eq('user_id', user.id);
+
+      const resumo = assinaturas?.length ? JSON.stringify(assinaturas) : "No subscriptions found.";
+      textoSistema += `\n\nUSER DATA:\n${resumo}`;
+    }
+
+    // 2. Montagem e Limpeza de Mensagens
+    const mensagensFinais: any[] = [
+      { role: 'system', content: textoSistema }
+    ];
+
+    if (Array.isArray(messages)) {
+      messages.forEach((m: any) => {
+        if (m.role === 'user' || m.role === 'assistant') {
+          let conteudoLimpo = '';
+          if (typeof m.content === 'string') {
+            conteudoLimpo = m.content;
+          } else if (Array.isArray(m.content)) {
+            conteudoLimpo = m.content.map((c: any) => c.text || '').join('');
+          } else if (m.parts) {
+            conteudoLimpo = m.parts.map((p: any) => p.text || '').join('');
+          }
+
+          if (conteudoLimpo && conteudoLimpo.trim().length > 0) {
+            mensagensFinais.push({
+              role: m.role,
+              content: conteudoLimpo.trim()
+            });
+          }
+        }
+      });
+    }
+
+    console.log(`🚀 [v2-fresh] Enviando ${mensagensFinais.length} mensagens para Groq. Chave prefixo: ${process.env.GROQ_API_KEY?.substring(0, 7)}`);
+
+    // 3. Chamada e Streaming
+    const stream = createUIMessageStream({
+      onError: (err) => {
+        console.error("❌ Erro na Stream:", err);
+        return err instanceof Error ? err.message : 'Ocorreu um erro durante a stream.';
+      },
+      execute: async ({ writer }) => {
+        try {
+          const response = await groqClient.chat.completions.create({
+            model: 'llama-3.3-70b-versatile',
+            stream: true,
+            messages: mensagensFinais,
+            temperature: 0.7,
+          });
+
+          const id = generateId();
+          writer.write({ type: 'text-start', id });
+
+          for await (const chunk of response) {
+            const delta = chunk.choices[0]?.delta?.content;
+            if (delta) {
+              writer.write({ type: 'text-delta', id, delta });
+            }
+          }
+
+          writer.write({ type: 'text-end', id });
+        } catch (streamError: any) {
+          console.error("❌ ERRO DURANTE STREAM:", streamError);
+          throw streamError;
+        }
+      },
     });
 
-    // 1. CONVERSÃO MANUAL (Substitui o convertToCoreMessages) 🛠️
-    // Como a importação falhou, fazemos a limpeza na mão.
-    // Isso garante que o histórico vá completo para a IA (sem amnésia).
-    const coreMessages = messages.map((m: any) => {
-      let content = m.content;
-
-      // Se o conteúdo vier picado (formato novo), junta tudo
-      if (!content && m.parts) {
-        content = m.parts.map((p: any) => p.text).join('');
-      }
-
-      // Garante que é string e trata roles estranhos
-      return {
-        role: (m.role === 'data' || m.role === 'system') ? 'user' : m.role,
-        content: content || '.',
-      };
-    });
-
-    console.log(`📥 Processando ${coreMessages.length} mensagens...`);
-
-    // 2. Envia para a IA com o histórico limpo
-    const result = streamText({
-      model: groq('llama-3.3-70b-versatile'),
-      messages: coreMessages, // Usa a nossa lista limpa manualmente
-      system: `Você é o Plan Hub Assistant, o especialista financeiro do Plan Hub. 
-                Seu objetivo é ajudar o usuário a economizar dinheiro, gerenciar assinaturas e entender seus gastos recorrentes.
-                Plan Hub é o central hub para todas as assinaturas e planos recorrentes.
-                Tagline: "All your subscriptions. One hub."
-                
-                Seja profissional, amigável e focado em eficiência financeira.
-                Você tem acesso aos dados de assinaturas do usuário (enviados no contexto abaixo).
-                Use esses dados para dar insights personalizados.`,
-    });
-
-    // 3. Resposta (Usando o método antigo que sabemos que funciona no seu PC)
-    return result.toTextStreamResponse();
+    return createUIMessageStreamResponse({ stream });
 
   } catch (error: any) {
-    console.error("❌ ERRO NO BACKEND:", error);
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    console.error("❌ ERRO API:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 401, // Mantemos o status de erro se falhar na criação
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
