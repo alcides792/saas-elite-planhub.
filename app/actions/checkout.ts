@@ -34,7 +34,9 @@ export async function createCheckoutSession() {
                 email: user.email,
                 name: user.user_metadata?.full_name || 'Cliente'
             },
-            billing_country: 'BR',
+            billing_address: {
+                country: 'BR',
+            },
             metadata: {
                 user_id: user.id,
             },
