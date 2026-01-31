@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import CancelButton from './CancelButton'
+import SubscribeButton from './SubscribeButton'
 
 export default async function BillingPage() {
     const supabase = await createClient()
@@ -122,25 +123,48 @@ export default async function BillingPage() {
 
             ) : (
                 // --- ESTADO 2: NÃO ASSINANTE (OFERTA) ---
-                <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900/50">
-                    <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500"></div>
-                    <div className="p-12 text-center">
-                        <div className="w-20 h-20 bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl ring-1 ring-white/10">
-                            <svg className="w-10 h-10 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                        </div>
+                <div className="max-w-md mx-auto">
+                    <div className="relative rounded-3xl overflow-hidden border border-zinc-700 bg-[#0F0F11] shadow-2xl">
 
-                        <h2 className="text-3xl font-bold text-white mb-3">Nenhum plano ativo</h2>
-                        <p className="text-zinc-400 mb-8 max-w-lg mx-auto text-lg">
-                            Você está usando a versão limitada. Desbloqueie todo o potencial do PlanHub Pro agora mesmo.
-                        </p>
+                        {/* Faixa de Destaque */}
+                        <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-purple-500 to-blue-500"></div>
 
-                        <div className="flex justify-center gap-4">
-                            <a
-                                href="/#pricing"
-                                className="inline-flex items-center px-8 py-4 border border-transparent text-base font-bold rounded-full shadow-sm text-black bg-white hover:bg-zinc-200 transition-transform transform hover:scale-105"
-                            >
-                                Ver Planos Disponíveis
-                            </a>
+                        <div className="p-8 text-center">
+                            <h3 className="text-zinc-400 text-sm font-semibold uppercase tracking-widest mb-2">Plano Pro</h3>
+                            <div className="flex items-center justify-center gap-1 mb-6">
+                                <span className="text-2xl text-zinc-500">R$</span>
+                                <span className="text-5xl font-bold text-white">27</span>
+                                <span className="text-zinc-500 self-end mb-1">/mês</span>
+                            </div>
+
+                            {/* Lista de Benefícios */}
+                            <ul className="text-left space-y-4 mb-8 text-zinc-300">
+                                <li className="flex items-center gap-3">
+                                    <div className="p-1 bg-green-500/10 rounded-full">
+                                        <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                    </div>
+                                    <span>Acesso Ilimitado a Tudo</span>
+                                </li>
+                                <li className="flex items-center gap-3">
+                                    <div className="p-1 bg-green-500/10 rounded-full">
+                                        <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                    </div>
+                                    <span>Ferramentas de IA Avançadas</span>
+                                </li>
+                                <li className="flex items-center gap-3">
+                                    <div className="p-1 bg-green-500/10 rounded-full">
+                                        <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                    </div>
+                                    <span>Suporte Prioritário</span>
+                                </li>
+                            </ul>
+
+                            {/* Botão de Checkout */}
+                            <SubscribeButton />
+
+                            <p className="mt-4 text-xs text-zinc-600">
+                                Pagamento seguro via Dodo Payments. Cancele quando quiser.
+                            </p>
                         </div>
                     </div>
                 </div>
