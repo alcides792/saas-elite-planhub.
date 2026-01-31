@@ -1,105 +1,82 @@
-import { Webhooks } from "@dodopayments/nextjs";
-import { createClient } from "@supabase/supabase-js";
+import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/supabase-js'
 
-// Supabase admin (service role) — necessário para atualizar qualquer usuário
+// 1. Inicializa o Supabase com PODER MÁXIMO (Service Role)
+// Isso permite encontrar e editar o usuário apenas pelo email
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+)
 
-export const dynamic = 'force-dynamic';
+export async function POST(request: Request) {
+    try {
+        // Lê o JSON que o Dodo enviou
+        const body = await request.json()
 
-export const POST = Webhooks({
-    webhookKey: process.env.DODO_PAYMENTS_WEBHOOK_KEY || "dummy_key_for_build",
+        // Extrai os campos baseados na sua pesquisa
+        const { type, data } = body
 
-    // 🟡 Assinatura criada / trial começou
-    onSubscriptionActive: async (payload: any) => {
-        const subscription = payload.data;
+        console.log(`🔔 Webhook Dodo Recebido: [${type}]`)
 
-        const userId = subscription.metadata?.user_id;
-        if (!userId) return;
+        // Verifica se é um evento de Assinatura Ativa ou Pagamento Sucesso
+        if (type === 'subscription.active' || type === 'payment.succeeded') {
 
-        console.log("Subscription Active for user:", userId);
+            // Mapeamento exato conforme a documentação que você trouxe
+            const customerEmail = data.customer?.email
+            const subscriptionId = data.subscription_id
+            const status = data.status || 'active'
 
-        await supabase
-            .from("profiles")
-            .update({
-                billing_status: "trial_active",
-                dodo_subscription_id: subscription.id,
-                trial_ends_at: subscription.trial_end
-                    ? new Date(subscription.trial_end * 1000).toISOString()
-                    : null,
-            })
-            .eq("id", userId);
-    },
+            // Lógica Inteligente para Trial:
+            // Se vier "trial_period_days" no JSON, calculamos a data final
+            let trialEnd = null;
+            if (data.trial_period_days && data.trial_period_days > 0) {
+                const hoje = new Date();
+                hoje.setDate(hoje.getDate() + data.trial_period_days); // Soma os dias
+                trialEnd = hoje.toISOString();
+            }
 
-    // 🟢 Pagamento confirmado após trial
-    onPaymentSucceeded: async (payload: any) => {
-        const payment = payload.data;
-        const subscription = payment.subscription;
+            if (customerEmail) {
+                console.log(`👤 Processando usuário: ${customerEmail}`)
 
-        const userId = subscription?.metadata?.user_id;
-        if (!userId) return;
+                // Atualiza o perfil no Supabase
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({
+                        billing_status: trialEnd ? 'trialing' : 'active', // Se tem data de trial, marca como trialing
+                        dodo_subscription_id: subscriptionId,
+                        trial_ends_at: trialEnd, // Salva a data que o trial acaba
+                        plan_name: 'Pro' // Ou pegue de data.product_id se quiser mapear nomes
+                    })
+                    .eq('email', customerEmail)
 
-        console.log("Payment succeeded for user:", userId);
+                if (error) {
+                    console.error('❌ Erro ao salvar no banco:', error)
+                    return NextResponse.json({ error: 'Erro de Banco de Dados' }, { status: 500 })
+                }
 
-        await supabase
-            .from("profiles")
-            .update({
-                billing_status: "active",
-            })
-            .eq("id", userId);
-    },
-
-    // 🔴 Falha na cobrança
-    onPaymentFailed: async (payload: any) => {
-        const payment = payload.data;
-        const subscription = payment.subscription;
-
-        const userId = subscription?.metadata?.user_id;
-        if (!userId) return;
-
-        console.log("Payment failed for user:", userId);
-
-        await supabase
-            .from("profiles")
-            .update({
-                billing_status: "past_due",
-            })
-            .eq("id", userId);
-    },
-
-    // ⚫ Assinatura cancelada
-    onSubscriptionCancelled: async (payload: any) => {
-        const subscription = payload.data;
-
-        const userId = subscription.metadata?.user_id;
-        if (!userId) return;
-
-        console.log("Subscription cancelled for user:", userId);
-
-        await supabase
-            .from("profiles")
-            .update({
-                billing_status: "cancelled",
-            })
-            .eq("id", userId);
-    },
-
-    // 🔄 Mudanças gerais (renovação, status update, etc)
-    onSubscriptionUpdated: async (payload: any) => {
-        const subscription = payload.data;
-        const userId = subscription.metadata?.user_id;
-        if (!userId) return;
-
-        console.log("Subscription updated:", subscription.status);
-
-        // Se estiver ativa e não estiver em trial
-        if (subscription.status === "active" && !subscription.trial_end) {
-            await supabase
-                .from("profiles")
-                .update({ billing_status: "active" })
-                .eq("id", userId);
+                console.log(`✅ Sucesso! Usuário ${customerEmail} atualizado.`)
+            } else {
+                console.warn('⚠️ Email não encontrado no JSON do Dodo.')
+            }
         }
-    },
-});
+
+        // Evento de Cancelamento
+        if (type === 'subscription.cancelled' || type === 'subscription.failed') {
+            const customerEmail = data.customer?.email
+            if (customerEmail) {
+                await supabase
+                    .from('profiles')
+                    .update({ billing_status: 'canceled' })
+                    .eq('email', customerEmail)
+                console.log(`🚫 Assinatura de ${customerEmail} cancelada.`)
+            }
+        }
+
+        // Retorna 200 para o Dodo saber que recebemos
+        return NextResponse.json({ received: true })
+
+    } catch (error: any) {
+        console.error('🔥 Erro Fatal no Webhook:', error.message)
+        return NextResponse.json({ error: error.message }, { status: 400 })
+    }
+}
