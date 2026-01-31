@@ -26,9 +26,9 @@ export default function SubscribeButton() {
         <button
             onClick={handleSubscribe}
             disabled={loading}
-            className="w-full py-4 px-6 bg-white text-black font-bold text-lg rounded-xl hover:bg-zinc-200 transition transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-white/10 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-4 px-6 bg-black text-white font-bold text-lg rounded-xl hover:bg-zinc-900 transition transform hover:scale-[1.02] active:scale-95 shadow-xl shadow-black/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-            {loading ? 'Redirecionando...' : 'Assinar Agora - R$ 27,00'}
+            {loading ? 'Processing...' : 'Upgrade to Pro'}
         </button>
     )
 }

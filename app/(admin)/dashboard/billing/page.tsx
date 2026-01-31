@@ -124,66 +124,53 @@ export default async function BillingPage() {
             ) : (
                 // --- ESTADO 2: NÃO ASSINANTE (OFERTA) ---
                 <div className="max-w-md mx-auto mt-8">
-                    <div className="relative rounded-3xl overflow-hidden border border-zinc-800 bg-[#0F0F11] shadow-2xl ring-1 ring-purple-500/20">
+                    {/* Card Estilo "Pro" Roxo Vibrante */}
+                    <div className="relative rounded-3xl overflow-hidden bg-purple-600 text-white shadow-2xl p-8">
 
-                        {/* Faixa de Destaque - TRIAL */}
-                        <div className="absolute top-0 inset-x-0 bg-gradient-to-r from-purple-600 to-blue-600 py-2 text-center">
-                            <p className="text-white text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2">
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                Teste Grátis por 3 Dias
-                            </p>
+                        {/* Badge POPULAR */}
+                        <div className="absolute top-6 right-6 bg-black/30 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                            <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                            POPULAR
                         </div>
 
-                        <div className="p-8 pt-16 text-center">
-                            {/* Preço */}
-                            <div className="mb-2">
-                                <p className="text-zinc-400 text-sm font-semibold uppercase tracking-widest mb-2">Plano Pro Anual</p>
-                            </div>
+                        {/* Título */}
+                        <h3 className="text-2xl font-bold mb-2">Pro</h3>
 
-                            <div className="flex items-start justify-center gap-1 mb-6">
-                                <span className="text-3xl text-zinc-400 font-medium mt-2">$</span>
-                                <span className="text-7xl font-extrabold text-white tracking-tight">27</span>
-                                <div className="flex flex-col text-left ml-2 mt-2">
-                                    <span className="text-zinc-400 text-lg font-bold">/ano</span>
-                                </div>
-                            </div>
+                        {/* Preço */}
+                        <div className="flex items-baseline mb-8">
+                            <span className="text-5xl font-extrabold tracking-tight">$39</span>
+                            <span className="text-purple-200 text-xl ml-2 font-medium">/lifetime</span>
+                        </div>
 
-                            {/* Aviso do Trial */}
-                            <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3 mb-8">
-                                <p className="text-purple-300 text-sm font-medium">
-                                    Você só será cobrado <strong className="text-white">$27 USD</strong> após o fim dos 3 dias de teste.
-                                </p>
-                            </div>
-
-                            {/* Lista de Benefícios */}
-                            <ul className="text-left space-y-4 mb-8 text-zinc-300 px-4">
-                                <li className="flex items-start gap-3">
-                                    <div className="mt-1 p-1 bg-green-500/10 rounded-full shrink-0">
-                                        <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                                    </div>
-                                    <span>Acesso imediato a todas as funcionalidades Premium durante o teste.</span>
+                        {/* Lista de Benefícios com Checkmarks */}
+                        <ul className="space-y-4 mb-8">
+                            {[
+                                "Unlimited subscriptions",
+                                "Advanced analytics",
+                                "Bill splitting",
+                                "Priority support",
+                                "AI chat (50 credits)",
+                                "Export data",
+                                "Early access to new features"
+                            ].map((item, index) => (
+                                <li key={index} className="flex items-start gap-3">
+                                    {/* Ícone de Checkmark (✓) */}
+                                    <svg className="w-6 h-6 text-white shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    <span className="text-lg font-medium">{item}</span>
                                 </li>
-                                <li className="flex items-start gap-3">
-                                    <div className="mt-1 p-1 bg-green-500/10 rounded-full shrink-0">
-                                        <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                                    </div>
-                                    <span>Cobrança anual automática (apenas $2,25/mês).</span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <div className="mt-1 p-1 bg-green-500/10 rounded-full shrink-0">
-                                        <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                                    </div>
-                                    <span>Cancele online a qualquer momento antes do teste acabar.</span>
-                                </li>
-                            </ul>
+                            ))}
+                        </ul>
 
-                            {/* Botão de Checkout */}
+                        {/* Botão de Compra (Estilo Preto) */}
+                        <div className="mt-8">
                             <SubscribeButton />
-
-                            <p className="mt-4 text-[11px] text-zinc-500 max-w-xs mx-auto leading-tight">
-                                Pagamento seguro processado pelo Dodo Payments em Dólar Americano (USD).
-                            </p>
                         </div>
+
+                        <p className="text-center text-purple-200 text-xs mt-4 font-medium">
+                            One-time payment. Secure checkout via Dodo.
+                        </p>
                     </div>
                 </div>
             )}
