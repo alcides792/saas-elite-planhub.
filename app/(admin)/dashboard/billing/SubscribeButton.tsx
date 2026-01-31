@@ -28,7 +28,7 @@ export default function SubscribeButton() {
             disabled={loading}
             className="w-full py-4 px-6 bg-black text-white font-bold text-lg rounded-xl hover:bg-zinc-900 transition transform hover:scale-[1.02] active:scale-95 shadow-xl shadow-black/20 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-            {loading ? 'Processing...' : 'Upgrade to Pro'}
+            {loading ? 'Processing...' : 'Start 3-Day Free Trial 🚀'}
         </button>
     )
 }
