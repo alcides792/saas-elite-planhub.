@@ -1,267 +1,150 @@
-'use client';
+import { createClient } from '@/utils/supabase/server'
+import { redirect } from 'next/navigation'
+import CancelButton from './CancelButton'
 
-import { useState, useEffect } from 'react';
-import { createClient } from '@/utils/supabase/client';
-import { Check, CreditCard, AlertCircle, Loader2, Sparkles, Zap, ArrowRight, ShieldCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
+export default async function BillingPage() {
+    const supabase = await createClient()
 
-type BillingStatus = 'trial_pending' | 'trial_active' | 'active' | 'past_due' | 'cancelled';
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) redirect('/login')
 
-interface UserProfile {
-    id: string;
-    billing_status: BillingStatus;
-    trial_ends_at: string | null;
-}
+    // Busca os dados atualizados do perfil
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single()
 
-export default function BillingPage() {
-    const [profile, setProfile] = useState<UserProfile | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [actionLoading, setActionLoading] = useState(false);
-    const supabase = createClient();
+    // Lógica de Estado
+    const isPro = profile?.billing_status === 'active' || profile?.billing_status === 'trialing'
+    const isTrial = profile?.billing_status === 'trialing'
 
-    useEffect(() => {
-        async function fetchProfile() {
-            try {
-                const { data: { user } } = await supabase.auth.getUser();
-                if (user) {
-                    const { data, error } = await supabase
-                        .from('profiles')
-                        .select('id, billing_status, trial_ends_at')
-                        .eq('id', user.id)
-                        .single();
-
-                    if (!error && data) {
-                        setProfile(data as UserProfile);
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching profile:', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchProfile();
-    }, [supabase]);
-
-    const handleCheckout = async () => {
-        setActionLoading(true);
-        try {
-            const response = await fetch('/api/billing/checkout', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            const contentType = response.headers.get("content-type");
-            if (!contentType || !contentType.includes("application/json")) {
-                const text = await response.text();
-                console.error("Non-JSON response received:", text);
-                throw new Error("Server returned an invalid response (HTML). Check your route configuration and environment variables.");
-            }
-
-            const data = await response.json();
-
-            if (data.checkoutUrl) {
-                window.location.href = data.checkoutUrl;
-            } else if (data.error) {
-                alert(`Error: ${data.error}${data.details ? ` (${data.details})` : ''}`);
-            } else {
-                alert('Checkout link not generated. Please check your configuration.');
-            }
-        } catch (error) {
-            console.error('Checkout error:', error);
-            alert(error instanceof Error ? error.message : 'Failed to initiate checkout. Please try again.');
-        } finally {
-            setActionLoading(false);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
-            </div>
-        );
-    }
-
-    const benefits = [
-        "Access to all premium features",
-        "Generate extension tokens",
-        "Priority processing",
-        "Future updates included"
-    ];
-
-    const status = profile?.billing_status || 'trial_pending';
-
-    const renderActionButton = () => {
-        switch (status) {
-            case 'trial_pending':
-                return (
-                    <button
-                        onClick={handleCheckout}
-                        disabled={actionLoading}
-                        className="w-full py-4 px-6 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 group shadow-lg shadow-violet-500/20 active:scale-[0.98]"
-                    >
-                        {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5 group-hover:scale-110 transition-transform" />}
-                        Start Free 3-Day Trial
-                    </button>
-                );
-            case 'trial_active':
-                return (
-                    <div className="space-y-4">
-                        <div className="flex flex-col items-center bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 p-4 rounded-xl">
-                            <div className="flex items-center gap-2 text-violet-700 dark:text-violet-300 font-medium mb-1">
-                                <Sparkles className="w-4 h-4" />
-                                You are currently in your free trial.
-                            </div>
-                            <p className="text-sm text-center text-slate-500 dark:text-slate-400">
-                                You will be charged $27/month after the 3-day trial unless you cancel.
-                            </p>
-                        </div>
-                        <button
-                            className="w-full py-3 px-6 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700"
-                        >
-                            Manage Subscription
-                        </button>
-                    </div>
-                );
-            case 'active':
-                return (
-                    <div className="space-y-4">
-                        <div className="flex flex-col items-center bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-4 rounded-xl">
-                            <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-medium">
-                                <ShieldCheck className="w-5 h-5" />
-                                Your subscription is active 🎉
-                            </div>
-                        </div>
-                        <button
-                            className="w-full py-3 px-6 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700"
-                        >
-                            Manage Subscription
-                        </button>
-                    </div>
-                );
-            case 'past_due':
-                return (
-                    <div className="space-y-4">
-                        <div className="flex flex-col items-center bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 p-4 rounded-xl gap-2">
-                            <div className="flex items-center gap-2 text-rose-700 dark:text-rose-300 font-medium">
-                                <AlertCircle className="w-5 h-5" />
-                                Payment failed
-                            </div>
-                            <p className="text-sm text-center text-rose-600 dark:text-rose-400">
-                                Please update your payment method to keep access.
-                            </p>
-                        </div>
-                        <button
-                            onClick={handleCheckout}
-                            disabled={actionLoading}
-                            className="w-full py-3 px-6 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-                        >
-                            {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Fix Payment'}
-                        </button>
-                    </div>
-                );
-            case 'cancelled':
-                return (
-                    <div className="space-y-4">
-                        <div className="flex flex-col items-center bg-slate-50 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800 p-4 rounded-xl">
-                            <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300 font-medium">
-                                Your subscription was cancelled.
-                            </div>
-                        </div>
-                        <button
-                            onClick={handleCheckout}
-                            disabled={actionLoading}
-                            className="w-full py-3 px-6 bg-violet-600 hover:bg-violet-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-                        >
-                            {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Reactivate Plan'}
-                        </button>
-                    </div>
-                );
-            default:
-                return null;
-        }
-    };
+    // Formata data amigável
+    const endDate = profile?.trial_ends_at
+        ? new Date(profile.trial_ends_at).toLocaleDateString('pt-BR')
+        : 'Vitalício / Indefinido'
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-12">
-            <header className="text-center mb-16">
-                <motion.h1
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-4xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight"
-                >
-                    Billing & Subscription
-                </motion.h1>
-                <motion.p
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="text-lg text-slate-500 dark:text-slate-400"
-                >
-                    Manage your plan and access premium features
-                </motion.p>
-            </header>
+        <div className="max-w-5xl mx-auto p-6 text-white space-y-8">
 
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-                className="max-w-md mx-auto"
-            >
-                <div className="relative group">
-                    {/* Shadow decoration */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+            {/* Cabeçalho */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tight">Assinatura & Plano 💎</h1>
+                    <p className="text-zinc-400 mt-1">Gerencie seus pagamentos e status da conta.</p>
+                </div>
+            </div>
 
-                    <div className="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-                        <div className="p-8">
-                            <div className="flex justify-between items-start mb-8">
+            {isPro ? (
+                // --- ESTADO 1: USUÁRIO PAGANTE (VISÃO PREMIUM) ---
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                    {/* O Cartão Virtual */}
+                    <div className="relative group perspective-1000">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                        <div className="relative h-64 bg-[#0a0a0a] border border-zinc-800 rounded-xl p-8 flex flex-col justify-between overflow-hidden shadow-2xl">
+
+                            {/* Background Effects */}
+                            <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
+                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4"></div>
+
+                            {/* Card Header */}
+                            <div className="flex justify-between items-start z-10">
                                 <div>
-                                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">Pro Plan</h2>
-                                    <p className="text-slate-500 dark:text-slate-400 font-medium">Best for power users</p>
+                                    <h3 className="text-xl font-bold text-white tracking-widest flex items-center gap-2">
+                                        PLANHUB <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">PRO</span>
+                                    </h3>
+                                    <p className="text-[10px] text-zinc-500 font-mono mt-1 tracking-widest uppercase">Member Card</p>
                                 </div>
-                                <div className="bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 p-2 rounded-lg">
-                                    <CreditCard className="w-6 h-6" />
-                                </div>
+                                {isTrial && (
+                                    <div className="px-3 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-full">
+                                        <span className="text-yellow-400 text-xs font-bold animate-pulse">⚡ TRIAL ATIVO</span>
+                                    </div>
+                                )}
                             </div>
 
-                            <div className="flex items-baseline gap-1 mb-2">
-                                <span className="text-4xl font-extrabold text-slate-900 dark:text-white">$27</span>
-                                <span className="text-slate-500 dark:text-slate-400 font-medium">/month</span>
+                            {/* Card User Info */}
+                            <div className="z-10">
+                                <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Titular</p>
+                                <p className="text-lg font-medium text-zinc-200 font-mono truncate">{profile.email}</p>
                             </div>
-                            <p className="text-sm font-semibold text-violet-600 dark:text-violet-400 mb-8 px-2 py-1 bg-violet-50 dark:bg-violet-900/20 inline-block rounded-md">
-                                3-day free trial
-                            </p>
 
-                            <ul className="space-y-4 mb-10">
-                                {benefits.map((benefit, index) => (
-                                    <li key={index} className="flex items-start gap-3">
-                                        <div className="mt-1 bg-emerald-100 dark:bg-emerald-900/30 p-0.5 rounded-full">
-                                            <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                                        </div>
-                                        <span className="text-slate-600 dark:text-slate-300 text-sm">{benefit}</span>
+                            {/* Card Footer */}
+                            <div className="flex justify-between items-end z-10 border-t border-white/5 pt-4">
+                                <div>
+                                    <p className="text-zinc-500 text-xs mb-1">Validade / Renovação</p>
+                                    <p className="text-sm text-white font-mono">{endDate}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-zinc-500 text-xs mb-1">Status</p>
+                                    <p className="text-green-400 font-bold text-sm flex items-center justify-end gap-2">
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                        </span>
+                                        ATIVO
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Área de Gerenciamento / Cancelamento */}
+                    <div className="flex flex-col justify-center space-y-6 p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl">
+                        <div>
+                            <h3 className="text-xl font-bold text-white mb-2">Detalhes do Plano</h3>
+                            <ul className="space-y-3 text-zinc-400 text-sm">
+                                <li className="flex items-center gap-2">
+                                    <svg className="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                    Acesso ilimitado a todas as ferramentas
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <svg className="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                    Suporte prioritário 24/7
+                                </li>
+                                {isTrial && (
+                                    <li className="flex items-center gap-2 text-yellow-500">
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        Seu período de teste acaba em breve.
                                     </li>
-                                ))}
+                                )}
                             </ul>
-
-                            {renderActionButton()}
                         </div>
 
-                        <div className="bg-slate-50 dark:bg-slate-800/50 p-6 border-t border-slate-100 dark:border-slate-800">
-                            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                                <span>Cancel anytime during trial</span>
-                                <div className="flex items-center gap-1 group/link cursor-pointer">
-                                    <span>Learn more</span>
-                                    <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
-                                </div>
-                            </div>
+                        <div className="pt-6 border-t border-zinc-800">
+                            <CancelButton subscriptionId={profile.dodo_subscription_id} />
+                            <p className="mt-3 text-xs text-zinc-600 text-center">
+                                Ao cancelar, você perde acesso aos recursos Pro imediatamente.
+                            </p>
                         </div>
                     </div>
                 </div>
-            </motion.div>
+
+            ) : (
+                // --- ESTADO 2: NÃO ASSINANTE (OFERTA) ---
+                <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900/50">
+                    <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500"></div>
+                    <div className="p-12 text-center">
+                        <div className="w-20 h-20 bg-zinc-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl ring-1 ring-white/10">
+                            <svg className="w-10 h-10 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        </div>
+
+                        <h2 className="text-3xl font-bold text-white mb-3">Nenhum plano ativo</h2>
+                        <p className="text-zinc-400 mb-8 max-w-lg mx-auto text-lg">
+                            Você está usando a versão limitada. Desbloqueie todo o potencial do PlanHub Pro agora mesmo.
+                        </p>
+
+                        <div className="flex justify-center gap-4">
+                            <a
+                                href="/#pricing"
+                                className="inline-flex items-center px-8 py-4 border border-transparent text-base font-bold rounded-full shadow-sm text-black bg-white hover:bg-zinc-200 transition-transform transform hover:scale-105"
+                            >
+                                Ver Planos Disponíveis
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
-    );
+    )
 }
