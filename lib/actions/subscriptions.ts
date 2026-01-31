@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createClient } from '@/utils/supabase/server';
 import { dbToSubscription, subscriptionToDb, type Subscription } from '@/types';
 import type { TablesInsert, TablesUpdate } from '@/types/database.types';
+import { requireProPlan } from '@/utils/gatekeeper';
 
 /**
  * Get all subscriptions for the authenticated user
@@ -56,6 +57,12 @@ export async function createSubscription(
     subscriptionData: Omit<Subscription, 'id' | 'user_id' | 'created_at' | 'updated_at'>
 ): Promise<{ data: Subscription | null; error: string | null }> {
     try {
+        // 🔒 TRAVA DE SEGURANÇA
+        const isPro = await requireProPlan();
+        if (!isPro) {
+            return { data: null, error: "Bloqueado: Você precisa de um plano Pro para adicionar assinaturas." };
+        }
+
         const supabase = await createClient();
 
         // Get authenticated user

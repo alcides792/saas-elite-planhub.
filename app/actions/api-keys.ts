@@ -2,6 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { requireProPlan } from '@/utils/gatekeeper';
 
 /**
  * Generate or regenerate an API key for the authenticated user
@@ -13,6 +14,12 @@ export async function generateApiKey(): Promise<{
     error?: string;
 }> {
     try {
+        // 🔒 TRAVA DE SEGURANÇA
+        const isPro = await requireProPlan()
+        if (!isPro) {
+            return { success: false, error: "Bloqueado: Você precisa de um plano Pro para gerar chaves de API." }
+        }
+
         const supabase = await createClient();
 
         // Get authenticated user
