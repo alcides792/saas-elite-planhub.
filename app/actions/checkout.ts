@@ -11,6 +11,9 @@ const dodo = process.env.DODO_PAYMENTS_API_KEY
     })
     : null;
 
+// URL FIXA DE PRODUÇÃO (Seu "Site Verdadeiro")
+const PRODUCTION_URL = 'https://kovr.vercel.app'
+
 export async function createCheckoutSession() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
@@ -40,7 +43,8 @@ export async function createCheckoutSession() {
             metadata: {
                 user_id: user.id,
             },
-            return_url: process.env.DODO_PAYMENTS_RETURN_URL || 'http://localhost:3000/dashboard/billing'
+            // AQUI ESTÁ A MÁGICA: Redireciona direto para o Billing do site oficial
+            return_url: `${PRODUCTION_URL}/dashboard/billing`
         })
 
         if (session.checkout_url) {
