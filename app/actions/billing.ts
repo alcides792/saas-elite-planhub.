@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 // IMPORTANTE: Certifique-se de que DODO_PAYMENTS_SECRET_KEY está no .env.local
 const DODO_API_URL = 'https://live.dodopayments.com'
-const DODO_API_KEY = process.env.DODO_PAYMENTS_SECRET_KEY
+const DODO_API_KEY = process.env.DODO_PAYMENTS_API_KEY
 
 export async function cancelSubscription(subscriptionId: string | null) {
     // Validação explícita
