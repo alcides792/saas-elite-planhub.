@@ -138,7 +138,7 @@ export default async function BillingPage() {
 
                         {/* Preço */}
                         <div className="flex items-baseline mb-8">
-                            <span className="text-5xl font-extrabold tracking-tight">$39</span>
+                            <span className="text-5xl font-extrabold tracking-tight">$27</span>
                             <span className="text-purple-200 text-xl ml-2 font-medium">/lifetime</span>
                         </div>
 
