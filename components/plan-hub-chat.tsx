@@ -2,14 +2,15 @@
 
 // A importação que estava falhando agora vai funcionar com a v6 do SDK
 import { useChat, type UIMessage } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
 import { useRef, useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Bot } from 'lucide-react'; // Assuming lucide-react is installed for the Bot icon
+import { Bot } from 'lucide-react';
+import UpgradeModal from '@/components/UpgradeModal';
 
 export default function PlanHubChat() {
     const { messages, sendMessage, status, error } = useChat();
     const [input, setInput] = useState('');
+    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
     const isLoading = status === 'streaming' || status === 'submitted';
 
     const handleFormSubmit = (e: React.FormEvent) => {
@@ -27,6 +28,13 @@ export default function PlanHubChat() {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [messages]);
+
+    // Detecção de erro Pro
+    useEffect(() => {
+        if (error?.message?.includes("Bloqueado") || error?.message?.includes("Pro")) {
+            setIsUpgradeModalOpen(true);
+        }
+    }, [error]);
 
     return (
         <div className="flex flex-col h-[500px] w-full border border-white/10 rounded-xl bg-black/40 backdrop-blur-md overflow-hidden">
@@ -102,6 +110,12 @@ export default function PlanHubChat() {
                     Send
                 </button>
             </form>
+
+            {/* Upgrade Modal */}
+            <UpgradeModal
+                isOpen={isUpgradeModalOpen}
+                onClose={() => setIsUpgradeModalOpen(false)}
+            />
         </div>
     );
 }

@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { requireProPlan } from '@/utils/gatekeeper';
 
 export async function POST(req: Request) {
   // CORREÇÃO: Adicionado 'await' aqui. No Next.js 15, cookies() é assíncrono.
@@ -42,6 +43,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // 🔒 TRAVA DE SEGURANÇA
+  const isPro = await requireProPlan();
+  if (!isPro) {
+    return NextResponse.json({ error: "Bloqueado: A conexão com a extensão é exclusiva para assinantes Pro." }, { status: 403 });
+  }
+
   // 2. Cliente ADMIN: Para FORÇAR a gravação no banco (Ignora o erro RLS)
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -50,7 +57,7 @@ export async function POST(req: Request) {
 
   const randomPart = crypto.randomBytes(3).toString('hex').toUpperCase();
   const code = `PH-${randomPart}`;
-  
+
   const expiresAt = new Date();
   expiresAt.setMinutes(expiresAt.getMinutes() + 10);
 

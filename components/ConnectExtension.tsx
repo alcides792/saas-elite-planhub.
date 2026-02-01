@@ -3,12 +3,14 @@
 import { useState } from 'react';
 import { Copy, RefreshCw, Puzzle, CheckCircle2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import UpgradeModal from '@/components/UpgradeModal';
 
 export default function ConnectExtension() {
     const [code, setCode] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [copied, setCopied] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
 
     const generateCode = async () => {
         setLoading(true);
@@ -21,7 +23,12 @@ export default function ConnectExtension() {
 
             setCode(data.code);
         } catch (err: any) {
-            setError(err.message || "Error generating code");
+            const errorMsg = err.message || "Error generating code";
+            setError(errorMsg);
+
+            if (errorMsg.includes("Bloqueado") || errorMsg.includes("Pro")) {
+                setIsUpgradeModalOpen(true);
+            }
         } finally {
             setLoading(false);
         }
@@ -126,6 +133,12 @@ export default function ConnectExtension() {
                     )}
                 </AnimatePresence>
             </div>
+
+            {/* Upgrade Modal */}
+            <UpgradeModal
+                isOpen={isUpgradeModalOpen}
+                onClose={() => setIsUpgradeModalOpen(false)}
+            />
 
             <style jsx>{`
         .animate-fade-in {

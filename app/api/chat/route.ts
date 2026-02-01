@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { createUIMessageStream, createUIMessageStreamResponse, generateId } from 'ai';
 import { createClient } from '@/utils/supabase/server';
+import { requireProPlan } from '@/utils/gatekeeper';
 
 export const maxDuration = 30;
 
@@ -21,6 +22,15 @@ const getGroqClient = () => {
 
 export async function POST(req: Request) {
   try {
+    // 🔒 TRAVA DE SEGURANÇA
+    const isPro = await requireProPlan();
+    if (!isPro) {
+      return new Response(JSON.stringify({ error: "Bloqueado: A IA Financeira é exclusiva para assinantes Pro." }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     const { messages } = await req.json();
     const groqClient = getGroqClient();
 
