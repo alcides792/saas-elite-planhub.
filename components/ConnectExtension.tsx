@@ -26,7 +26,7 @@ export default function ConnectExtension() {
             const errorMsg = err.message || "Error generating code";
             setError(errorMsg);
 
-            if (errorMsg.includes("Bloqueado") || errorMsg.includes("Pro")) {
+            if (errorMsg.includes("Blocked") || errorMsg.includes("Pro")) {
                 setIsProModalOpen(true);
             }
         } finally {

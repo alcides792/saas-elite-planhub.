@@ -9,6 +9,7 @@ import type { Subscription } from '@/types';
 import ProModal from '@/components/ProModal';
 import { createSubscription, deleteSubscription, toggleSubscriptionStatus } from '@/lib/actions/subscriptions';
 import { useUser } from '@/contexts/UserContext';
+import { toast } from 'sonner';
 
 interface SubscriptionsClientProps {
     initialSubscriptions: Subscription[];
@@ -37,13 +38,14 @@ export default function SubscriptionsClient({ initialSubscriptions }: Subscripti
             if (error) {
                 console.error('Error creating subscription:', error);
 
-                // SE DER ERRO DE BLOQUEIO, ABRE O MODAL LINDO
-                if (error.includes("Bloqueado") || error.includes("Pro")) {
+                // IF THERE IS A BLOCKING ERROR, OPEN THE BEAUTIFUL MODAL
+                if (error.includes("Blocked") || error.includes("Pro")) {
                     setIsProModalOpen(true);
                 } else {
-                    alert('Error creating subscription: ' + error);
+                    toast.error('Error creating subscription: ' + error);
                 }
             } else {
+                toast.success('Subscription created successfully!');
                 // Refresh to get updated data from server
                 router.refresh();
             }
@@ -55,8 +57,9 @@ export default function SubscriptionsClient({ initialSubscriptions }: Subscripti
             const { success, error } = await deleteSubscription(id);
             if (error) {
                 console.error('Error deleting subscription:', error);
-                alert('Error deleting subscription: ' + error);
+                toast.error('Error deleting subscription: ' + error);
             } else {
+                toast.success('Subscription deleted!');
                 router.refresh();
             }
         });
@@ -67,8 +70,9 @@ export default function SubscriptionsClient({ initialSubscriptions }: Subscripti
             const { data, error } = await toggleSubscriptionStatus(id);
             if (error) {
                 console.error('Error toggling subscription:', error);
-                alert('Error changing status: ' + error);
+                toast.error('Error changing status: ' + error);
             } else {
+                toast.success('Status updated!');
                 router.refresh();
             }
         });

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createCheckoutSession } from '@/app/actions/checkout'
+import { toast } from 'sonner'
 
 export default function SubscribeButton() {
     const [loading, setLoading] = useState(false)
@@ -13,10 +14,10 @@ export default function SubscribeButton() {
             if (result.url) {
                 window.location.href = result.url // Redireciona para o Dodo
             } else {
-                alert("Erro ao iniciar pagamento: " + (result.error || "Desconhecido"))
+                toast.error("Erro ao iniciar pagamento: " + (result.error || "Desconhecido"))
             }
         } catch (err) {
-            alert("Erro de conexão.")
+            toast.error("Erro de conexão.")
         } finally {
             setLoading(false)
         }

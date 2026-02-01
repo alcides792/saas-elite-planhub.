@@ -10,7 +10,7 @@ export async function askAI(message: string) {
     // 🔒 TRAVA DE SEGURANÇA
     const isPro = await requireProPlan()
     if (!isPro) {
-        return { error: "Bloqueado: A IA Financeira é exclusiva para assinantes Pro." }
+        return { error: "Blocked: AI features are exclusive to the Pro plan." };
     }
 
     // Note: Most AI logic happens in app/api/chat/route.ts via useChat.

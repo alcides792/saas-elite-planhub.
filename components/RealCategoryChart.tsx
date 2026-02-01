@@ -12,7 +12,7 @@ export function RealCategoryChart({ data, currency }: RealCategoryChartProps) {
     if (data.length === 0) {
         return (
             <div className="h-80 flex items-center justify-center opacity-50">
-                <p className="text-sm font-bold text-dim">Sem dados de categoria disponíveis</p>
+                <p className="text-sm font-bold text-dim">No category data available</p>
             </div>
         );
     }
@@ -76,13 +76,13 @@ export function RealCategoryChart({ data, currency }: RealCategoryChartProps) {
                         <p className="font-bold text-white capitalize">{data.category}</p>
                     </div>
                     <p className="text-xl font-black text-white mb-1">
-                        {new Intl.NumberFormat('pt-PT', {
+                        {new Intl.NumberFormat('en-US', {
                             style: 'currency',
                             currency,
                         }).format(data.value)}
                     </p>
                     <p className="text-sm" style={{ color: data.color }}>
-                        {data.percentage.toFixed(1)}% do total
+                        {data.percentage.toFixed(1)}% of total
                     </p>
                 </div>
             );

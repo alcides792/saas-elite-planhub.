@@ -9,13 +9,13 @@ const DODO_API_KEY = process.env.DODO_PAYMENTS_API_KEY
 
 export async function cancelSubscription(subscriptionId: string | null) {
     if (!subscriptionId) {
-        return { success: false, message: "Erro: ID da assinatura não encontrado." }
+        return { success: false, message: "Error: Subscription ID not found." }
     }
 
     // Debug de Segurança (apenas para ver se a chave foi carregada)
     if (!DODO_API_KEY) {
-        console.error("ERRO CRÍTICO: DODO_PAYMENTS_API_KEY não encontrada nas variáveis de ambiente.")
-        return { success: false, message: "Erro de configuração no servidor (Chave ausente)." }
+        console.error("CRITICAL ERROR: DODO_PAYMENTS_API_KEY not found in environment variables.")
+        return { success: false, message: "Server configuration error (Missing Key)." }
     }
 
     try {
@@ -31,8 +31,8 @@ export async function cancelSubscription(subscriptionId: string | null) {
         })
 
         if (!response.ok) {
-            console.error('Erro Dodo:', await response.text())
-            return { success: false, message: `Erro ao cancelar: ${response.status}` }
+            console.error('Dodo Error:', await response.text())
+            return { success: false, message: `Error cancelling: ${response.status}` }
         }
 
         const supabase = await createClient()
@@ -46,10 +46,10 @@ export async function cancelSubscription(subscriptionId: string | null) {
         }
 
         revalidatePath('/dashboard/billing')
-        return { success: true, message: "Renovação automática cancelada com sucesso!" }
+        return { success: true, message: "Auto-renewal cancelled successfully!" }
 
     } catch (error: any) {
         console.error(error)
-        return { success: false, message: "Erro de conexão." }
+        return { success: false, message: "Connection error." }
     }
 }

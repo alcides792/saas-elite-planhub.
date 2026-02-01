@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-// 1. Inicializa o Supabase com PODER MÁXIMO (Service Role)
-// Isso permite encontrar e editar o usuário apenas pelo email
+// 1. Initialize Supabase with Service Role (Admin privileges)
+// This allows finding and editing users by email only
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -10,57 +10,57 @@ const supabase = createClient(
 
 export async function POST(request: Request) {
     try {
-        // Lê o JSON que o Dodo enviou
+        // Read JSON sent by Dodo
         const body = await request.json()
 
-        // Extrai os campos baseados na sua pesquisa
+        // Extract fields
         const { type, data } = body
 
-        console.log(`🔔 Webhook Dodo Recebido: [${type}]`)
+        console.log(`🔔 Dodo Webhook Received: [${type}]`)
 
-        // Verifica se é um evento de Assinatura Ativa ou Pagamento Sucesso
+        // Check if it's a Subscription Active or Payment Success event
         if (type === 'subscription.active' || type === 'payment.succeeded') {
 
-            // Mapeamento exato conforme a documentação que você trouxe
+            // Exact mapping according to docs
             const customerEmail = data.customer?.email
             const subscriptionId = data.subscription_id
             const status = data.status || 'active'
 
-            // Lógica Inteligente para Trial:
-            // Se vier "trial_period_days" no JSON, calculamos a data final
+            // Intelligent Trial Logic:
+            // If "trial_period_days" is in JSON, calculate end date
             let trialEnd = null;
             if (data.trial_period_days && data.trial_period_days > 0) {
-                const hoje = new Date();
-                hoje.setDate(hoje.getDate() + data.trial_period_days); // Soma os dias
-                trialEnd = hoje.toISOString();
+                const today = new Date();
+                today.setDate(today.getDate() + data.trial_period_days); // Add days
+                trialEnd = today.toISOString();
             }
 
             if (customerEmail) {
-                console.log(`👤 Processando usuário: ${customerEmail}`)
+                console.log(`👤 Processing user: ${customerEmail}`)
 
-                // Atualiza o perfil no Supabase
+                // Update profile in Supabase
                 const { error } = await supabase
                     .from('profiles')
                     .update({
-                        billing_status: trialEnd ? 'trialing' : 'active', // Se tem data de trial, marca como trialing
+                        billing_status: trialEnd ? 'trialing' : 'active', // If has trial date, mark as trialing
                         dodo_subscription_id: subscriptionId,
-                        trial_ends_at: trialEnd, // Salva a data que o trial acaba
-                        plan_name: 'Pro' // Ou pegue de data.product_id se quiser mapear nomes
+                        trial_ends_at: trialEnd, // Save trial end date
+                        plan_name: 'Pro' // Or map from data.product_id if needed
                     })
                     .eq('email', customerEmail)
 
                 if (error) {
-                    console.error('❌ Erro ao salvar no banco:', error)
-                    return NextResponse.json({ error: 'Erro de Banco de Dados' }, { status: 500 })
+                    console.error('❌ Error saving to database:', error)
+                    return NextResponse.json({ error: 'Database Error' }, { status: 500 })
                 }
 
-                console.log(`✅ Sucesso! Usuário ${customerEmail} atualizado.`)
+                console.log(`✅ Success! User ${customerEmail} updated.`)
             } else {
-                console.warn('⚠️ Email não encontrado no JSON do Dodo.')
+                console.warn('⚠️ Email not found in Dodo JSON.')
             }
         }
 
-        // Evento de Cancelamento
+        // Cancellation Event
         if (type === 'subscription.cancelled' || type === 'subscription.failed') {
             const customerEmail = data.customer?.email
             if (customerEmail) {
@@ -68,15 +68,15 @@ export async function POST(request: Request) {
                     .from('profiles')
                     .update({ billing_status: 'canceled' })
                     .eq('email', customerEmail)
-                console.log(`🚫 Assinatura de ${customerEmail} cancelada.`)
+                console.log(`🚫 Subscription for ${customerEmail} cancelled.`)
             }
         }
 
-        // Retorna 200 para o Dodo saber que recebemos
+        // Return 200 to Dodo
         return NextResponse.json({ received: true })
 
     } catch (error: any) {
-        console.error('🔥 Erro Fatal no Webhook:', error.message)
+        console.error('🔥 Fatal Webhook Error:', error.message)
         return NextResponse.json({ error: error.message }, { status: 400 })
     }
 }

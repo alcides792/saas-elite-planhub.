@@ -20,27 +20,27 @@ export default async function BillingPage() {
     const isPro = profile?.billing_status === 'active' || profile?.billing_status === 'trialing'
     const isTrial = profile?.billing_status === 'trialing'
 
-    // Formata data amigável
+    // Format friendly date
     const endDate = profile?.trial_ends_at
-        ? new Date(profile.trial_ends_at).toLocaleDateString('pt-BR')
-        : 'Vitalício / Indefinido'
+        ? new Date(profile.trial_ends_at).toLocaleDateString('en-US')
+        : 'Lifetime / Indefinite'
 
     return (
         <div className="max-w-5xl mx-auto p-6 text-white space-y-8">
 
-            {/* Cabeçalho */}
+            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Assinatura & Plano 💎</h1>
-                    <p className="text-zinc-400 mt-1">Gerencie seus pagamentos e status da conta.</p>
+                    <h1 className="text-3xl font-bold tracking-tight">Subscription & Plan 💎</h1>
+                    <p className="text-zinc-400 mt-1">Manage your payments and account status.</p>
                 </div>
             </div>
 
             {isPro ? (
-                // --- ESTADO 1: USUÁRIO PAGANTE (VISÃO PREMIUM) ---
+                // --- STATE 1: PAYING USER (PREMIUM VIEW) ---
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-                    {/* O Cartão Virtual */}
+                    {/* The Virtual Card */}
                     <div className="relative group perspective-1000">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
                         <div className="relative h-64 bg-[#0a0a0a] border border-zinc-800 rounded-xl p-8 flex flex-col justify-between overflow-hidden shadow-2xl">
@@ -59,21 +59,21 @@ export default async function BillingPage() {
                                 </div>
                                 {isTrial && (
                                     <div className="px-3 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-full">
-                                        <span className="text-yellow-400 text-xs font-bold animate-pulse">⚡ TRIAL ATIVO</span>
+                                        <span className="text-yellow-400 text-xs font-bold animate-pulse">⚡ TRIAL ACTIVE</span>
                                     </div>
                                 )}
                             </div>
 
                             {/* Card User Info */}
                             <div className="z-10">
-                                <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Titular</p>
+                                <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Holder</p>
                                 <p className="text-lg font-medium text-zinc-200 font-mono truncate">{profile.email}</p>
                             </div>
 
                             {/* Card Footer */}
                             <div className="flex justify-between items-end z-10 border-t border-white/5 pt-4">
                                 <div>
-                                    <p className="text-zinc-500 text-xs mb-1">Validade / Renovação</p>
+                                    <p className="text-zinc-500 text-xs mb-1">Validity / Renewal</p>
                                     <p className="text-sm text-white font-mono">{endDate}</p>
                                 </div>
                                 <div className="text-right">
@@ -83,30 +83,30 @@ export default async function BillingPage() {
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                             <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                                         </span>
-                                        ATIVO
+                                        ACTIVE
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Área de Gerenciamento / Cancelamento */}
+                    {/* Management / Cancellation Area */}
                     <div className="flex flex-col justify-center space-y-6 p-6 bg-zinc-900/30 border border-zinc-800 rounded-xl">
                         <div>
-                            <h3 className="text-xl font-bold text-white mb-2">Detalhes do Plano</h3>
+                            <h3 className="text-xl font-bold text-white mb-2">Plan Details</h3>
                             <ul className="space-y-3 text-zinc-400 text-sm">
                                 <li className="flex items-center gap-2">
                                     <svg className="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                    Acesso ilimitado a todas as ferramentas
+                                    Unlimited access to all tools
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <svg className="w-4 h-4 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                                    Suporte prioritário 24/7
+                                    24/7 priority support
                                 </li>
                                 {isTrial && (
                                     <li className="flex items-center gap-2 text-yellow-500">
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                        Seu período de teste acaba em breve.
+                                        Your trial period ends soon.
                                     </li>
                                 )}
                             </ul>
@@ -115,39 +115,39 @@ export default async function BillingPage() {
                         <div className="pt-6 border-t border-zinc-800">
                             <CancelButton subscriptionId={profile.dodo_subscription_id} />
                             <p className="mt-3 text-xs text-zinc-600 text-center">
-                                Ao cancelar, você perde acesso aos recursos Pro imediatamente.
+                                By cancelling, you will lose access to Pro features immediately.
                             </p>
                         </div>
                     </div>
                 </div>
 
             ) : (
-                // --- ESTADO 2: NÃO ASSINANTE (OFERTA) ---
+                // --- STATE 2: NON-SUBSCRIBER (OFFER) ---
                 <div className="max-w-md mx-auto mt-8">
-                    {/* Card Roxo Vibrante com Foco em Trial */}
+                    {/* Vibrant Purple Card focused on Trial */}
                     <div className="relative rounded-3xl overflow-hidden bg-[#7c3aed] text-white shadow-2xl p-8 ring-1 ring-white/20">
 
-                        {/* Badge de Trial (O destaque principal) */}
+                        {/* Trial Badge */}
                         <div className="absolute top-0 right-0 bg-yellow-400 text-black text-xs font-black px-4 py-2 rounded-bl-xl uppercase tracking-widest shadow-lg">
-                            ⚡ 3 Dias Grátis
+                            ⚡ 3 Days Free
                         </div>
 
-                        {/* Título e Chamada */}
+                        {/* Title and Call to Action */}
                         <div className="mt-2 mb-6">
-                            <h3 className="text-lg font-medium text-purple-200 uppercase tracking-widest mb-1">Plano Pro</h3>
-                            <h2 className="text-3xl font-bold">Teste sem compromisso</h2>
+                            <h3 className="text-lg font-medium text-purple-200 uppercase tracking-widest mb-1">Pro Plan</h3>
+                            <h2 className="text-3xl font-bold">Try risk-free</h2>
                         </div>
 
-                        {/* Preço com explicação */}
+                        {/* Price with explanation */}
                         <div className="flex items-baseline mb-2">
                             <span className="text-5xl font-extrabold tracking-tight">$27</span>
-                            <span className="text-purple-200 text-lg ml-2 font-medium">/ano</span>
+                            <span className="text-purple-200 text-lg ml-2 font-medium">/year</span>
                         </div>
                         <p className="text-sm text-purple-200 mb-8 font-medium bg-purple-800/30 inline-block px-3 py-1 rounded-lg">
-                            Cobrança automática somente após o 3º dia.
+                            Automatic billing only after the 3rd day.
                         </p>
 
-                        {/* Lista de Benefícios */}
+                        {/* Benefits List */}
                         <ul className="space-y-3 mb-8">
                             {[
                                 "Unlimited subscriptions",
@@ -169,7 +169,7 @@ export default async function BillingPage() {
                             ))}
                         </ul>
 
-                        {/* Botão de Ação */}
+                        {/* Action Button */}
                         <div className="mt-4">
                             <SubscribeButton />
                         </div>

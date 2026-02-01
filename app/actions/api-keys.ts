@@ -17,7 +17,7 @@ export async function generateApiKey(): Promise<{
         // 🔒 TRAVA DE SEGURANÇA
         const isPro = await requireProPlan()
         if (!isPro) {
-            return { success: false, error: "Bloqueado: Você precisa de um plano Pro para gerar chaves de API." }
+            return { success: false, error: "Blocked: You need a Pro plan to generate API keys." }
         }
 
         const supabase = await createClient();

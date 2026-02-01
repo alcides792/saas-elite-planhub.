@@ -31,7 +31,7 @@ export default function PlanHubChat() {
 
     // Detecção de erro Pro
     useEffect(() => {
-        if (error?.message?.includes("Bloqueado") || error?.message?.includes("Pro")) {
+        if (error?.message?.includes("Blocked") || error?.message?.includes("Pro")) {
             setIsProModalOpen(true);
         }
     }, [error]);

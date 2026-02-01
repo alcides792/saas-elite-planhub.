@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-// Inicializa cliente Admin
+// Initialize Admin client
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -18,21 +18,21 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: Request) {
-  console.log("💾 [API /subscriptions] Iniciando salvamento...");
+  console.log("💾 [API /subscriptions] Starting save...");
 
   try {
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      console.error("❌ [API] Sem token");
+      console.error("❌ [API] No token");
       return NextResponse.json({ error: 'No token' }, { status: 401, headers: corsHeaders });
     }
 
     const token = authHeader.replace('Bearer ', '');
     const body = await req.json();
 
-    console.log("📦 Payload recebido:", body);
+    console.log("📦 Payload received:", body);
 
-    // 1. Identificar Usuário
+    // 1. Identify User
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('id')
@@ -40,15 +40,15 @@ export async function POST(req: Request) {
       .single();
 
     if (profileError || !profile) {
-      console.error("❌ [API] Perfil não encontrado ou erro:", profileError);
+      console.error("❌ [API] Profile not found or error:", profileError);
       return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401, headers: corsHeaders });
     }
 
-    // --- CORREÇÃO DE DATA ---
-    // Se a data vier vazia string "", transforma em null, senão o banco recusa
+    // --- DATE CORRECTION ---
+    // If date comes as an empty string "", transform to null, otherwise DB rejects
     const renewalDate = body.renewal_date ? body.renewal_date : null;
 
-    // 2. Salvar Assinatura
+    // 2. Save Subscription
     const { error: insertError } = await supabaseAdmin
       .from('subscriptions')
       .insert({
@@ -56,24 +56,24 @@ export async function POST(req: Request) {
         name: body.service_name,
         amount: body.amount,
         currency: body.currency,
-        billing_type: body.billing_cycle, // Verifica se sua coluna chama 'billing_type' ou 'billing_cycle'
-        renewal_date: renewalDate,        // <--- AQUI ESTAVA O ERRO COMUM
+        billing_type: body.billing_cycle, // Check if your column is 'billing_type' or 'billing_cycle'
+        renewal_date: renewalDate,        // <--- Common error here
         category: body.category,
         website: body.website,
         status: 'active',
-       
+
       });
 
     if (insertError) {
-      console.error("❌ [API] Erro do Supabase ao inserir:", insertError);
+      console.error("❌ [API] Supabase insert error:", insertError);
       return NextResponse.json({ ok: false, error: insertError.message }, { status: 500, headers: corsHeaders });
     }
 
-    console.log("✅ [API] Sucesso absoluto!");
+    console.log("✅ [API] Absolute success!");
     return NextResponse.json({ ok: true, data: { success: true } }, { headers: corsHeaders });
 
   } catch (err: any) {
-    console.error("❌ [API] Erro Fatal Catch:", err.message);
+    console.error("❌ [API] Fatal Catch Error:", err.message);
     return NextResponse.json({ ok: false, error: err.message }, { status: 500, headers: corsHeaders });
   }
 }

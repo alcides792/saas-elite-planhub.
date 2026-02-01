@@ -25,7 +25,7 @@ export default function InvitePage({ params }: { params: { token: string } }) {
                 router.push('/family');
             }, 2000);
         } else {
-            setError(result.error || 'Erro ao aceitar convite');
+            setError(result.error || 'Error accepting invite');
         }
 
         setLoading(false);
@@ -39,10 +39,10 @@ export default function InvitePage({ params }: { params: { token: string } }) {
                         <>
                             <Loader2 className="w-16 h-16 animate-spin text-indigo-500 mx-auto mb-6" />
                             <h2 className="text-2xl font-black text-white mb-3">
-                                Processando Convite...
+                                Processing Invite...
                             </h2>
                             <p className="text-zinc-300 font-medium">
-                                Aguarde enquanto adicionamos você à família
+                                Please wait while we add you to the family
                             </p>
                         </>
                     )}
@@ -53,13 +53,13 @@ export default function InvitePage({ params }: { params: { token: string } }) {
                                 <CheckCircle2 className="w-10 h-10 text-green-400" />
                             </div>
                             <h2 className="text-2xl font-black text-green-400 mb-3">
-                                Convite Aceito!
+                                Invite Accepted!
                             </h2>
                             <p className="text-zinc-300 font-medium mb-4">
-                                Você agora faz parte da família
+                                You are now part of the family
                             </p>
                             <p className="text-sm text-slate-500">
-                                Redirecionando para a página da família...
+                                Redirecting to family page...
                             </p>
                         </>
                     )}
@@ -70,7 +70,7 @@ export default function InvitePage({ params }: { params: { token: string } }) {
                                 <XCircle className="w-10 h-10 text-red-400" />
                             </div>
                             <h2 className="text-2xl font-black text-red-400 mb-3">
-                                Erro ao Aceitar Convite
+                                Error Accepting Invite
                             </h2>
                             <p className="text-zinc-300 font-medium mb-6">
                                 {error}
@@ -79,7 +79,7 @@ export default function InvitePage({ params }: { params: { token: string } }) {
                                 onClick={() => router.push('/family')}
                                 className="px-6 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-bold text-sm transition-all shadow-lg shadow-indigo-500/20"
                             >
-                                Ir para Família
+                                Go to Family
                             </button>
                         </>
                     )}

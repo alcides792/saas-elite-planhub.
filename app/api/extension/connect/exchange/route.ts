@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-// CLIENTE ADMIN (Necessário para buscar o código sem estar logado)
+// ADMIN CLIENT (Needed to fetch code without being logged in)
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Code required' }, { status: 400, headers: corsHeaders });
     }
 
-    // 1. Procura o código no banco
+    // 1. Search code in DB
     const { data: codeRecord, error: codeError } = await supabaseAdmin
       .from('connect_codes')
       .select('user_id, expires_at')
@@ -38,32 +38,32 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid code' }, { status: 401, headers: corsHeaders });
     }
 
-    // 2. Verifica se expirou (validade de 5 minutos, por exemplo)
+    // 2. Check if expired (5-minute validity, for example)
     if (new Date(codeRecord.expires_at) < new Date()) {
       return NextResponse.json({ error: 'Code expired' }, { status: 401, headers: corsHeaders });
     }
 
-    // 3. Gera um Token Permanente para a extensão
-    // (Pode ser um JWT ou uma string aleatória segura)
+    // 3. Generate a Permanent Token for the extension
+    // (Can be a JWT or a secure random string)
     const extensionToken = 'ext_' + crypto.randomBytes(24).toString('hex');
 
-    // 4. Salva esse token no perfil do usuário
+    // 4. Save this token to user profile
     const { error: updateError } = await supabaseAdmin
       .from('profiles')
-      .update({ extension_token: extensionToken }) // Certifique-se que essa coluna existe em 'profiles'
+      .update({ extension_token: extensionToken }) // Ensure this column exists in 'profiles'
       .eq('id', codeRecord.user_id);
 
     if (updateError) throw updateError;
 
-    // 5. Apaga o código usado (para não usar de novo)
+    // 5. Delete used code (prevent reuse)
     await supabaseAdmin.from('connect_codes').delete().eq('code', code);
 
-    // 6. Retorna o sucesso exatamente como a extensão espera
+    // 6. Return success exactly as the extension expects
     return NextResponse.json({
       ok: true,
       data: {
         extension_token: extensionToken,
-        user: { email: 'Connected' } // Dados extras opcionais
+        user: { email: 'Connected' } // Optional extra data
       }
     }, { headers: corsHeaders });
 

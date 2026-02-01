@@ -41,9 +41,9 @@ export default function ProModal({ isOpen, onClose }: ProModalProps) {
 
                         {/* Content */}
                         <div className="text-center mb-8">
-                            <h2 className="text-2xl font-black text-white mb-3 tracking-tighter italic uppercase">Funcionalidade Exclusiva</h2>
+                            <h2 className="text-2xl font-black text-white mb-3 tracking-tighter italic uppercase">Exclusive Feature</h2>
                             <p className="text-zinc-400 text-sm leading-relaxed font-medium">
-                                Você atingiu o limite do seu plano atual. Para adicionar mais assinaturas e usar a <span className="text-white font-bold">IA Financeira</span>, você precisa de um plano ativo.
+                                You have reached your current plan limit. To add more subscriptions and use the <span className="text-white font-bold">Financial AI</span>, you need an active plan.
                             </p>
                         </div>
 
@@ -56,7 +56,7 @@ export default function ProModal({ isOpen, onClose }: ProModalProps) {
                             className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black rounded-xl shadow-lg shadow-purple-500/25 transition-all transform hover:scale-[1.03] active:scale-95 flex items-center justify-center gap-2 group overflow-hidden relative"
                         >
                             <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 pointer-events-none" />
-                            <span>Começar Teste Grátis de 3 Dias</span>
+                            <span>Start 3-Day Free Trial</span>
                             <Zap size={18} className="fill-current text-yellow-300 animate-pulse" />
                         </button>
 
@@ -65,7 +65,7 @@ export default function ProModal({ isOpen, onClose }: ProModalProps) {
                             onClick={onClose}
                             className="w-full mt-5 text-[10px] text-zinc-600 hover:text-zinc-400 font-black uppercase tracking-[0.2em] transition"
                         >
-                            Não, obrigado. Quero continuar limitado.
+                            No thanks. I want to continue limited.
                         </button>
                     </motion.div>
                 </div>

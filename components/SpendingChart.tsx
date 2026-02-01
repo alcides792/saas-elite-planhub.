@@ -18,7 +18,7 @@ export function SpendingChart({ data, currency }: SpendingChartProps) {
     if (data.length === 0) {
         return (
             <div className="h-64 flex items-center justify-center opacity-50">
-                <p className="text-sm font-bold text-dim">Sem dados suficientes para o gráfico</p>
+                <p className="text-sm font-bold text-dim">Not enough data for the chart</p>
             </div>
         );
     }
@@ -67,13 +67,13 @@ export function SpendingChart({ data, currency }: SpendingChartProps) {
                 <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
                     <p className="font-bold text-black">{payload[0].name}</p>
                     <p className="text-sm text-black">
-                        {new Intl.NumberFormat('pt-PT', {
+                        {new Intl.NumberFormat('en-US', {
                             style: 'currency',
                             currency,
                         }).format(payload[0].value)}
                     </p>
                     <p className="text-xs text-slate-800">
-                        {payload[0].payload.percentage.toFixed(1)}% do total
+                        {payload[0].payload.percentage.toFixed(1)}% of total
                     </p>
                 </div>
             );

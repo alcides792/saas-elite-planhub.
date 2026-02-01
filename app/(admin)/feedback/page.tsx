@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Lightbulb, Plus, ArrowUp } from 'lucide-react';
 import { getFeedbackPosts, createFeedbackPost, toggleVote } from '@/app/actions/feedback';
+import { toast } from 'sonner';
 
 interface FeedbackPost {
     id: string;
@@ -56,7 +57,7 @@ export default function FeedbackPage() {
 
     const handleCreatePost = async () => {
         if (!newPost.title.trim() || !newPost.content.trim()) {
-            alert('Please fill in both title and content');
+            toast.error('Please fill in both title and content');
             return;
         }
 
@@ -69,13 +70,13 @@ export default function FeedbackPage() {
         if (createError) {
             setError(`Failed to create post: ${createError}`);
             console.error('Create error:', createError);
-            alert(`Error: ${createError}\n\nMake sure you've applied feedback_schema.sql in Supabase SQL Editor!`);
+            toast.error(`Error: ${createError}`);
         } else {
             console.log('Post created successfully:', data);
             setNewPost({ title: '', content: '', category: 'idea' });
             setIsCreating(false);
             await loadPosts();
-            alert('✅ Post created successfully!');
+            toast.success('✅ Post created successfully!');
         }
 
         setIsLoading(false);

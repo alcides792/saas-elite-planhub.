@@ -60,7 +60,7 @@ export async function createSubscription(
         // 🔒 TRAVA DE SEGURANÇA
         const isPro = await requireProPlan();
         if (!isPro) {
-            return { data: null, error: "Bloqueado: Você precisa de um plano Pro para adicionar assinaturas." };
+            return { data: null, error: "Blocked: You need a Pro plan to add subscriptions." };
         }
 
         const supabase = await createClient();

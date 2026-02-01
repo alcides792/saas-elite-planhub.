@@ -18,11 +18,11 @@ export async function createCheckoutSession() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
-    if (!user || !user.email) return { error: "Usuário não logado" }
+    if (!user || !user.email) return { error: "User not logged in" }
 
     if (!dodo) {
         console.error("[Billing/Checkout] Dodo Payments API key is missing");
-        return { error: "Dodo Payments não configurado corretamente no servidor." }
+        return { error: "Dodo Payments not correctly configured on the server." }
     }
 
     try {
@@ -35,7 +35,7 @@ export async function createCheckoutSession() {
             ],
             customer: {
                 email: user.email,
-                name: user.user_metadata?.full_name || 'Cliente'
+                name: user.user_metadata?.full_name || 'Customer'
             },
             billing_address: {
                 country: 'BR',
@@ -51,10 +51,10 @@ export async function createCheckoutSession() {
             return { url: session.checkout_url }
         }
 
-        return { error: "Link de pagamento não gerado." }
+        return { error: "Checkout link not generated." }
 
     } catch (error: any) {
-        console.error('Erro ao criar sessão de checkout:', error)
-        return { error: error?.message || "Erro interno ao iniciar checkout." }
+        console.error('Error creating checkout session:', error)
+        return { error: error?.message || "Internal error starting checkout." }
     }
 }

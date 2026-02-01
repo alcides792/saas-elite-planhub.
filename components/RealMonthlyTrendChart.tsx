@@ -12,14 +12,14 @@ export function RealMonthlyTrendChart({ data, currency }: RealMonthlyTrendChartP
     if (data.length === 0) {
         return (
             <div className="h-64 flex items-center justify-center opacity-50">
-                <p className="text-sm font-bold text-dim">Sem dados históricos disponíveis</p>
+                <p className="text-sm font-bold text-dim">No historical data available</p>
             </div>
         );
     }
 
     // Mark the current month
     const now = new Date();
-    const currentMonthName = now.toLocaleDateString('pt-PT', { month: 'short' });
+    const currentMonthName = now.toLocaleDateString('en-US', { month: 'short' });
 
     const chartData = data.map(item => ({
         ...item,
@@ -34,16 +34,16 @@ export function RealMonthlyTrendChart({ data, currency }: RealMonthlyTrendChartP
                 <div className="bg-indigo-950 text-white p-4 rounded-xl shadow-2xl border border-purple-500/30">
                     <p className="text-xs font-bold mb-2 text-purple-300">{data.month}</p>
                     <p className="text-lg font-black mb-1">
-                        {new Intl.NumberFormat('pt-PT', {
+                        {new Intl.NumberFormat('en-US', {
                             style: 'currency',
                             currency,
                         }).format(data.total)}
                     </p>
                     <p className="text-xs text-gray-400">
-                        {data.subscriptionCount} assinatura{data.subscriptionCount !== 1 ? 's' : ''}
+                        {data.subscriptionCount} subscription{data.subscriptionCount !== 1 ? 's' : ''}
                     </p>
                     {data.isFuture && (
-                        <p className="text-xs text-amber-400 mt-1">📊 Projeção</p>
+                        <p className="text-xs text-amber-400 mt-1">📊 Projection</p>
                     )}
                 </div>
             );
@@ -79,7 +79,7 @@ export function RealMonthlyTrendChart({ data, currency }: RealMonthlyTrendChartP
                         tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }}
                         axisLine={{ stroke: '#e2e8f0' }}
                         tickFormatter={(value) =>
-                            new Intl.NumberFormat('pt-PT', {
+                            new Intl.NumberFormat('en-US', {
                                 style: 'currency',
                                 currency,
                                 minimumFractionDigits: 0,

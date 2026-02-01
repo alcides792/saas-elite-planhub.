@@ -37,14 +37,14 @@ export function ExtensionConnection() {
                 setShowFullKey(false);
             }, 10000);
         } else {
-            alert(result.error || 'Erro ao gerar chave');
+            alert(result.error || 'Error generating key');
         }
 
         setGenerating(false);
     }
 
     async function handleRevokeKey() {
-        if (!confirm('⚠️ Tem certeza? A extensão Chrome parará de funcionar até que você gere uma nova chave.')) {
+        if (!confirm('⚠️ Are you sure? The Chrome extension will stop working until you generate a new key.')) {
             return;
         }
 
@@ -55,7 +55,7 @@ export function ExtensionConnection() {
             setApiKey(null);
             setShowFullKey(false);
         } else {
-            alert(result.error || 'Erro ao revogar chave');
+            alert(result.error || 'Error revoking key');
         }
 
         setGenerating(false);
@@ -101,12 +101,12 @@ export function ExtensionConnection() {
                             {apiKey && (
                                 <span className="cyber-badge-success">
                                     <CheckCircle2 className="w-3 h-3" />
-                                    Conectado
+                                    Connected
                                 </span>
                             )}
                         </h3>
                         <p className="text-sm text-zinc-400 mt-1">
-                            Conecte a extensão Chrome para rastreamento automático de assinaturas
+                            Connect the Chrome extension for automatic subscription tracking
                         </p>
                     </div>
                 </div>
@@ -120,7 +120,7 @@ export function ExtensionConnection() {
                         <div className="flex items-center gap-2 mb-2">
                             <Key className="w-4 h-4 text-purple-400" />
                             <span className="text-xs font-semibold text-purple-300 uppercase tracking-wider">
-                                Sua API Key
+                                Your API Key
                             </span>
                         </div>
 
@@ -138,7 +138,7 @@ export function ExtensionConnection() {
                                     onClick={() => setShowFullKey(true)}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-purple-400 hover:text-purple-300 transition-colors"
                                 >
-                                    Mostrar
+                                    Show
                                 </button>
                             )}
                         </div>
@@ -146,7 +146,7 @@ export function ExtensionConnection() {
                         {showFullKey && (
                             <p className="text-xs text-amber-400 mt-2 flex items-center gap-1">
                                 <Shield className="w-3 h-3" />
-                                Chave visível. Copie e guarde em local seguro.
+                                Key visible. Copy and store it in a safe place.
                             </p>
                         )}
                     </div>
@@ -161,12 +161,12 @@ export function ExtensionConnection() {
                             {copied ? (
                                 <>
                                     <CheckCircle2 className="w-4 h-4" />
-                                    Copiado!
+                                    Copied!
                                 </>
                             ) : (
                                 <>
                                     <Copy className="w-4 h-4" />
-                                    Copiar Chave
+                                    Copy Key
                                 </>
                             )}
                         </button>
@@ -175,17 +175,17 @@ export function ExtensionConnection() {
                             onClick={handleGenerateKey}
                             disabled={generating}
                             className="cyber-button-secondary"
-                            title="Gerar nova chave (a anterior será invalidada)"
+                            title="Generate new key (the previous one will be invalidated)"
                         >
                             <RefreshCw className={`w-4 h-4 ${generating ? 'animate-spin' : ''}`} />
-                            Rotacionar
+                            Rotate
                         </button>
 
                         <button
                             onClick={handleRevokeKey}
                             disabled={generating}
                             className="cyber-button-danger"
-                            title="Revogar chave"
+                            title="Revoke Key"
                         >
                             <Trash2 className="w-4 h-4" />
                         </button>
@@ -194,13 +194,13 @@ export function ExtensionConnection() {
                     {/* Instructions */}
                     <div className="cyber-instructions">
                         <h4 className="text-sm font-semibold text-white mb-2">
-                            📋 Como usar na extensão:
+                            📋 How to use in the extension:
                         </h4>
                         <ol className="text-xs text-zinc-300 space-y-1 list-decimal list-inside">
-                            <li>Copie a API Key acima</li>
-                            <li>Abra a extensão Kovr no Chrome</li>
-                            <li>Cole a chave nas configurações da extensão</li>
-                            <li>Pronto! Suas assinaturas serão sincronizadas automaticamente</li>
+                            <li>Copy the API Key above</li>
+                            <li>Open the Kovr extension in Chrome</li>
+                            <li>Paste the key in the extension settings</li>
+                            <li>Ready! Your subscriptions will be synced automatically</li>
                         </ol>
                     </div>
                 </div>
@@ -211,11 +211,11 @@ export function ExtensionConnection() {
                     </div>
 
                     <h4 className="text-lg font-semibold text-white mb-2">
-                        Conecte sua Extensão Chrome
+                        Connect Your Chrome Extension
                     </h4>
 
                     <p className="text-sm text-zinc-400 mb-6 max-w-md mx-auto">
-                        Gere uma API Key para conectar a extensão Kovr e começar a rastrear suas assinaturas automaticamente.
+                        Generate an API Key to connect the Kovr extension and start tracking your subscriptions automatically.
                     </p>
 
                     <button
@@ -226,12 +226,12 @@ export function ExtensionConnection() {
                         {generating ? (
                             <>
                                 <RefreshCw className="w-5 h-5 animate-spin" />
-                                Gerando...
+                                Generating...
                             </>
                         ) : (
                             <>
                                 <Sparkles className="w-5 h-5" />
-                                Gerar API Key
+                                Generate API Key
                             </>
                         )}
                     </button>

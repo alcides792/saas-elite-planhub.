@@ -11,7 +11,7 @@ export async function generateExtensionToken() {
     // 🔒 TRAVA DE SEGURANÇA
     const isPro = await requireProPlan()
     if (!isPro) {
-        return { error: "Bloqueado: Tokens de API são exclusivos para assinantes Pro." }
+        return { error: "Blocked: Token generation is exclusive to the Pro plan." };
     }
 
     try {

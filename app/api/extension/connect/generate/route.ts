@@ -6,10 +6,10 @@ import crypto from 'crypto';
 import { requireProPlan } from '@/utils/gatekeeper';
 
 export async function POST(req: Request) {
-  // CORREÇÃO: Adicionado 'await' aqui. No Next.js 15, cookies() é assíncrono.
+  // CORRECTION: Added 'await' here. In Next.js 15, cookies() is asynchronous.
   const cookieStore = await cookies();
 
-  // 1. Cliente Padrão: Apenas para LER o cookie e saber quem é o usuário
+  // 1. Standard Client: Only to READ the cookie and know who the user is
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -36,20 +36,20 @@ export async function POST(req: Request) {
     }
   );
 
-  // Verifica quem está logado
+  // Check who is logged in
   const { data: { user }, error: authError } = await supabase.auth.getUser();
 
   if (authError || !user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // 🔒 TRAVA DE SEGURANÇA
+  // 🔒 SECURITY GATE
   const isPro = await requireProPlan();
   if (!isPro) {
-    return NextResponse.json({ error: "Bloqueado: A conexão com a extensão é exclusiva para assinantes Pro." }, { status: 403 });
+    return NextResponse.json({ error: "Blocked: Extension connection is exclusive for Pro subscribers." }, { status: 403 });
   }
 
-  // 2. Cliente ADMIN: Para FORÇAR a gravação no banco (Ignora o erro RLS)
+  // 2. ADMIN Client: To FORCE writing to DB (Ignores RLS error)
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
   const expiresAt = new Date();
   expiresAt.setMinutes(expiresAt.getMinutes() + 10);
 
-  // USAMOS O ADMIN AQUI PARA SALVAR
+  // WE USE ADMIN HERE TO SAVE
   const { error } = await supabaseAdmin
     .from('connect_codes')
     .insert({
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
     });
 
   if (error) {
-    console.error("Erro ao salvar código:", error);
+    console.error("Error saving code:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 

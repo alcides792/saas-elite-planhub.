@@ -12,6 +12,7 @@ import SubscriptionLogo from '@/components/ui/subscription-logo';
 import type { Subscription } from '@/types';
 import { createSubscription } from '@/lib/actions/subscriptions';
 import { useUser } from '@/contexts/UserContext';
+import { toast } from 'sonner';
 
 
 interface DashboardClientProps {
@@ -37,8 +38,9 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
             const { data, error } = await createSubscription(newSub);
             if (error) {
                 console.error('Error creating subscription:', error);
-                alert('Error creating subscription: ' + error);
+                toast.error('Error creating subscription: ' + error);
             } else {
+                toast.success('Subscription created!');
                 // Refresh to get updated data from server
                 router.refresh();
             }

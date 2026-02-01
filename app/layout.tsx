@@ -11,7 +11,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "Kovr - Smart Subscription Manager",
-  description: "Gerencie, economize e controle suas assinaturas com inteligência artificial.",
+  description: "Manage, save, and control your subscriptions with artificial intelligence.",
 };
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-PT">
+    <html lang="en">
       <body className={plusJakarta.className + " min-h-screen selection:bg-violet-500/30 overflow-x-hidden"}>
         {/* CAMADA 1: Conteúdo da Aplicação */}
         <main className="relative z-10 min-h-screen">
