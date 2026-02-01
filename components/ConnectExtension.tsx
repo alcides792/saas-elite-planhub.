@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import { Copy, RefreshCw, Puzzle, CheckCircle2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import UpgradeModal from '@/components/UpgradeModal';
+import ProModal from '@/components/ProModal';
 
 export default function ConnectExtension() {
     const [code, setCode] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [copied, setCopied] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+    const [isProModalOpen, setIsProModalOpen] = useState(false);
 
     const generateCode = async () => {
         setLoading(true);
@@ -27,7 +27,7 @@ export default function ConnectExtension() {
             setError(errorMsg);
 
             if (errorMsg.includes("Bloqueado") || errorMsg.includes("Pro")) {
-                setIsUpgradeModalOpen(true);
+                setIsProModalOpen(true);
             }
         } finally {
             setLoading(false);
@@ -134,10 +134,10 @@ export default function ConnectExtension() {
                 </AnimatePresence>
             </div>
 
-            {/* Upgrade Modal */}
-            <UpgradeModal
-                isOpen={isUpgradeModalOpen}
-                onClose={() => setIsUpgradeModalOpen(false)}
+            {/* Pro Modal */}
+            <ProModal
+                isOpen={isProModalOpen}
+                onClose={() => setIsProModalOpen(false)}
             />
 
             <style jsx>{`

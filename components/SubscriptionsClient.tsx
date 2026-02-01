@@ -6,7 +6,7 @@ import { Plus, Search, Filter } from 'lucide-react';
 import SubscriptionList from '@/components/SubscriptionList';
 import AddSubscriptionModal from '@/components/AddSubscriptionModal';
 import type { Subscription } from '@/types';
-import UpgradeModal from '@/components/UpgradeModal';
+import ProModal from '@/components/ProModal';
 import { createSubscription, deleteSubscription, toggleSubscriptionStatus } from '@/lib/actions/subscriptions';
 import { useUser } from '@/contexts/UserContext';
 
@@ -18,7 +18,7 @@ export default function SubscriptionsClient({ initialSubscriptions }: Subscripti
     const router = useRouter();
     const { formatMoney } = useUser();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+    const [isProModalOpen, setIsProModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [filterCategory, setFilterCategory] = useState('all');
     const [isPending, startTransition] = useTransition();
@@ -39,7 +39,7 @@ export default function SubscriptionsClient({ initialSubscriptions }: Subscripti
 
                 // SE DER ERRO DE BLOQUEIO, ABRE O MODAL LINDO
                 if (error.includes("Bloqueado") || error.includes("Pro")) {
-                    setIsUpgradeModalOpen(true);
+                    setIsProModalOpen(true);
                 } else {
                     alert('Error creating subscription: ' + error);
                 }
@@ -207,10 +207,10 @@ export default function SubscriptionsClient({ initialSubscriptions }: Subscripti
                 onAdd={handleAddSubscription}
             />
 
-            {/* Upgrade Modal */}
-            <UpgradeModal
-                isOpen={isUpgradeModalOpen}
-                onClose={() => setIsUpgradeModalOpen(false)}
+            {/* Pro Modal */}
+            <ProModal
+                isOpen={isProModalOpen}
+                onClose={() => setIsProModalOpen(false)}
             />
         </div>
     );

@@ -5,12 +5,12 @@ import { useChat, type UIMessage } from '@ai-sdk/react';
 import { useRef, useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Bot } from 'lucide-react';
-import UpgradeModal from '@/components/UpgradeModal';
+import ProModal from '@/components/ProModal';
 
 export default function PlanHubChat() {
     const { messages, sendMessage, status, error } = useChat();
     const [input, setInput] = useState('');
-    const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+    const [isProModalOpen, setIsProModalOpen] = useState(false);
     const isLoading = status === 'streaming' || status === 'submitted';
 
     const handleFormSubmit = (e: React.FormEvent) => {
@@ -32,7 +32,7 @@ export default function PlanHubChat() {
     // Detecção de erro Pro
     useEffect(() => {
         if (error?.message?.includes("Bloqueado") || error?.message?.includes("Pro")) {
-            setIsUpgradeModalOpen(true);
+            setIsProModalOpen(true);
         }
     }, [error]);
 
@@ -111,10 +111,10 @@ export default function PlanHubChat() {
                 </button>
             </form>
 
-            {/* Upgrade Modal */}
-            <UpgradeModal
-                isOpen={isUpgradeModalOpen}
-                onClose={() => setIsUpgradeModalOpen(false)}
+            {/* Pro Modal */}
+            <ProModal
+                isOpen={isProModalOpen}
+                onClose={() => setIsProModalOpen(false)}
             />
         </div>
     );
