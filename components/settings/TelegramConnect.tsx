@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Send, RefreshCw, CheckCircle2, Loader2, ExternalLink } from 'lucide-react'
+import { RefreshCw, CheckCircle2, Loader2, ExternalLink } from 'lucide-react'
+import { TelegramIcon } from '@/components/icons/BrandIcons'
 import { motion } from 'framer-motion'
 import { getProfile } from '@/app/actions/settings'
 
@@ -42,7 +43,7 @@ export default function TelegramConnect({ userId, onConnected, isActive }: Teleg
                         rel="noopener noreferrer"
                         className="w-full flex items-center justify-center gap-2 bg-white text-black py-4 rounded-2xl font-black text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-white/5"
                     >
-                        <Send size={18} />
+                        <TelegramIcon size={18} />
                         ABRIR NO TELEGRAM
                         <ExternalLink size={14} className="opacity-50" />
                     </a>

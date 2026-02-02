@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Bell, ArrowLeft, Gamepad2, Smartphone, ShieldCheck, Zap, Send } from 'lucide-react'
+import { Bell, ArrowLeft, Smartphone, ShieldCheck, Zap } from 'lucide-react'
+import { TelegramIcon, DiscordIcon } from '@/components/icons/BrandIcons'
 import Link from 'next/link'
 import { getProfile } from '@/app/actions/settings'
 import TelegramConnect from '@/components/settings/TelegramConnect'
@@ -66,7 +67,7 @@ export default function NotificationsPage() {
                 <div className="bg-zinc-950/40 backdrop-blur-3xl p-8 rounded-[2.3rem]">
                     <div className="flex items-center gap-4 mb-8">
                         <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20 text-blue-400">
-                            <Send size={24} />
+                            <TelegramIcon size={24} />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-white tracking-tight">Telegram Instantâneo</h2>
@@ -95,7 +96,7 @@ export default function NotificationsPage() {
 
                 <div className="grid md:grid-cols-2 gap-6">
                     <ComingSoonCard
-                        icon={Gamepad2}
+                        icon={DiscordIcon}
                         title="Discord Webhooks"
                         description="Receba alertas e logs diretamente no seu servidor."
                         color="#5865F2"
