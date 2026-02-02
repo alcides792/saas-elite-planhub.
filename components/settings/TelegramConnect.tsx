@@ -10,9 +10,9 @@ export default function TelegramConnect() {
     const [loading, setLoading] = useState(false)
     const supabase = createClient()
 
-    // --- A CORREÇÃO ESTÁ AQUI ---
-    // Forçamos "KovrAppBot" se a variável não existir
-    const BOT_USERNAME = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "KovrAppBot"
+    // --- CORREÇÃO FINAL ---
+    // Vamos usar o valor fixo para garantir que abra o bot certo
+    const BOT_USERNAME = "KovrAppBot"
 
     useEffect(() => {
         checkConnection()
