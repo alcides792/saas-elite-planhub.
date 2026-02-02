@@ -86,6 +86,7 @@ export default function NotificationsSettingsPage() {
 
             {/* Channels Grid */}
             <NotificationChannels
+                userId={profile?.id}
                 initialTelegramId={profile?.telegram_chat_id}
                 initialDiscordWebhook={profile?.discord_webhook}
             />

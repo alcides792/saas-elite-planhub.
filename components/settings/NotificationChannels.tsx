@@ -3,36 +3,25 @@
 import { useState } from 'react'
 import { Send, MessageSquare, CheckCircle2, Loader2, ExternalLink, BellRing } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { saveTelegramId, saveDiscordWebhook } from '@/app/actions/notifications'
+import { saveDiscordWebhook } from '@/app/actions/notifications'
+import TelegramConnect from './TelegramConnect'
 
 interface NotificationChannelsProps {
+    userId: string
     initialTelegramId?: string | null
     initialDiscordWebhook?: string | null
 }
 
 export default function NotificationChannels({
+    userId,
     initialTelegramId,
     initialDiscordWebhook
 }: NotificationChannelsProps) {
-    const [telegramId, setTelegramId] = useState('')
     const [discordWebhook, setDiscordWebhook] = useState('')
     const [activeTelegram, setActiveTelegram] = useState(!!initialTelegramId)
     const [activeDiscord, setActiveDiscord] = useState(!!initialDiscordWebhook)
-    const [isLoading, setIsLoading] = useState({ telegram: false, discord: false })
+    const [isLoading, setIsLoading] = useState({ discord: false })
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
-
-    const handleConnectTelegram = async () => {
-        if (!telegramId) return
-        setIsLoading(prev => ({ ...prev, telegram: true }))
-        const res = await saveTelegramId(telegramId)
-        if (res.success) {
-            setActiveTelegram(true)
-            setMessage({ type: 'success', text: 'Telegram conectado!' })
-        } else {
-            setMessage({ type: 'error', text: res.error || 'Erro ao conectar' })
-        }
-        setIsLoading(prev => ({ ...prev, telegram: false }))
-    }
 
     const handleConnectDiscord = async () => {
         if (!discordWebhook) return
@@ -74,37 +63,19 @@ export default function NotificationChannels({
                 </div>
 
                 <div className="space-y-4">
-                    <p className="text-xs text-zinc-400 leading-relaxed">
-                        1. Envie uma mensagem para o <a href="https://t.me/userinfobot" target="_blank" className="text-blue-400 hover:underline inline-flex items-center gap-1">@userinfobot <ExternalLink size={10} /></a> no Telegram.<br />
-                        2. Copie seu <strong>ID de Usuário</strong> e cole abaixo.
-                    </p>
+                    <TelegramConnect
+                        userId={userId}
+                        isActive={activeTelegram}
+                        onConnected={() => setActiveTelegram(true)}
+                    />
 
-                    {!activeTelegram ? (
-                        <div className="space-y-4">
-                            <input
-                                type="text"
-                                placeholder="Ex: 12345678"
-                                value={telegramId}
-                                onChange={(e) => setTelegramId(e.target.value)}
-                                className="w-full plan-hub-input"
-                            />
-                            <button
-                                onClick={handleConnectTelegram}
-                                disabled={isLoading.telegram}
-                                className="w-full flex items-center justify-center gap-2 bg-white text-black py-4 rounded-2xl font-black text-sm hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
-                            >
-                                {isLoading.telegram ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-                                CONECTAR TELEGRAM
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="p-4 bg-zinc-950/50 border border-white/5 rounded-2xl">
-                            <p className="text-[11px] text-zinc-500 text-center">Conectado com sucesso. Você receberá alertas automáticos aqui.</p>
+                    {activeTelegram && (
+                        <div className="pt-4 border-t border-white/5">
                             <button
                                 onClick={() => setActiveTelegram(false)}
-                                className="w-full mt-4 text-[10px] font-bold text-zinc-600 hover:text-red-400 transition-colors uppercase tracking-widest"
+                                className="w-full text-[10px] font-bold text-zinc-600 hover:text-red-400 transition-colors uppercase tracking-widest"
                             >
-                                Alterar Conexão
+                                Desconectar / Alterar Bot
                             </button>
                         </div>
                     )}
