@@ -10,8 +10,8 @@ export default function TelegramConnect() {
     const [loading, setLoading] = useState(false)
     const supabase = createClient()
 
-    // --- CORREÇÃO FINAL ---
-    // Vamos usar o valor fixo para garantir que abra o bot certo
+    // --- CORREÇÃO FINAL E FORÇADA ---
+    // Forçamos o username correto aqui para evitar problemas de cache/env
     const BOT_USERNAME = "KovrAppBot"
 
     useEffect(() => {
@@ -54,7 +54,7 @@ export default function TelegramConnect() {
                     </div>
 
                     <div className="flex flex-col gap-3">
-                        {/* Link Gerado Dinamicamente */}
+                        {/* Link Gerado Dinamicamente - FORÇADO KovrAppBot */}
                         <a
                             href={`https://t.me/${BOT_USERNAME}?start=${userId}`}
                             target="_blank"
@@ -62,7 +62,7 @@ export default function TelegramConnect() {
                             className="flex items-center justify-center gap-2 w-full py-4 bg-[#229ED9] hover:bg-[#1e8ubc] text-white font-bold text-lg rounded-xl transition shadow-xl shadow-[#229ED9]/20 hover:scale-[1.02]"
                         >
                             <Send size={20} />
-                            Conectar Telegram Agora
+                            Conectar @{BOT_USERNAME} Agora
                             <ExternalLink size={16} className="opacity-50" />
                         </a>
 
