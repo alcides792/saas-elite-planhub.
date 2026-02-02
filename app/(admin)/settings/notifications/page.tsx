@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Bell, ArrowLeft, ShieldCheck, Zap } from 'lucide-react'
+import { Bell, ArrowLeft, Gamepad2, Smartphone, ShieldCheck, Zap, Send } from 'lucide-react'
 import Link from 'next/link'
 import { getProfile } from '@/app/actions/settings'
-import NotificationChannels from '@/components/settings/NotificationChannels'
+import TelegramConnect from '@/components/settings/TelegramConnect'
+import ComingSoonCard from '@/components/settings/ComingSoonCard'
 
-export default function NotificationsSettingsPage() {
+export default function NotificationsPage() {
     const [profile, setProfile] = useState<any>(null)
     const [isLoading, setIsLoading] = useState(true)
 
@@ -32,98 +33,93 @@ export default function NotificationsSettingsPage() {
     }
 
     return (
-        <div className="max-w-[1200px] mx-auto px-6 py-12">
-            {/* Back Button */}
+        <div className="max-w-4xl mx-auto px-6 py-12 space-y-12">
+            {/* Cabeçalho */}
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="mb-8"
             >
                 <Link
                     href="/settings"
-                    className="inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm font-bold group"
+                    className="inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-xs font-bold group mb-8"
                 >
-                    <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                    <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
                     VOLTAR PARA CONFIGURAÇÕES
                 </Link>
-            </motion.div>
 
-            {/* Header */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-12"
-            >
                 <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-1 bg-purple-500 rounded-full" />
                     <span className="text-purple-500 font-black uppercase tracking-[0.4em] text-[11px]">Centro de Alertas</span>
                 </div>
-                <h1 className="text-5xl font-black text-white tracking-tighter mb-4">
-                    Sistema de <span className="text-zinc-800">Notificações</span>
-                </h1>
-                <p className="text-zinc-500 max-w-2xl font-medium leading-relaxed">
-                    Configure onde você deseja receber avisos sobre renovações, relatórios semanais e insights de gastos do Kovr AI.
+                <h1 className="text-4xl font-black text-white tracking-tighter mb-2">Canais de Alerta</h1>
+                <p className="text-zinc-500 font-medium">
+                    Escolha onde você quer ser avisado antes de uma assinatura renovar.
                 </p>
             </motion.div>
 
-            {/* Security Banner */}
+            {/* Destaque: Telegram (Funcional) */}
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mb-10 p-6 bg-gradient-to-r from-purple-500/10 to-transparent border border-purple-500/20 rounded-[2rem] flex items-center gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="border border-purple-500/20 rounded-[2.5rem] p-1 bg-gradient-to-b from-purple-500/10 to-transparent overflow-hidden"
             >
-                <div className="p-4 bg-purple-500/20 rounded-2xl text-purple-400">
-                    <ShieldCheck size={28} />
-                </div>
-                <div>
-                    <h4 className="text-white font-bold mb-1 flex items-center gap-2">
-                        Privacidade Garantida
-                        <Zap size={14} className="text-yellow-500" />
-                    </h4>
-                    <p className="text-sm text-zinc-400">Suas chaves de webhook e IDs são criptografados e usados apenas para o envio de alertas automáticos.</p>
+                <div className="bg-zinc-950/40 backdrop-blur-3xl p-8 rounded-[2.3rem]">
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20 text-blue-400">
+                            <Send size={24} />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-white tracking-tight">Telegram Instantâneo</h2>
+                            <p className="text-xs text-emerald-400 font-bold uppercase tracking-widest">Recomendado</p>
+                        </div>
+                    </div>
+
+                    <TelegramConnect
+                        userId={profile?.id}
+                        isActive={!!profile?.telegram_chat_id}
+                        onConnected={() => setProfile({ ...profile, telegram_chat_id: 'connected' })}
+                    />
                 </div>
             </motion.div>
 
-            {/* Channels Grid */}
-            <NotificationChannels
-                userId={profile?.id}
-                initialTelegramId={profile?.telegram_chat_id}
-                initialDiscordWebhook={profile?.discord_webhook}
-            />
+            {/* Outras Opções (Bloqueadas) */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="space-y-6"
+            >
+                <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.3em] pl-2">
+                    Outros Canais (Roadmap)
+                </h3>
 
-            <div className="mt-12 p-8 border-t border-white/5">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="flex items-center gap-4 text-zinc-500">
-                        <Bell size={20} />
-                        <span className="text-xs font-medium tracking-wide">As notificações por e-mail continuam ativas nas <Link href="/settings" className="text-purple-400 hover:underline">Configurações Gerais</Link>.</span>
-                    </div>
-                    <p className="text-[10px] font-black text-zinc-700 uppercase tracking-widest">Kovr v2.0 • Sistema de Alertas</p>
+                <div className="grid md:grid-cols-2 gap-6">
+                    <ComingSoonCard
+                        icon={Gamepad2}
+                        title="Discord Webhooks"
+                        description="Receba alertas e logs diretamente no seu servidor."
+                        color="#5865F2"
+                    />
+
+                    <ComingSoonCard
+                        icon={Smartphone}
+                        title="App Kovr Oficial"
+                        description="Notificações Push Nativas para iOS e Android."
+                        color="#10b981"
+                    />
                 </div>
-            </div>
+            </motion.div>
 
-            <style jsx global>{`
-        .plan-hub-card {
-           background: rgba(18, 18, 18, 0.4);
-           backdrop-filter: blur(20px);
-           border: 1px solid rgba(255, 255, 255, 0.05);
-           border-radius: 2.5rem;
-        }
-        .plan-hub-input {
-           background: rgba(0, 0, 0, 0.2);
-           border: 1px solid rgba(255, 255, 255, 0.05);
-           border-radius: 1.25rem;
-           padding: 1rem 1.25rem;
-           color: white;
-           font-size: 0.875rem;
-           width: 100%;
-           transition: all 0.3s;
-        }
-        .plan-hub-input:focus {
-           outline: none;
-           border-color: rgba(139, 92, 246, 0.5);
-           background: rgba(0, 0, 0, 0.4);
-        }
-      `}</style>
+            {/* Footer Info */}
+            <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex items-center gap-4 text-zinc-500">
+                    <Bell size={18} />
+                    <span className="text-[11px] font-medium tracking-wide">
+                        Alertas por e-mail continuam ativos nas <Link href="/settings" className="text-purple-400 hover:underline">Configurações Gerais</Link>.
+                    </span>
+                </div>
+                <p className="text-[9px] font-black text-zinc-700 uppercase tracking-widest">Kovr v2.0 • Alertas Inteligentes</p>
+            </div>
         </div>
     )
 }
