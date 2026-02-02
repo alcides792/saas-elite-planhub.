@@ -1,69 +1,89 @@
 'use client'
-
 import { useState, useEffect } from 'react'
-import { RefreshCw, CheckCircle2, Loader2, ExternalLink } from 'lucide-react'
+import { createClient } from '@/utils/supabase/client'
 import { TelegramIcon } from '@/components/icons/BrandIcons'
-import { motion } from 'framer-motion'
-import { getProfile } from '@/app/actions/settings'
+import { CheckCircle, RefreshCw, ExternalLink, Send } from 'lucide-react'
 
-interface TelegramConnectProps {
-    userId: string
-    onConnected: () => void
-    isActive: boolean
-}
+export default function TelegramConnect() {
+    const [userId, setUserId] = useState('')
+    const [isConnected, setIsConnected] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const supabase = createClient()
 
-export default function TelegramConnect({ userId, onConnected, isActive }: TelegramConnectProps) {
-    const [isChecking, setIsChecking] = useState(false)
+    // --- A CORREÇÃO ESTÁ AQUI ---
+    // Forçamos "KovrAppBot" se a variável não existir
+    const BOT_USERNAME = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || "KovrAppBot"
 
-    // Substitua 'KovrBot' pelo username real do seu bot
-    const botUsername = 'KovrBot'
-    const telegramLink = `https://t.me/${botUsername}?start=${userId}`
+    useEffect(() => {
+        checkConnection()
+    }, [])
 
-    const checkStatus = async () => {
-        setIsChecking(true)
-        const res = await getProfile()
-        if (res.success && res.profile?.telegram_chat_id) {
-            onConnected()
+    async function checkConnection() {
+        setLoading(true)
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+            setUserId(user.id)
+            const { data } = await supabase.from('profiles').select('telegram_chat_id').eq('id', user.id).single()
+            if (data?.telegram_chat_id) setIsConnected(true)
         }
-        setIsChecking(false)
+        setLoading(false)
     }
 
     return (
-        <div className="space-y-4">
-            <p className="text-xs text-zinc-400 leading-relaxed">
-                Clique no botão abaixo para abrir o nosso bot e dê <strong>/start</strong>.
-                O sistema identificará sua conta automaticamente.
-            </p>
+        <div className="p-6 bg-[#0F0F11] border border-white/5 rounded-2xl relative group overflow-hidden">
+            {/* Background Decorativo */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-[#229ED9]/10 rounded-bl-full -mr-10 -mt-10 transition-all group-hover:bg-[#229ED9]/20"></div>
 
-            {!isActive ? (
-                <div className="space-y-4">
-                    <a
-                        href={telegramLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 bg-white text-black py-4 rounded-2xl font-black text-sm hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-white/5"
-                    >
-                        <TelegramIcon size={18} />
-                        ABRIR NO TELEGRAM
-                        <ExternalLink size={14} className="opacity-50" />
-                    </a>
+            <div className="flex items-center gap-4 mb-6 relative z-10">
+                <div className="w-14 h-14 bg-[#229ED9]/20 rounded-2xl flex items-center justify-center text-[#229ED9] shadow-lg shadow-[#229ED9]/20">
+                    <TelegramIcon size={28} />
+                </div>
+                <div>
+                    <h3 className="text-xl font-bold text-white">Telegram</h3>
+                    <p className="text-zinc-400 text-sm">Conexão instantânea em 1 clique.</p>
+                </div>
+            </div>
 
-                    <button
-                        onClick={checkStatus}
-                        disabled={isChecking}
-                        className="w-full flex items-center justify-center gap-2 bg-zinc-800/50 border border-white/5 text-zinc-400 py-3 rounded-xl font-bold text-xs hover:bg-zinc-800 transition-all disabled:opacity-50"
-                    >
-                        {isChecking ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
-                        VERIFICAR CONEXÃO
-                    </button>
+            {!isConnected ? (
+                <div className="space-y-5 relative z-10">
+                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
+                        <p className="text-sm text-zinc-300 leading-relaxed">
+                            Receba alertas de vencimento direto no seu celular.
+                            Basta clicar abaixo e iniciar o bot <strong>@{BOT_USERNAME}</strong>.
+                        </p>
+                    </div>
+
+                    <div className="flex flex-col gap-3">
+                        {/* Link Gerado Dinamicamente */}
+                        <a
+                            href={`https://t.me/${BOT_USERNAME}?start=${userId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-2 w-full py-4 bg-[#229ED9] hover:bg-[#1e8ubc] text-white font-bold text-lg rounded-xl transition shadow-xl shadow-[#229ED9]/20 hover:scale-[1.02]"
+                        >
+                            <Send size={20} />
+                            Conectar Telegram Agora
+                            <ExternalLink size={16} className="opacity-50" />
+                        </a>
+
+                        <button
+                            onClick={checkConnection}
+                            className="text-xs text-zinc-500 hover:text-white flex items-center justify-center gap-2 mt-2 transition"
+                        >
+                            <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
+                            Já iniciei o bot, verificar conexão
+                        </button>
+                    </div>
                 </div>
             ) : (
-                <div className="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl text-center">
-                    <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-widest mb-1">
-                        <CheckCircle2 size={14} />
-                        Conta Vinculada
+                <div className="bg-green-500/10 border border-green-500/20 p-5 rounded-xl flex items-center gap-4 relative z-10 animate-in fade-in zoom-in">
+                    <div className="bg-green-500/20 p-2 rounded-full">
+                        <CheckCircle className="text-green-500" size={24} />
                     </div>
-                    <p className="text-[10px] text-zinc-500">Seu Telegram foi configurado com sucesso via Deep Linking.</p>
+                    <div>
+                        <p className="text-green-400 font-bold text-lg">Conectado!</p>
+                        <p className="text-green-500/60 text-sm">Bot <strong>@{BOT_USERNAME}</strong> ativo.</p>
+                    </div>
                 </div>
             )}
         </div>

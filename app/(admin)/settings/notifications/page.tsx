@@ -75,11 +75,7 @@ export default function NotificationsPage() {
                         </div>
                     </div>
 
-                    <TelegramConnect
-                        userId={profile?.id}
-                        isActive={!!profile?.telegram_chat_id}
-                        onConnected={() => setProfile({ ...profile, telegram_chat_id: 'connected' })}
-                    />
+                    <TelegramConnect />
                 </div>
             </motion.div>
 
