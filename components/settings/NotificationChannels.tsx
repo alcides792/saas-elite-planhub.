@@ -63,11 +63,7 @@ export default function NotificationChannels({
                 </div>
 
                 <div className="space-y-4">
-                    <TelegramConnect
-                        userId={userId}
-                        isActive={activeTelegram}
-                        onConnected={() => setActiveTelegram(true)}
-                    />
+                    <TelegramConnect />
 
                     {activeTelegram && (
                         <div className="pt-4 border-t border-white/5">
