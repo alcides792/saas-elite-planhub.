@@ -14,7 +14,6 @@ import {
     Coins,
     Check,
     Lock,
-    Bell,
     Mail,
     Calendar,
     ArrowRight,
@@ -115,10 +114,7 @@ export default function SettingsPage() {
     const [formData, setFormData] = useState({
         full_name: '',
         currency: 'EUR',
-        language: 'en-US',
-        notify_emails: true,
-        notify_summary: true,
-        notify_days_before: 3
+        language: 'en-US'
     });
 
     useEffect(() => {
@@ -133,10 +129,7 @@ export default function SettingsPage() {
             setFormData({
                 full_name: res.profile.full_name || '',
                 currency: res.profile.currency || 'EUR',
-                language: res.profile.language || 'en-US',
-                notify_emails: res.profile.notify_emails,
-                notify_summary: res.profile.notify_summary,
-                notify_days_before: res.profile.notify_days_before
+                language: res.profile.language || 'en-US'
             });
         }
         setIsLoading(false);
@@ -341,68 +334,6 @@ export default function SettingsPage() {
                     </div>
                 </BentoCard>
 
-                {/* 4. Notification Center (Bottom Row - 8 columns) */}
-                <BentoCard
-                    title="Notification Center"
-                    icon={Bell}
-                    description="Alert control and smart reports"
-                    className="md:col-span-8"
-                >
-                    <div className="flex justify-end -mt-6 mb-4">
-                        <Link
-                            href="/settings/notifications"
-                            className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 text-[10px] font-black uppercase tracking-widest hover:bg-purple-500/20 transition-all group"
-                        >
-                            <span>Advanced Setup</span>
-                            <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                    </div>
-                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-4">
-                            <CustomSwitch
-                                checked={formData.notify_emails}
-                                onChange={(val: boolean) => setFormData({ ...formData, notify_emails: val })}
-                                label="Renewal Alerts"
-                                description="Receive email about upcoming renewals"
-                                icon={Mail}
-                            />
-                            <CustomSwitch
-                                checked={formData.notify_summary}
-                                onChange={(val: boolean) => setFormData({ ...formData, notify_summary: val })}
-                                label="Weekly Summary"
-                                description="Consolidated spending report"
-                                icon={Calendar}
-                            />
-                        </div>
-
-                        <div className="p-6 bg-zinc-800/20 border border-white/5 rounded-[2rem] space-y-6">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2.5 bg-purple-500/10 rounded-xl text-purple-400">
-                                    <Calendar size={18} />
-                                </div>
-                                <h5 className="text-sm font-black text-white uppercase tracking-widest">Alert Lead Time</h5>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-2">
-                                {[1, 3, 7].map((days) => (
-                                    <button
-                                        key={days}
-                                        onClick={() => setFormData({ ...formData, notify_days_before: days })}
-                                        className={`py-3 rounded-2xl font-black text-xs transition-all border ${formData.notify_days_before === days
-                                            ? 'bg-white text-black border-white'
-                                            : 'bg-zinc-950 text-zinc-500 border-white/5 hover:border-white/10'
-                                            }`}
-                                    >
-                                        {days} {days === 1 ? 'DAY' : days === 7 ? 'WEEK' : 'DAYS'}
-                                    </button>
-                                ))}
-                            </div>
-                            <p className="text-[10px] text-zinc-600 font-bold leading-relaxed px-2">
-                                * Kovr AI will trigger alerts according to the selected lead time to avoid unplanned charges.
-                            </p>
-                        </div>
-                    </div>
-                </BentoCard>
 
             </div>
 

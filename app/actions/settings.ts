@@ -127,9 +127,9 @@ export async function updateProfile(data: {
     full_name: string;
     currency: string;
     language: string;
-    notify_emails: boolean;
-    notify_summary: boolean;
-    notify_days_before: number;
+    notify_emails?: boolean;
+    notify_summary?: boolean;
+    notify_days_before?: number;
 }): Promise<{
     success: boolean;
     error?: string;
