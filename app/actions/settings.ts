@@ -20,6 +20,8 @@ export async function getProfile(): Promise<{
         notify_emails: boolean;
         notify_summary: boolean;
         notify_days_before: number;
+        telegram_chat_id: string | null;
+        discord_webhook: string | null;
     };
     error?: string;
 }> {
@@ -105,6 +107,8 @@ export async function getProfile(): Promise<{
                 notify_emails: profile.notify_emails ?? true,
                 notify_summary: profile.notify_summary ?? true,
                 notify_days_before: profile.notify_days_before ?? 3,
+                telegram_chat_id: profile.telegram_chat_id || null,
+                discord_webhook: profile.discord_webhook || null,
             },
         };
     } catch (error) {

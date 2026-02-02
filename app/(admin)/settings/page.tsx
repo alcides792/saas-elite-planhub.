@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import {
     User,
     Save,
@@ -347,6 +348,15 @@ export default function SettingsPage() {
                     description="Alert control and smart reports"
                     className="md:col-span-8"
                 >
+                    <div className="flex justify-end -mt-6 mb-4">
+                        <Link
+                            href="/settings/notifications"
+                            className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 text-[10px] font-black uppercase tracking-widest hover:bg-purple-500/20 transition-all group"
+                        >
+                            <span>Advanced Setup</span>
+                            <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </div>
                     <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-4">
                             <CustomSwitch
