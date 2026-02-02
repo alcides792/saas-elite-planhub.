@@ -8,6 +8,7 @@ interface SelectProps {
     defaultValue?: string
     value?: string
     onValueChange?: (value: string) => void
+    name?: string
 }
 
 const SelectContext = React.createContext<{
@@ -17,7 +18,7 @@ const SelectContext = React.createContext<{
     setIsOpen: (open: boolean) => void
 } | null>(null)
 
-export function Select({ children, defaultValue, value, onValueChange }: SelectProps) {
+export function Select({ children, defaultValue, value, onValueChange, name }: SelectProps) {
     const [internalValue, setInternalValue] = React.useState(defaultValue)
     const [isOpen, setIsOpen] = React.useState(false)
 
@@ -30,7 +31,10 @@ export function Select({ children, defaultValue, value, onValueChange }: SelectP
 
     return (
         <SelectContext.Provider value={{ value: val, onValueChange: handleValueChange, isOpen, setIsOpen }}>
-            <div className="relative w-full">{children}</div>
+            <div className="relative w-full">
+                <input type="hidden" name={name} value={val} />
+                {children}
+            </div>
         </SelectContext.Provider>
     )
 }

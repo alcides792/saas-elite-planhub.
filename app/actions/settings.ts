@@ -240,3 +240,39 @@ export async function rotateApiKey(): Promise<{
         };
     }
 }
+
+/**
+ * Save alert preferences from Alerts page
+ */
+export async function saveAlertSettings(formData: FormData) {
+    try {
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return { success: false, error: 'Unauthorized' };
+
+        const settings = {
+            notify_expiration: formData.get('notify_expiration') === 'on',
+            notify_weekly_summary: formData.get('notify_weekly_summary') === 'on',
+            notify_price_change: formData.get('notify_price_change') === 'on',
+            notify_days_before: Number(formData.get('notify_days_before')),
+            notify_time: String(formData.get('notify_time')),
+            updated_at: new Date().toISOString(),
+        };
+
+        const { error } = await supabase
+            .from('profiles')
+            .update(settings)
+            .eq('id', user.id);
+
+        if (error) {
+            console.error('Error saving alert settings:', error);
+            return { success: false, error: error.message };
+        }
+
+        revalidatePath('/dashboard/alerts');
+        return { success: true };
+    } catch (error: any) {
+        console.error('Unexpected error in saveAlertSettings:', error);
+        return { success: false, error: error.message };
+    }
+}
