@@ -1,4 +1,5 @@
 import { getSubscriptions, getDashboardStats } from '@/lib/actions/subscriptions';
+export const dynamic = 'force-dynamic';
 import DashboardClient from '@/components/DashboardClient';
 import ErrorDisplay from '@/components/ErrorDisplay';
 import { redirect } from 'next/navigation';

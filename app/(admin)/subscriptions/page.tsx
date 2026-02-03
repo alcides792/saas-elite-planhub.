@@ -1,4 +1,5 @@
 import { getSubscriptions } from '@/lib/actions/subscriptions';
+export const dynamic = 'force-dynamic';
 import SubscriptionsClient from '@/components/SubscriptionsClient';
 import ErrorDisplay from '@/components/ErrorDisplay';
 import { redirect } from 'next/navigation';

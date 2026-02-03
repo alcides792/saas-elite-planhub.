@@ -1,4 +1,5 @@
 import { createClient } from '@/utils/supabase/server'
+export const dynamic = 'force-dynamic';
 import { redirect } from 'next/navigation'
 import CancelButton from './CancelButton'
 import SubscribeButton from './SubscribeButton'

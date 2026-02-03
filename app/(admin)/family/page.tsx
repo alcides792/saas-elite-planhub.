@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
 import { Users, UserPlus, Copy, Trash2, LogOut, Crown, Mail, Link as LinkIcon, Loader2, CheckCircle2 } from 'lucide-react';
