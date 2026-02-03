@@ -15,7 +15,9 @@ export async function updateSession(request: NextRequest) {
                     return request.cookies.getAll()
                 },
                 setAll(cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) {
-                    cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+                    cookiesToSet.forEach(({ name, value, options }) =>
+                        request.cookies.set(name, value)
+                    )
                     supabaseResponse = NextResponse.next({
                         request,
                     })
@@ -27,51 +29,26 @@ export async function updateSession(request: NextRequest) {
         }
     )
 
-    // IMPORTANT: Avoid writing any logic between createServerClient and
-    // getUser(). A simple mistake could make it very hard to debug
-    // issues with users being logged out.
-
+    // IMPORTANTE: Não tente proteger rotas aqui se já estiver fazendo no layout.
+    // Apenas atualizamos a sessão para manter o usuário logado.
     const {
         data: { user },
     } = await supabase.auth.getUser()
 
-    const url = request.nextUrl.clone()
-    const pathname = url.pathname
-
-    // Protected routes
-    const isAdminPage = pathname.startsWith('/dashboard') ||
-        pathname.startsWith('/settings') ||
-        pathname.startsWith('/analytics') ||
-        pathname.startsWith('/chat') ||
-        pathname.startsWith('/family') ||
-        pathname.startsWith('/feedback') ||
-        pathname.startsWith('/subscriptions')
-
-    // Auth pages
-    const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register')
-
-    if (!user && isAdminPage) {
+    // Lógica de Redirecionamento de Proteção
+    // 1. Se NÃO tiver usuário e tentar acessar dashboard -> Manda pro Login
+    if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
+        const url = request.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)
     }
 
-    if (user && isAuthPage) {
+    // 2. Se TIVER usuário e tentar acessar login/register -> Manda pro Dashboard
+    if (user && (request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname === '/')) {
+        const url = request.nextUrl.clone()
         url.pathname = '/dashboard'
         return NextResponse.redirect(url)
     }
-
-    // IMPORTANT: You *must* return the supabaseResponse object as it is. If you're
-    // creating a new response object with NextResponse.next() make sure to:
-    // 1. Pass the request in it, like so:
-    //    const myNewResponse = NextResponse.next({ request })
-    // 2. Copy over the cookies, like so:
-    //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-    // 3. Change the myNewResponse object to fit your needs, but avoid changing
-    //    the cookies!
-    // 4. Finally:
-    //    return myNewResponse
-    // If this is not done, you may be causing the browser and server to go out
-    // of sync and terminate the user's session prematurely!
 
     return supabaseResponse
 }
