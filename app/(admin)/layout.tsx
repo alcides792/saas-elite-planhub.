@@ -1,20 +1,23 @@
-'use client';
+import { redirect } from 'next/navigation'
+import { createClient } from '@/utils/supabase/server'
+import { ReactNode } from 'react'
+import AdminClientLayout from './AdminClientLayout'
 
-import ThemeWrapper from '@/components/ThemeWrapper';
-import OnlineStatusTracker from '@/components/OnlineStatusTracker';
-import { LayoutProvider } from '@/context/LayoutContext';
-import { UserProvider } from '@/contexts/UserContext';
-import { ReactNode } from 'react';
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+    const supabase = await createClient()
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+    // --- VERIFICAÇÃO DE SEGURANÇA ---
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+        // Se não tiver usuário, manda pro login e PARA aqui.
+        redirect('/login')
+    }
+    // ---------------------------------
+
     return (
-        <UserProvider>
-            <LayoutProvider>
-                <ThemeWrapper>
-                    <OnlineStatusTracker />
-                    {children}
-                </ThemeWrapper>
-            </LayoutProvider>
-        </UserProvider>
-    );
+        <AdminClientLayout>
+            {children}
+        </AdminClientLayout>
+    )
 }
