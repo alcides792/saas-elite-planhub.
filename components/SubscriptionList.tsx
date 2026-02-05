@@ -118,14 +118,12 @@ export default function SubscriptionList({ subscriptions, onEdit, onDelete, onPa
                                     {formatMoney(sub.amount)}
                                 </p>
                                 <p className="text-xs text-dim font-bold uppercase">
-                                    {sub.billingType === 'monthly' && 'Monthly'}
-                                    {sub.billingType === 'yearly' && 'Yearly'}
-                                    {sub.billingType === 'weekly' && 'Weekly'}
-                                    {sub.billingType === 'quarterly' && 'Quarterly'}
+                                    {sub.billing_cycle === 'monthly' && 'Monthly'}
+                                    {sub.billing_cycle === 'yearly' && 'Yearly'}
                                 </p>
-                                {sub.renewalDate && (
+                                {sub.next_payment && (
                                     <p className="text-xs text-dim font-medium mt-1">
-                                        Renews: {new Date(sub.renewalDate).toLocaleDateString(preferences.language)}
+                                        Renews: {new Date(sub.next_payment).toLocaleDateString(preferences.language)}
                                     </p>
                                 )}
                             </div>

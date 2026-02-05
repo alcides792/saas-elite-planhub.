@@ -92,11 +92,9 @@ export default function SubscriptionsClient({ initialSubscriptions }: Subscripti
 
     const totalMonthly = subscriptions.reduce((total, sub) => {
         if (sub.status !== 'active') return total;
-        switch (sub.billingType) {
+        switch (sub.billing_cycle) {
             case 'monthly': return total + sub.amount;
             case 'yearly': return total + (sub.amount / 12);
-            case 'quarterly': return total + (sub.amount / 3);
-            case 'weekly': return total + (sub.amount * 4.33);
             default: return total + sub.amount;
         }
     }, 0);

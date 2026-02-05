@@ -22,10 +22,10 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
         website: '',
         amount: '',
         currency: preferences.currency,
-        billingType: 'monthly',
+        billing_cycle: 'monthly',
         category: 'streaming',
         paymentMethod: 'card',
-        renewalDate: '',
+        next_payment: '',
     });
 
     const filteredSubscriptions = searchQuery
@@ -53,10 +53,10 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
             website: '',
             amount: '',
             currency: preferences.currency,
-            billingType: 'monthly',
+            billing_cycle: 'monthly',
             category: 'streaming',
             paymentMethod: 'card',
-            renewalDate: '',
+            next_payment: '',
         });
     };
 
@@ -65,7 +65,7 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
         onAdd({
             ...formData,
             amount: parseFloat(formData.amount),
-            renewalDate: formData.renewalDate || null, // Convert empty string to null
+            next_payment: formData.next_payment || null, // Convert empty string to null
             status: 'active',
         });
         onClose();
@@ -75,10 +75,10 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
             website: '',
             amount: '',
             currency: preferences.currency,
-            billingType: 'monthly',
+            billing_cycle: 'monthly',
             category: 'streaming',
             paymentMethod: 'card',
-            renewalDate: '',
+            next_payment: '',
         });
         setShowPresets(true);
         setSearchQuery('');
@@ -284,8 +284,8 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
                                                         Billing Cycle
                                                     </label>
                                                     <select
-                                                        value={formData.billingType}
-                                                        onChange={(e) => setFormData({ ...formData, billingType: e.target.value })}
+                                                        value={formData.billing_cycle}
+                                                        onChange={(e) => setFormData({ ...formData, billing_cycle: e.target.value })}
                                                         className="plan-hub-input"
                                                     >
                                                         <option value="monthly">Monthly</option>
@@ -340,8 +340,8 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
                                                     </label>
                                                     <input
                                                         type="date"
-                                                        value={formData.renewalDate}
-                                                        onChange={(e) => setFormData({ ...formData, renewalDate: e.target.value })}
+                                                        value={formData.next_payment}
+                                                        onChange={(e) => setFormData({ ...formData, next_payment: e.target.value })}
                                                         className="plan-hub-input"
                                                     />
                                                 </div>

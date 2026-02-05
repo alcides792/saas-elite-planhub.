@@ -79,9 +79,9 @@ export async function createSubscription(
             website: subscriptionData.website ?? null,
             amount: subscriptionData.amount ?? 0,
             currency: subscriptionData.currency ?? 'EUR',
-            billing_type: subscriptionData.billingType ?? 'monthly',
+            billing_type: subscriptionData.billing_cycle ?? 'monthly',
             category: subscriptionData.category ?? 'other',
-            renewal_date: subscriptionData.renewalDate ?? null,
+            renewal_date: subscriptionData.next_payment ?? null,
             payment_method: subscriptionData.paymentMethod ?? null,
             icon: subscriptionData.icon ?? null,
             icon_color: subscriptionData.iconColor ?? null,
@@ -134,9 +134,9 @@ export async function updateSubscription(
         if (updates.website !== undefined) updatePayload.website = updates.website;
         if (updates.amount !== undefined) updatePayload.amount = updates.amount;
         if (updates.currency !== undefined) updatePayload.currency = updates.currency;
-        if (updates.billingType !== undefined) updatePayload.billing_type = updates.billingType;
+        if (updates.billing_cycle !== undefined) updatePayload.billing_type = updates.billing_cycle;
         if (updates.category !== undefined) updatePayload.category = updates.category;
-        if (updates.renewalDate !== undefined) updatePayload.renewal_date = updates.renewalDate;
+        if (updates.next_payment !== undefined) updatePayload.renewal_date = updates.next_payment;
         if (updates.paymentMethod !== undefined) updatePayload.payment_method = updates.paymentMethod;
         if (updates.icon !== undefined) updatePayload.icon = updates.icon;
         if (updates.iconColor !== undefined) updatePayload.icon_color = updates.iconColor;
