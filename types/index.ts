@@ -7,15 +7,15 @@ export interface Subscription {
     website: string | null;
     amount: number;
     currency: string;
-    billingType: 'monthly' | 'yearly' | 'weekly' | 'quarterly';
+    billing_cycle: 'monthly' | 'yearly';
     category: string;
     status: 'active' | 'paused' | 'cancelled';
-    renewalDate: string | null;
+    next_payment: string | null;
+    end_date: string | null;
     paymentMethod: string | null;
     icon: string | null;
     iconColor: string | null;
     created_at?: string;
-    updated_at?: string;
 }
 
 export interface FamilyMember {
@@ -89,22 +89,25 @@ import type { Tables, TablesInsert } from './database.types';
  * Convert database subscription (snake_case) to TypeScript Subscription (camelCase)
  */
 export function dbToSubscription(dbSub: Tables<'subscriptions'>): Subscription {
+    // Map database field names (snake_case) to TypeScript interface
+    // DB uses: billing_type, renewal_date
+    // TS uses: billing_cycle, next_payment
     return {
         id: dbSub.id,
         user_id: dbSub.user_id,
         name: dbSub.name,
-        website: dbSub.website,
-        amount: dbSub.amount,
+        website: (dbSub as any).website || null,
+        amount: (dbSub as any).amount || 0,
         currency: dbSub.currency,
-        billingType: dbSub.billing_type as 'monthly' | 'yearly' | 'weekly' | 'quarterly',
+        billing_cycle: ((dbSub as any).billing_type || 'monthly') as 'monthly' | 'yearly',
         category: dbSub.category || 'other',
         status: dbSub.status as 'active' | 'paused' | 'cancelled',
-        renewalDate: dbSub.renewal_date,
+        next_payment: (dbSub as any).renewal_date || null,
+        end_date: (dbSub as any).end_date || null,
         paymentMethod: dbSub.payment_method,
         icon: dbSub.icon,
         iconColor: dbSub.icon_color,
         created_at: dbSub.created_at,
-        updated_at: dbSub.updated_at,
     };
 }
 
@@ -118,13 +121,13 @@ export function subscriptionToDb(sub: Partial<Subscription> & { user_id: string;
         website: sub.website ?? null,
         amount: sub.amount ?? 0,
         currency: sub.currency ?? 'EUR',
-        billing_type: sub.billingType ?? 'monthly',
+        billing_cycle: sub.billing_cycle ?? 'monthly',
         category: sub.category ?? 'other',
-        renewal_date: sub.renewalDate ?? null,
+        next_payment: sub.next_payment ?? null,
+        end_date: sub.end_date ?? null,
         payment_method: sub.paymentMethod ?? null,
         icon: sub.icon ?? null,
         icon_color: sub.iconColor ?? null,
         status: sub.status ?? 'active',
-        notes: null,
-    };
+    } as any;
 }

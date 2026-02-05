@@ -46,8 +46,8 @@ export default function NotificationChannels({
             >
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20 text-blue-400 group-hover:scale-110 transition-transform">
-                            <Send size={22} />
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform">
+                            <img src="/telegram-3d.png" alt="Telegram" className="w-10 h-10 object-contain" />
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-white tracking-tight">Telegram</h3>
@@ -138,6 +138,39 @@ export default function NotificationChannels({
                             </button>
                         </div>
                     )}
+                </div>
+            </motion.div>
+
+            {/* Email Card */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="plan-hub-card p-8 group relative overflow-hidden"
+            >
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform">
+                            <img src="/gmail-icon-v2.png" alt="Email" className="w-10 h-10 object-contain" />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-white tracking-tight">E-mail</h3>
+                            <p className="text-sm text-zinc-500 font-medium">Alertas na sua caixa de entrada</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <p className="text-xs text-zinc-400 leading-relaxed">
+                        Receba resumos semanais e alertas de renovação importantes diretamente no seu e-mail cadastrado.
+                    </p>
+                    <div className="p-4 bg-zinc-950/50 border border-white/5 rounded-2xl flex items-center justify-between">
+                        <span className="text-sm font-bold text-zinc-300">Notificações por E-mail</span>
+                        <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Ativo</span>
+                        </div>
+                    </div>
                 </div>
             </motion.div>
 

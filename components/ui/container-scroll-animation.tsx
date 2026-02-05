@@ -14,10 +14,8 @@ export const ContainerScroll = ({
         target: containerRef,
     });
     const [isMobile, setIsMobile] = React.useState(false);
-    const [mounted, setMounted] = React.useState(false);
 
     React.useEffect(() => {
-        setMounted(true);
         const checkMobile = () => {
             setIsMobile(window.innerWidth <= 768);
         };
@@ -35,8 +33,6 @@ export const ContainerScroll = ({
     const rotate = useTransform(scrollYProgress, [0, 1], [20, 0]);
     const scale = useTransform(scrollYProgress, [0, 1], scaleDimensions());
     const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
-
-    if (!mounted) return null;
 
     return (
         <div

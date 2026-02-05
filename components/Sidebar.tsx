@@ -24,7 +24,8 @@ import {
     Menu,
     X,
     Sun,
-    Moon
+    Moon,
+    Calendar as CalendarIcon
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 
@@ -75,6 +76,11 @@ export default function Sidebar() {
                     label: 'Alerts',
                     href: '/dashboard/alerts',
                     icon: <Bell size={18} />,
+                },
+                {
+                    label: 'Calendar',
+                    href: '/dashboard/calendar',
+                    icon: <CalendarIcon size={18} />,
                 },
             ],
         },
