@@ -50,10 +50,10 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
 
     // Calculate next billing
     const upcomingSubscriptions = subscriptions
-        .filter(sub => sub.status === 'active' && sub.renewalDate)
+        .filter(sub => sub.status === 'active' && sub.next_payment)
         .sort((a, b) => {
-            const dateA = new Date(a.renewalDate!).getTime();
-            const dateB = new Date(b.renewalDate!).getTime();
+            const dateA = new Date(a.next_payment!).getTime();
+            const dateB = new Date(b.next_payment!).getTime();
             return dateA - dateB;
         });
 
@@ -69,10 +69,8 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
 
             // Normalize to monthly
             let monthlyAmount = sub.amount;
-            switch (sub.billingType) {
+            switch (sub.billing_cycle) {
                 case 'yearly': monthlyAmount = sub.amount / 12; break;
-                case 'quarterly': monthlyAmount = sub.amount / 3; break;
-                case 'weekly': monthlyAmount = sub.amount * 4.33; break;
             }
 
             acc[category] += monthlyAmount;
@@ -188,7 +186,7 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                                 <div className="flex flex-col">
                                     <span className="text-[10px] font-bold">{nextBilling.name}</span>
                                     <span className="text-[9px] opacity-70">
-                                        {new Date(nextBilling.renewalDate!).toLocaleDateString(preferences.language)}
+                                        {new Date(nextBilling.next_payment!).toLocaleDateString(preferences.language)}
                                     </span>
                                 </div>
                             </div>
@@ -366,7 +364,7 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                                             <div>
                                                 <p className="text-sm font-bold">{sub.name}</p>
                                                 <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-                                                    {new Date(sub.renewalDate!).toLocaleDateString(preferences.language)}
+                                                    {new Date(sub.next_payment!).toLocaleDateString(preferences.language)}
                                                 </p>
                                             </div>
                                         </div>
