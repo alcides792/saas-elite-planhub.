@@ -1,10 +1,237 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
 import { Resend } from 'resend'
+import { generatePdfBuffer } from '@/lib/generate-pdf'
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const resend = new Resend(RESEND_API_KEY)
+
+// Função auxiliar para gerar o HTML profissional do relatório
+function generateReportHtml(
+    userName: string,
+    userEmail: string,
+    subs: any[],
+    totalDisplayHtml: string,
+    dataHoje: string
+): string {
+    const rows = subs.map(sub => `
+        <tr>
+            <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb;">
+                <div style="font-weight: 600; color: #111827;">${sub.name}</div>
+                <div style="font-size: 11px; color: #9ca3af; margin-top: 2px;">${sub.category || 'Sem categoria'}</div>
+            </td>
+            <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; text-transform: capitalize; color: #6b7280;">
+                ${sub.billing_cycle || sub.billing_type || 'Mensal'}
+            </td>
+            <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; text-align: right; font-family: monospace; color: #7c3aed;">
+                ${sub.renewal_date ? new Date(sub.renewal_date).toLocaleDateString('pt-BR') : '-'}
+            </td>
+            <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: 700; color: #111827;">
+                ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: sub.currency || 'BRL' }).format(Number(sub.amount) || 0)}
+            </td>
+        </tr>
+    `).join('')
+
+    return `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Kovr</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: #ffffff;
+            padding: 40px;
+            color: #374151;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 24px;
+            border-bottom: 3px solid #7c3aed;
+            margin-bottom: 32px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f0f11;
+            letter-spacing: -1px;
+        }
+        .logo-dot {
+            color: #7c3aed;
+        }
+        .logo-subtitle {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 400;
+            margin-top: 4px;
+        }
+        .date-box {
+            text-align: right;
+        }
+        .date-label {
+            font-size: 11px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .date-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin-top: 4px;
+        }
+        .summary {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .user-info p {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+        .total-box {
+            text-align: right;
+        }
+        .total-label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .total-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #7c3aed;
+            margin-top: 4px;
+        }
+        .services-count {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+        .table-section {
+            margin-bottom: 32px;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            font-size: 10px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 12px 8px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        th:nth-child(3),
+        th:nth-child(4) {
+            text-align: right;
+        }
+        .footer {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+            text-align: center;
+        }
+        .footer p {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+        .footer .brand {
+            color: #7c3aed;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <div class="logo">Kovr<span class="logo-dot">.</span></div>
+                <div class="logo-subtitle">Relatório de Assinaturas</div>
+            </div>
+            <div class="date-box">
+                <div class="date-label">Data de Emissão</div>
+                <div class="date-value">${dataHoje}</div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary">
+            <div class="user-info">
+                <h2>${userName}</h2>
+                <p>${userEmail}</p>
+            </div>
+            <div class="total-box">
+                <div class="total-label">Custo Mensal Total</div>
+                <div class="total-value">${totalDisplayHtml}</div>
+                <div class="services-count">${subs.length} serviço${subs.length !== 1 ? 's' : ''} ativo${subs.length !== 1 ? 's' : ''}</div>
+            </div>
+        </div>
+
+        <!-- Subscriptions Table -->
+        <div class="table-section">
+            <div class="section-title">Suas Assinaturas</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Serviço</th>
+                        <th>Ciclo</th>
+                        <th>Próx. Renovação</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Relatório gerado automaticamente via <span class="brand">Kovr</span> • kovr.space</p>
+        </div>
+    </div>
+</body>
+</html>
+    `
+}
 
 export async function POST(request: Request) {
     try {
@@ -114,12 +341,9 @@ export async function POST(request: Request) {
         const totalDisplayText = formattedTotals.join(' + ')
         const dataHoje = new Date().toLocaleDateString('pt-BR')
 
-        let fileContent = ''
-        let fileName = ''
-        let mimeType = ''
-
-        // 4. Generate file content
+        // 4. Generate file content based on format
         if (format === 'csv') {
+            // CSV Export
             const header = 'Nome,Preço,Moeda,Ciclo,Categoria,Início,Próx. Renovação\n'
             const rows = subs.map(sub => {
                 const inicio = sub.created_at ? new Date(sub.created_at).toLocaleDateString('pt-BR') : '-'
@@ -127,154 +351,167 @@ export async function POST(request: Request) {
                 return `"${sub.name}",${sub.amount},${sub.currency},${sub.billing_type || sub.billing_cycle},${sub.category},${inicio},${renovacao}`
             }).join('\n')
 
-            fileContent = header + rows
-            fileName = `kovr_relatorio_${Date.now()}.csv`
-            mimeType = 'text/csv'
-        } else {
-            // PDF (HTML format)
-            fileName = `kovr_resumo_${Date.now()}.html`
-            mimeType = 'text/html'
+            const fileContent = header + rows
+            const fileName = `kovr_relatorio_${Date.now()}.csv`
 
-            fileContent = `
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relatório Kovr</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 p-6 font-sans">
-  <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-    
-    <div class="bg-[#0F0F11] p-8 text-white flex justify-between items-center border-b-4 border-purple-600">
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight">Kovr<span class="text-purple-500">.</span></h1>
-        <p class="text-gray-400 text-sm mt-1">Extrato de Assinaturas</p>
-      </div>
-      <div class="text-right">
-        <p class="text-sm text-gray-400">Data de Emissão</p>
-        <p class="font-mono font-bold text-lg">${dataHoje}</p>
-      </div>
-    </div>
+            if (channel === 'telegram') {
+                const formData = new FormData()
+                formData.append('chat_id', profile.telegram_chat_id)
 
-    <div class="p-8 bg-purple-50/50 flex justify-between items-center border-b border-gray-100">
-      <div>
-        <p class="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Assinante</p>
-        <h2 class="text-xl font-bold text-gray-900">${userName}</h2>
-        <p class="text-gray-600 text-sm">${userEmail}</p>
-      </div>
-      <div class="text-right">
-        <p class="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Custo Mensal Total</p>
-        <h2 class="text-2xl font-bold text-purple-700 leading-tight">${totalDisplayHtml}</h2>
-        <p class="text-xs text-gray-400 mt-1">${subs.length} Serviços Ativos</p>
-      </div>
-    </div>
+                const caption = `📊 <b>Relatório Financeiro Kovr</b>\n\n` +
+                    `👤 ${userName}\n` +
+                    `📅 ${dataHoje}\n\n` +
+                    `💰 <b>Totais Estimados:</b>\n${totalDisplayText}\n\n` +
+                    `<i>Baixe o arquivo para visualizar.</i>`
 
-    <div class="p-8">
-      <table class="w-full text-left border-collapse">
-        <thead>
-          <tr>
-            <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b">Serviço</th>
-            <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b">Ciclo</th>
-            <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b text-right">Próx. Pagamento</th>
-            <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b text-right">Valor</th>
-          </tr>
-        </thead>
-        <tbody class="text-sm text-gray-600">
-          ${subs.map(sub => `
-            <tr class="group hover:bg-gray-50 transition-colors">
-              <td class="py-4 border-b group-last:border-0 font-medium text-gray-900">
-                ${sub.name}
-                <span class="block text-xs text-gray-400 font-normal">${sub.category}</span>
-              </td>
-              <td class="py-4 border-b group-last:border-0 capitalize">${sub.billing_cycle || sub.billing_type}</td>
-              <td class="py-4 border-b group-last:border-0 text-right font-mono text-purple-600">
-                ${sub.renewal_date ? new Date(sub.renewal_date).toLocaleDateString('pt-BR') : '-'}
-              </td>
-              <td class="py-4 border-b group-last:border-0 text-right font-bold text-gray-900">
-                ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: sub.currency || 'BRL' }).format(Number(sub.amount) || 0)}
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
+                formData.append('caption', caption)
+                formData.append('parse_mode', 'HTML')
 
-    <div class="bg-gray-50 p-6 text-center text-xs text-gray-400 border-t border-gray-100">
-      <p>Relatório gerado automaticamente via Kovr SaaS.</p>
-    </div>
-  </div>
-</body>
-</html>
-            `
-        }
+                const fileBlob = new Blob([fileContent], { type: 'text/csv' })
+                formData.append('document', fileBlob, fileName)
 
-        // 5. Send via chosen channel
-        if (channel === 'telegram') {
-            const formData = new FormData()
-            formData.append('chat_id', profile.telegram_chat_id)
+                const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendDocument`, {
+                    method: 'POST',
+                    body: formData
+                })
 
-            const caption = `📊 <b>Relatório Financeiro Kovr</b>\n\n` +
-                `👤 ${userName}\n` +
-                `📅 ${dataHoje}\n\n` +
-                `💰 <b>Totais Estimados:</b>\n${totalDisplayText}\n\n` +
-                `<i>Baixe o arquivo para visualizar.</i>`
+                const data = await res.json()
+                if (!data.ok) {
+                    throw new Error(data.description || 'Erro ao enviar para Telegram')
+                }
 
-            formData.append('caption', caption)
-            formData.append('parse_mode', 'HTML')
+                return NextResponse.json({ success: true })
+            } else {
+                // Email CSV
+                const buffer = Buffer.from(fileContent, 'utf-8')
 
-            const fileBlob = new Blob([fileContent], { type: mimeType })
-            formData.append('document', fileBlob, fileName)
+                const emailRes = await resend.emails.send({
+                    from: 'Kovr <noreply@kovr.space>',
+                    to: userEmail,
+                    subject: `📊 Relatório CSV - ${dataHoje}`,
+                    html: `
+                        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+                            <div style="text-align: center; margin-bottom: 32px;">
+                                <h1 style="font-size: 28px; font-weight: 800; color: #0f0f11; margin: 0;">Kovr<span style="color: #7c3aed;">.</span></h1>
+                            </div>
+                            <h2 style="color: #111827; font-size: 20px; margin-bottom: 16px;">Olá, ${userName}!</h2>
+                            <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
+                                Seu relatório de assinaturas está em anexo no formato <strong>CSV</strong>.
+                            </p>
+                            <div style="background: #f5f3ff; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                                <p style="color: #6b7280; font-size: 13px; margin: 0 0 8px 0;">Resumo:</p>
+                                <p style="color: #7c3aed; font-size: 20px; font-weight: 700; margin: 0;">${totalDisplayText}</p>
+                                <p style="color: #9ca3af; font-size: 12px; margin: 8px 0 0 0;">${subs.length} serviço${subs.length !== 1 ? 's' : ''}</p>
+                            </div>
+                            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
+                            <p style="font-size: 12px; color: #9ca3af; text-align: center;">
+                                Relatório gerado automaticamente em ${dataHoje}
+                            </p>
+                        </div>
+                    `,
+                    attachments: [
+                        {
+                            filename: fileName,
+                            content: buffer,
+                        }
+                    ]
+                })
 
-            const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendDocument`, {
-                method: 'POST',
-                body: formData
-            })
+                if (emailRes.error) {
+                    console.error('Erro Resend:', emailRes.error)
+                    return NextResponse.json(
+                        { success: false, error: 'Erro ao enviar e-mail' },
+                        { status: 500 }
+                    )
+                }
 
-            const data = await res.json()
-            if (!data.ok) {
-                throw new Error(data.description || 'Erro ao enviar para Telegram')
+                return NextResponse.json({ success: true })
             }
-
-            return NextResponse.json({ success: true })
-
         } else {
-            // Send via email
-            const buffer = Buffer.from(fileContent, 'utf-8')
+            // PDF Export
+            const htmlTemplate = generateReportHtml(
+                userName,
+                userEmail,
+                subs,
+                totalDisplayHtml,
+                dataHoje
+            )
 
-            const emailRes = await resend.emails.send({
-                from: 'Kovr <noreply@kovr.space>',
-                to: userEmail,
-                subject: `📊 Relatório ${format.toUpperCase()} - ${dataHoje}`,
-                html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                        <h2 style="color: #7c3aed;">Kovr - Relatório de Assinaturas</h2>
-                        <p>Olá, <strong>${userName}</strong>!</p>
-                        <p>Seu relatório no formato <strong>${format.toUpperCase()}</strong> está em anexo.</p>
-                        <p><strong>Totais:</strong> ${totalDisplayText}</p>
-                        <p><strong>Total de Serviços:</strong> ${subs.length}</p>
-                        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-                        <p style="font-size: 12px; color: #666;">Relatório gerado automaticamente em ${dataHoje}</p>
-                    </div>
-                `,
-                attachments: [
-                    {
-                        filename: fileName,
-                        content: buffer,
-                    }
-                ]
-            })
+            // Gera o PDF usando Puppeteer
+            const pdfBuffer = await generatePdfBuffer(htmlTemplate)
+            const fileName = `Kovr-Relatorio-${dataHoje.replace(/\//g, '-')}.pdf`
 
-            if (emailRes.error) {
-                console.error('Erro Resend:', emailRes.error)
-                return NextResponse.json(
-                    { success: false, error: 'Erro ao enviar e-mail' },
-                    { status: 500 }
-                )
+            if (channel === 'telegram') {
+                const formData = new FormData()
+                formData.append('chat_id', profile.telegram_chat_id)
+
+                const caption = `📊 <b>Relatório Financeiro Kovr</b>\n\n` +
+                    `👤 ${userName}\n` +
+                    `📅 ${dataHoje}\n\n` +
+                    `💰 <b>Totais Estimados:</b>\n${totalDisplayText}\n\n` +
+                    `📎 <i>PDF profissional em anexo</i>`
+
+                formData.append('caption', caption)
+                formData.append('parse_mode', 'HTML')
+
+                const fileBlob = new Blob([new Uint8Array(pdfBuffer)], { type: 'application/pdf' })
+                formData.append('document', fileBlob, fileName)
+
+                const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendDocument`, {
+                    method: 'POST',
+                    body: formData
+                })
+
+                const data = await res.json()
+                if (!data.ok) {
+                    throw new Error(data.description || 'Erro ao enviar para Telegram')
+                }
+
+                return NextResponse.json({ success: true })
+            } else {
+                // Email PDF
+                const emailRes = await resend.emails.send({
+                    from: 'Kovr <noreply@kovr.space>',
+                    to: userEmail,
+                    subject: `📊 Relatório PDF - ${dataHoje}`,
+                    html: `
+                        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+                            <div style="text-align: center; margin-bottom: 32px;">
+                                <h1 style="font-size: 28px; font-weight: 800; color: #0f0f11; margin: 0;">Kovr<span style="color: #7c3aed;">.</span></h1>
+                            </div>
+                            <h2 style="color: #111827; font-size: 20px; margin-bottom: 16px;">Olá, ${userName}!</h2>
+                            <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
+                                Seu relatório de assinaturas está em anexo. Abrindo o arquivo <strong>PDF</strong>, você terá um resumo profissional de todos os seus serviços.
+                            </p>
+                            <div style="background: #f5f3ff; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+                                <p style="color: #6b7280; font-size: 13px; margin: 0 0 8px 0;">Resumo:</p>
+                                <p style="color: #7c3aed; font-size: 20px; font-weight: 700; margin: 0;">${totalDisplayText}</p>
+                                <p style="color: #9ca3af; font-size: 12px; margin: 8px 0 0 0;">${subs.length} serviço${subs.length !== 1 ? 's' : ''}</p>
+                            </div>
+                            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
+                            <p style="font-size: 12px; color: #9ca3af; text-align: center;">
+                                Relatório gerado automaticamente em ${dataHoje}
+                            </p>
+                        </div>
+                    `,
+                    attachments: [
+                        {
+                            filename: fileName,
+                            content: pdfBuffer,
+                        }
+                    ]
+                })
+
+                if (emailRes.error) {
+                    console.error('Erro Resend:', emailRes.error)
+                    return NextResponse.json(
+                        { success: false, error: 'Erro ao enviar e-mail' },
+                        { status: 500 }
+                    )
+                }
+
+                return NextResponse.json({ success: true })
             }
-
-            return NextResponse.json({ success: true })
         }
 
     } catch (error: any) {
