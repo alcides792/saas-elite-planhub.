@@ -23,12 +23,12 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
   const userName = profile.full_name || user.user_metadata?.full_name || "Usuário Kovr"
   const userEmail = profile.email || user.email || ""
 
-  // 2. Busca Assinaturas (Usando colunas reais: amount, billing_cycle, next_payment)
+  // 2. Busca Assinaturas (Usando colunas reais: amount, billing_type, renewal_date)
   const { data: subs, error: subsError } = await supabase
     .from('subscriptions')
     .select('*')
     .eq('user_id', user.id)
-    .order('next_payment', { ascending: true })
+    .order('renewal_date', { ascending: true })
 
   if (subsError) {
     console.error('Erro ao buscar assinaturas:', subsError)
@@ -45,6 +45,9 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
   subs.forEach(sub => {
     const currency = sub.currency || 'BRL'
     const amount = Number(sub.amount) || 0
+
+    // Usar billing_type de preferência
+    const cycle = sub.billing_type || sub.billing_cycle || 'monthly'
 
     if (totalsByCurrency[currency]) {
       totalsByCurrency[currency] += amount
@@ -75,8 +78,8 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
     const header = 'Nome,Preço,Moeda,Ciclo,Categoria,Início,Próx. Renovação\n'
     const rows = subs.map(sub => {
       const inicio = sub.created_at ? new Date(sub.created_at).toLocaleDateString('pt-BR') : '-'
-      const renovacao = sub.next_payment ? new Date(sub.next_payment).toLocaleDateString('pt-BR') : '-'
-      return `"${sub.name}",${sub.amount},${sub.currency},${sub.billing_cycle || sub.billing_type},${sub.category},${inicio},${renovacao}`
+      const renovacao = sub.renewal_date ? new Date(sub.renewal_date).toLocaleDateString('pt-BR') : '-'
+      return `"${sub.name}",${sub.amount},${sub.currency},${sub.billing_type || sub.billing_cycle},${sub.category},${inicio},${renovacao}`
     }).join('\n')
 
     fileContent = header + rows
@@ -144,7 +147,7 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
                   </td>
                   <td class="py-4 border-b group-last:border-0 capitalize">${sub.billing_cycle || sub.billing_type}</td>
                   <td class="py-4 border-b group-last:border-0 text-right font-mono text-purple-600">
-                    ${sub.next_payment ? new Date(sub.next_payment).toLocaleDateString('pt-BR') : '-'}
+                    ${sub.renewal_date ? new Date(sub.renewal_date).toLocaleDateString('pt-BR') : '-'}
                   </td>
                   <td class="py-4 border-b group-last:border-0 text-right font-bold text-gray-900">
                     ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: sub.currency || 'BRL' }).format(Number(sub.amount) || 0)}

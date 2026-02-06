@@ -1,7 +1,7 @@
 'use client'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
-import { TelegramIcon } from '@/components/icons/BrandIcons'
 import { CheckCircle, RefreshCw, ExternalLink, Send } from 'lucide-react'
 
 export default function TelegramConnect() {
@@ -30,13 +30,10 @@ export default function TelegramConnect() {
     }
 
     return (
-        <div className="p-6 bg-[#0F0F11] border border-white/5 rounded-2xl relative group overflow-hidden">
-            {/* Background Decorativo */}
-            <div className="absolute top-0 right-0 w-40 h-40 bg-[#229ED9]/10 rounded-bl-full -mr-10 -mt-10 transition-all group-hover:bg-[#229ED9]/20"></div>
-
+        <div className="relative group overflow-hidden h-full">
             <div className="flex items-center gap-4 mb-6 relative z-10">
-                <div className="w-14 h-14 bg-[#229ED9]/20 rounded-2xl flex items-center justify-center text-[#229ED9] shadow-lg shadow-[#229ED9]/20">
-                    <TelegramIcon size={28} />
+                <div className="w-14 h-14 relative shrink-0">
+                    <Image src="/icons/telegram-3d-v2.png" alt="Telegram" fill className="object-contain" />
                 </div>
                 <div>
                     <h3 className="text-xl font-bold text-white">Telegram</h3>

@@ -1,19 +1,23 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import {
-    CreditCard, Star, TrendingUp, Wallet,
-    Bot, User, Loader2, Send, AlertCircle
+    CreditCard, TrendingUp, Zap, Plus, CalendarDays, ArrowRight
 } from 'lucide-react';
-import StatsCard from '@/components/StatsCard';
+import {
+    ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip,
+    PieChart, Pie, Cell
+} from 'recharts';
+import { format, differenceInDays, isToday, isTomorrow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import AddSubscriptionModal from '@/components/AddSubscriptionModal';
 import SubscriptionLogo from '@/components/ui/subscription-logo';
 import type { Subscription } from '@/types';
 import { createSubscription } from '@/lib/actions/subscriptions';
 import { useUser } from '@/contexts/UserContext';
 import { toast } from 'sonner';
-
 
 interface DashboardClientProps {
     subscriptions: Subscription[];
@@ -25,370 +29,300 @@ interface DashboardClientProps {
     };
 }
 
+const CHART_COLORS = ['#7c3aed', '#a855f7', '#c084fc', '#e9d5ff', '#6366f1', '#818cf8'];
+const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+        opacity: 1,
+        y: 0,
+        transition: { delay: i * 0.1, duration: 0.5, ease: 'easeOut' }
+    })
+};
+
 export default function DashboardClient({ subscriptions, stats }: DashboardClientProps) {
     const router = useRouter();
-    const { formatMoney, preferences } = useUser();
+    const { formatMoney } = useUser();
     const [isModalOpen, setIsModalOpen] = useState(false);
+
     const [isPending, startTransition] = useTransition();
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const status = params.get('status') || params.get('alert');
+        const error = params.get('error');
+
+        if (status === 'deleted') {
+            toast.success('Assinatura excluída com sucesso!');
+            router.replace('/dashboard');
+        } else if (status === 'renewed') {
+            toast.success('Assinatura renovada com sucesso!');
+            router.replace('/dashboard');
+        } else if (status === 'error' || error === 'failed') {
+            toast.error('Erro: ' + (params.get('message') || 'Algo deu errado'));
+            router.replace('/dashboard');
+        }
+    }, [router]);
 
     const handleAddSubscription = async (newSub: any) => {
         setIsModalOpen(false);
-
         startTransition(async () => {
             const { data, error } = await createSubscription(newSub);
             if (error) {
-                console.error('Error creating subscription:', error);
-                toast.error('Error creating subscription: ' + error);
+                toast.error('Erro ao criar assinatura: ' + error);
             } else {
-                toast.success('Subscription created!');
-                // Refresh to get updated data from server
+                toast.success('Assinatura criada!');
                 router.refresh();
             }
         });
     };
 
+    // --- CALCULATIONS ---
+    const monthlySpend = useMemo(() => {
+        return subscriptions
+            .filter(s => s.status === 'active')
+            .reduce((acc, sub) => {
+                const monthly = sub.billing_cycle === 'yearly' ? sub.amount / 12 : sub.amount;
+                return acc + monthly;
+            }, 0);
+    }, [subscriptions]);
 
-    // Calculate next billing
-    const upcomingSubscriptions = subscriptions
-        .filter(sub => sub.status === 'active' && sub.next_payment)
-        .sort((a, b) => {
-            const dateA = new Date(a.next_payment!).getTime();
-            const dateB = new Date(b.next_payment!).getTime();
-            return dateA - dateB;
-        });
+    const yearlyProjection = monthlySpend * 12;
 
-    const nextBilling = upcomingSubscriptions[0];
+    const categoryData = useMemo(() => {
+        const grouped = subscriptions
+            .filter(s => s.status === 'active')
+            .reduce((acc, sub) => {
+                const cat = sub.category || 'Outros';
+                const monthly = sub.billing_cycle === 'yearly' ? sub.amount / 12 : sub.amount;
+                acc[cat] = (acc[cat] || 0) + monthly;
+                return acc;
+            }, {} as Record<string, number>);
 
-    const categoryBreakdown = subscriptions
-        .filter(sub => sub.status === 'active')
-        .reduce((acc, sub) => {
-            const category = sub.category || 'other';
-            if (!acc[category]) {
-                acc[category] = 0;
-            }
+        return Object.entries(grouped).map(([name, value]) => ({ name, value }));
+    }, [subscriptions]);
 
-            // Normalize to monthly
-            let monthlyAmount = sub.amount;
-            switch (sub.billing_cycle) {
-                case 'yearly': monthlyAmount = sub.amount / 12; break;
-            }
+    const monthlyChartData = useMemo(() => {
+        return MONTHS.map(month => ({ name: month, value: monthlySpend }));
+    }, [monthlySpend]);
 
-            acc[category] += monthlyAmount;
-            return acc;
-        }, {} as Record<string, number>);
+    const upcomingRenewals = useMemo(() => {
+        return subscriptions
+            .filter(s => s.status === 'active' && s.next_payment)
+            .sort((a, b) => new Date(a.next_payment!).getTime() - new Date(b.next_payment!).getTime())
+            .slice(0, 4);
+    }, [subscriptions]);
 
-    const totalSpend = Object.values(categoryBreakdown).reduce((sum, val) => sum + val, 0);
+    const formatRenewalDate = (dateStr: string) => {
+        const date = new Date(dateStr);
+        if (isToday(date)) return 'Hoje';
+        if (isTomorrow(date)) return 'Amanhã';
+        const days = differenceInDays(date, new Date());
+        if (days < 7) return `Em ${days} dias`;
+        return format(date, 'dd MMM', { locale: ptBR });
+    };
 
-    // Recent activity (last 5 subscriptions)
-    const recentActivity = [...subscriptions]
-        .sort((a, b) => {
-            const dateA = new Date(a.created_at || 0).getTime();
-            const dateB = new Date(b.created_at || 0).getTime();
-            return dateB - dateA;
-        })
-        .slice(0, 5);
+    const userName = 'Assinante';
 
     return (
-        <div className="max-w-6xl mx-auto">
+        <div className="text-white">
             {/* Header */}
-            <header className="mb-14">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <div className="flex items-center gap-3">
-                        <div className="relative">
-                            <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2.5"
-                                >
-                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                                    <polyline points="9 22 9 12 15 12 15 22" />
-                                </svg>
-                            </div>
-                            <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-[#030305] rounded-full animate-pulse" />
-                        </div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 text-[10px] font-black uppercase tracking-wider">
-                            Operational • Kovr
-                        </div>
-                    </div>
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        disabled={isPending}
-                        className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-indigo-500 text-white font-bold text-sm hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="18"
-                            height="18"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="3"
-                        >
-                            <line x1="12" y1="5" x2="12" y2="19" />
-                            <line x1="5" y1="12" x2="19" y2="12" />
-                        </svg>
-                        <span>New Subscription</span>
-                    </button>
+            <motion.header
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10"
+            >
+                <div>
+                    <h1 className="text-3xl md:text-4xl font-black tracking-tight">
+                        Olá, <span className="text-purple-500">{userName}</span>
+                    </h1>
+                    <p className="text-zinc-500 text-sm mt-1">Visão geral do seu painel financeiro.</p>
                 </div>
-                <h1 className="text-5xl lg:text-7xl font-black tracking-tighter mb-4 leading-none text-zinc-900 dark:text-white">
-                    Command.
-                </h1>
-                <p className="text-xl font-medium text-zinc-900 dark:text-zinc-400">
-                    Today • General Overview of your Kovr.
-                </p>
-            </header>
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    disabled={isPending}
+                    className="flex items-center gap-2 px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm transition-all shadow-lg shadow-purple-600/30 disabled:opacity-50"
+                >
+                    <Plus size={18} strokeWidth={3} />
+                    Nova Assinatura
+                </button>
+            </motion.header>
 
-            {/* Stats Overview */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-                <StatsCard
-                    title="Monthly Spend"
-                    value={formatMoney(stats.monthlySpend)}
-                    icon={<CreditCard size={18} strokeWidth={2.5} />}
-                />
-                <StatsCard
-                    title="Active"
-                    value={stats.activeCount.toString()}
-                    icon={<Star size={18} strokeWidth={2.5} />}
-                />
-                <div className="plan-hub-card stat-card intelligence-board border-l-4 border-indigo-500 p-6">
-                    <div className="flex justify-between items-start mb-4 relative z-10">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-indigo-500">
-                            Kovr Insights
-                        </p>
-                        <span className="smart-badge badge-ai">Active</span>
+            {/* KPI Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <motion.div
+                    custom={0}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-6 hover:border-purple-500/30 transition-colors"
+                >
+                    <div className="flex items-center justify-between mb-4">
+                        <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Gasto Mensal</span>
+                        <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+                            <CreditCard size={20} />
+                        </div>
                     </div>
-                    <h3 className="text-lg font-black leading-tight mb-2 relative z-10 text-zinc-900 dark:text-white">
-                        {stats.totalCount === 0
-                            ? 'Add subscriptions to start analysis...'
-                            : `${stats.activeCount} active subscriptions monitored`}
-                    </h3>
-                </div>
-                <div className="premium-gradient p-8 text-white shadow-2xl relative overflow-hidden border border-white/10 rounded-xl">
-                    <div className="relative z-10">
-                        <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">
-                            Next Invoice
-                        </p>
-                        <h3 className="text-4xl font-black">
-                            {nextBilling ? formatMoney(nextBilling.amount) : formatMoney(0)}
-                        </h3>
-                        {nextBilling && (
-                            <div className="flex items-center gap-2 mt-4 bg-white/20 p-2 rounded-xl backdrop-blur-sm">
-                                <SubscriptionLogo
-                                    name={nextBilling.name}
-                                    domain={nextBilling.website?.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]}
-                                    size="sm"
+                    <p className="text-4xl font-black text-white">{formatMoney(monthlySpend)}</p>
+                    <p className="text-xs text-zinc-600 mt-2">Baseado em {stats.activeCount} assinaturas ativas</p>
+                </motion.div>
+
+                <motion.div
+                    custom={1}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-6 hover:border-green-500/30 transition-colors"
+                >
+                    <div className="flex items-center justify-between mb-4">
+                        <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Projeção Anual</span>
+                        <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center text-green-500">
+                            <TrendingUp size={20} />
+                        </div>
+                    </div>
+                    <p className="text-4xl font-black text-green-400">{formatMoney(yearlyProjection)}</p>
+                    <p className="text-xs text-zinc-600 mt-2">Mensal x 12 meses</p>
+                </motion.div>
+
+                <motion.div
+                    custom={2}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-6 hover:border-orange-500/30 transition-colors"
+                >
+                    <div className="flex items-center justify-between mb-4">
+                        <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Assinaturas Ativas</span>
+                        <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                            <Zap size={20} />
+                        </div>
+                    </div>
+                    <p className="text-4xl font-black text-orange-400">{stats.activeCount}</p>
+                    <p className="text-xs text-zinc-600 mt-2">de {stats.totalCount} registradas</p>
+                </motion.div>
+            </div>
+
+            {/* Charts Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+                {/* Bar Chart - 2/3 */}
+                <motion.div
+                    custom={3}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="lg:col-span-2 bg-[#0A0A0A] border border-white/5 rounded-3xl p-6"
+                >
+                    <h3 className="text-lg font-bold mb-6">Projeção de Gastos Mensais</h3>
+                    <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={monthlyChartData}>
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#71717a', fontSize: 11 }} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#71717a', fontSize: 11 }} tickFormatter={(v) => `R$${v}`} />
+                                <Tooltip
+                                    contentStyle={{ background: '#111', border: '1px solid #222', borderRadius: '12px' }}
+                                    labelStyle={{ color: '#fff', fontWeight: 'bold' }}
+                                    formatter={(value) => [formatMoney(Number(value) || 0), 'Gasto']}
                                 />
-                                <div className="flex flex-col">
-                                    <span className="text-[10px] font-bold">{nextBilling.name}</span>
-                                    <span className="text-[9px] opacity-70">
-                                        {new Date(nextBilling.next_payment!).toLocaleDateString(preferences.language)}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-                        {!nextBilling && (
-                            <div className="flex items-center gap-2 mt-4 bg-white/20 p-2 rounded-xl backdrop-blur-sm">
-                                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center font-black text-xs">
-                                    ?
-                                </div>
-                                <span className="text-[10px] font-bold">---</span>
-                            </div>
+                                <Bar dataKey="value" fill="#7c3aed" radius={[8, 8, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </motion.div>
+
+                {/* Donut Chart - 1/3 */}
+                <motion.div
+                    custom={4}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-6"
+                >
+                    <h3 className="text-lg font-bold mb-6">Gastos por Categoria</h3>
+                    <div className="h-64 flex items-center justify-center">
+                        {categoryData.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={categoryData}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={60}
+                                        outerRadius={90}
+                                        paddingAngle={4}
+                                        dataKey="value"
+                                        stroke="none"
+                                        label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                                        labelLine={false}
+                                    >
+                                        {categoryData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip
+                                        contentStyle={{ background: '#111', border: '1px solid #222', borderRadius: '12px' }}
+                                        formatter={(value) => [formatMoney(Number(value) || 0), 'Gasto']}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <p className="text-zinc-600 text-sm">Nenhuma categoria disponível</p>
                         )}
                     </div>
-                    <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
-                </div>
+                </motion.div>
             </div>
 
-            {/* Main Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Left: Budget Overview */}
-                <div className="space-y-6">
-                    <div className="plan-hub-card p-8 card-hover transition-all">
-                        <div className="flex items-center justify-between mb-8">
-                            <h4 className="text-xl font-black tracking-tighter text-zinc-900 dark:text-white">Kovr Budget.</h4>
-                            <div className="flex gap-2">
-                                <button className="px-3 py-1 rounded-lg bg-indigo-500 text-white text-[10px] font-black">
-                                    Monthly
-                                </button>
-                                <button className="px-3 py-1 rounded-lg bg-white/5 text-dim text-[10px] font-bold hover:bg-white/10 transition-colors">
-                                    Yearly
-                                </button>
-                            </div>
-                        </div>
-                        {Object.keys(categoryBreakdown).length > 0 ? (
-                            <div className="space-y-4">
-                                {Object.entries(categoryBreakdown).map(([category, amount]) => {
-                                    const percentage = totalSpend > 0 ? (amount / totalSpend) * 100 : 0;
-                                    return (
-                                        <div key={category}>
-                                            <div className="flex justify-between items-center mb-2">
-                                                <span className="text-sm font-bold capitalize">{category}</span>
-                                                <span className="text-sm font-black text-zinc-900 dark:text-white">
-                                                    {formatMoney(amount)}
-                                                </span>
-                                            </div>
-                                            <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
-                                                <div
-                                                    className="h-full bg-indigo-500 rounded-full transition-all"
-                                                    style={{ width: `${percentage}%` }}
-                                                />
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        ) : (
-                            <div className="opacity-50 text-center py-8">
-                                <p className="text-sm font-bold">No category data available</p>
-                            </div>
-                        )}
+            {/* Upcoming Renewals */}
+            <motion.div
+                custom={5}
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-6"
+            >
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                        <CalendarDays size={20} className="text-purple-500" />
+                        <h3 className="text-lg font-bold">Próximas Renovações</h3>
                     </div>
-
-                    {/* Recent Activity */}
-                    <div className="plan-hub-card p-8">
-                        <h4 className="text-xl font-black tracking-tighter mb-8 text-zinc-900 dark:text-white">Recent Fleet.</h4>
-                        {recentActivity.length > 0 ? (
-                            <div className="space-y-3">
-                                {recentActivity.map((sub) => (
-                                    <div
-                                        key={sub.id}
-                                        className="flex items-center justify-between p-3 rounded-xl bg-white/40 backdrop-blur-md border border-white/50 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 transition-colors"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <SubscriptionLogo
-                                                name={sub.name}
-                                                domain={sub.website?.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]}
-                                                size="sm"
-                                            />
-                                            <div>
-                                                <p className="text-sm font-bold">{sub.name}</p>
-                                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium capitalize">
-                                                    {sub.category}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <span className="text-sm font-black text-black dark:text-white">
-                                            {formatMoney(sub.amount)}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="opacity-50 text-center py-4 text-sm font-medium">
-                                No recent activity detected.
-                            </div>
-                        )}
-                    </div>
+                    <a href="/subscriptions" className="text-xs font-bold text-purple-500 hover:underline flex items-center gap-1">
+                        Ver todas <ArrowRight size={14} />
+                    </a>
                 </div>
 
-                {/* Right: Subscription Intelligence */}
-                <div className="space-y-6">
-                    <div className="plan-hub-card p-8 relative overflow-hidden group min-h-[400px]">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-indigo-500/10 transition-all" />
-
-                        <div className="flex items-center justify-between mb-8 relative z-10">
-                            <div>
-                                <div className="inline-flex items-center gap-2 px-2 py-1 rounded-md bg-indigo-500/10 text-indigo-500 text-[10px] font-black uppercase tracking-widest mb-2">
-                                    Intelligence Core
-                                </div>
-                                <h4 className="text-2xl font-black tracking-tighter text-zinc-900 dark:text-white">Subscription DNA.</h4>
-                            </div>
-                            <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/5 flex items-center justify-center text-indigo-500 shadow-2xl">
-                                <TrendingUp size={24} />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 mb-8 relative z-10">
-                            <div className="p-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/20 dark:border-white/5 shadow-sm">
-                                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Burn Rate</p>
-                                <p className="text-xl font-black text-zinc-900 dark:text-white">{formatMoney(stats.monthlySpend / 30)}<span className="text-[10px] font-bold text-zinc-500 ml-1">/day</span></p>
-                            </div>
-                            <div className="p-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/20 dark:border-white/5 shadow-sm">
-                                <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Optimization</p>
-                                <p className="text-xl font-black text-emerald-500">12.5%<span className="text-[10px] font-bold text-zinc-500 ml-1">Potential</span></p>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4 relative z-10">
-                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/10">
-                                <Bot size={18} className="text-indigo-500 mt-1 shrink-0" />
-                                <div>
-                                    <p className="text-sm font-bold text-zinc-900 dark:text-white mb-1">Financial Sentiment</p>
-                                    <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium">
-                                        Your subscription fleet is currently balanced. We detected 2 upcoming renewals that could be optimized for quarterly billing.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <a
-                                href="/dashboard/chat"
-                                className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900 text-white hover:bg-zinc-800 transition-all group/btn shadow-xl shadow-indigo-500/10"
+                {upcomingRenewals.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {upcomingRenewals.map((sub) => (
+                            <div
+                                key={sub.id}
+                                className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-purple-500/20 transition-colors"
                             >
-                                <span className="text-sm font-bold">Open AI Consultant</span>
-                                <Send size={16} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
-                            </a>
-                        </div>
-
-                        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent" />
-                    </div>
-
-                    {/* Next Renewals */}
-                    <div className="plan-hub-card p-8">
-                        <div className="flex items-center justify-between mb-8">
-                            <h4 className="text-xl font-black tracking-tighter text-zinc-900 dark:text-white">Upcoming Subscriptions.</h4>
-                            <a
-                                href="/subscriptions"
-                                className="text-[10px] font-black text-indigo-500 uppercase tracking-widest hover:underline"
-                            >
-                                View All
-                            </a>
-                        </div>
-                        {upcomingSubscriptions.length > 0 ? (
-                            <div className="space-y-3">
-                                {upcomingSubscriptions.slice(0, 3).map((sub) => (
-                                    <div
-                                        key={sub.id}
-                                        className="flex items-center justify-between p-3 rounded-xl bg-white/40 backdrop-blur-md border border-white/50 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 transition-colors"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <SubscriptionLogo
-                                                name={sub.name}
-                                                domain={sub.website?.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]}
-                                                size="sm"
-                                            />
-                                            <div>
-                                                <p className="text-sm font-bold">{sub.name}</p>
-                                                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-                                                    {new Date(sub.next_payment!).toLocaleDateString(preferences.language)}
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <span className="text-sm font-black text-black dark:text-white">
-                                            {formatMoney(sub.amount)}
-                                        </span>
-                                    </div>
-                                ))}
+                                <SubscriptionLogo
+                                    name={sub.name}
+                                    domain={sub.website?.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]}
+                                    size="md"
+                                />
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-bold text-sm truncate">{sub.name}</p>
+                                    <p className="text-xs text-zinc-500">{formatRenewalDate(sub.next_payment!)}</p>
+                                </div>
+                                <span className="text-sm font-black text-purple-400 shrink-0">
+                                    {formatMoney(sub.amount)}
+                                </span>
                             </div>
-                        ) : (
-                            <div className="opacity-50 text-center py-4 text-sm font-medium">
-                                No upcoming renewals
-                            </div>
-                        )}
+                        ))}
                     </div>
-                </div>
-            </div>
+                ) : (
+                    <p className="text-zinc-600 text-center py-8">Nenhuma renovação próxima.</p>
+                )}
+            </motion.div>
 
-            {/* Add Subscription Modal */}
+            {/* Modal */}
             <AddSubscriptionModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onAdd={handleAddSubscription}
             />
-        </div >
+        </div>
     );
 }
