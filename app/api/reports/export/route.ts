@@ -244,7 +244,7 @@ export async function POST(request: Request) {
             const buffer = Buffer.from(fileContent, 'utf-8')
 
             const emailRes = await resend.emails.send({
-                from: 'Kovr <noreply@kovr.app>',
+                from: 'Kovr <noreply@kovr.space>',
                 to: userEmail,
                 subject: `📊 Relatório ${format.toUpperCase()} - ${dataHoje}`,
                 html: `

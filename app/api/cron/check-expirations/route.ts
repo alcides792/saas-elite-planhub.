@@ -95,7 +95,7 @@ export async function GET(request: Request) {
                     )
 
                     await resend.emails.send({
-                        from: 'Kovr Alerts <alerts@kovr.space>',
+                        from: 'Kovr <noreply@kovr.space>',
                         to: [profile.email],
                         subject: `🤖 Kovr Alerta: A sua assinatura ${sub.name} vence hoje!`,
                         html: emailHtml
