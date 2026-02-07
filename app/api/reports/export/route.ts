@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
 import { Resend } from 'resend'
-import { generatePdfBuffer } from '@/lib/generate-pdf'
+import { generateSimplePDF, generateSimpleCSV } from '@/lib/generate-simple'
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN
 const RESEND_API_KEY = process.env.RESEND_API_KEY
@@ -343,15 +343,8 @@ export async function POST(request: Request) {
 
         // 4. Generate file content based on format
         if (format === 'csv') {
-            // CSV Export
-            const header = 'Nome,Preço,Moeda,Ciclo,Categoria,Início,Próx. Renovação\n'
-            const rows = subs.map(sub => {
-                const inicio = sub.created_at ? new Date(sub.created_at).toLocaleDateString('pt-BR') : '-'
-                const renovacao = sub.renewal_date ? new Date(sub.renewal_date).toLocaleDateString('pt-BR') : '-'
-                return `"${sub.name}",${sub.amount},${sub.currency},${sub.billing_type || sub.billing_cycle},${sub.category},${inicio},${renovacao}`
-            }).join('\n')
-
-            const fileContent = header + rows
+            // CSV Export usando gerador leve
+            const csvBuffer = generateSimpleCSV(subs)
             const fileName = `kovr_relatorio_${Date.now()}.csv`
 
             if (channel === 'telegram') {
@@ -367,7 +360,7 @@ export async function POST(request: Request) {
                 formData.append('caption', caption)
                 formData.append('parse_mode', 'HTML')
 
-                const fileBlob = new Blob([fileContent], { type: 'text/csv' })
+                const fileBlob = new Blob([new Uint8Array(csvBuffer)], { type: 'text/csv' })
                 formData.append('document', fileBlob, fileName)
 
                 const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendDocument`, {
@@ -383,8 +376,6 @@ export async function POST(request: Request) {
                 return NextResponse.json({ success: true })
             } else {
                 // Email CSV
-                const buffer = Buffer.from(fileContent, 'utf-8')
-
                 const emailRes = await resend.emails.send({
                     from: 'Kovr <noreply@kovr.space>',
                     to: userEmail,
@@ -396,7 +387,7 @@ export async function POST(request: Request) {
                             </div>
                             <h2 style="color: #111827; font-size: 20px; margin-bottom: 16px;">Olá, ${userName}!</h2>
                             <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
-                                Seu relatório de assinaturas está em anexo no formato <strong>CSV</strong>.
+                                Segue em anexo o seu relatório simplificado no formato <strong>CSV</strong>.
                             </p>
                             <div style="background: #f5f3ff; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                                 <p style="color: #6b7280; font-size: 13px; margin: 0 0 8px 0;">Resumo:</p>
@@ -412,7 +403,7 @@ export async function POST(request: Request) {
                     attachments: [
                         {
                             filename: fileName,
-                            content: buffer,
+                            content: csvBuffer,
                         }
                     ]
                 })
@@ -428,28 +419,19 @@ export async function POST(request: Request) {
                 return NextResponse.json({ success: true })
             }
         } else {
-            // PDF Export
-            const htmlTemplate = generateReportHtml(
-                userName,
-                userEmail,
-                subs,
-                totalDisplayHtml,
-                dataHoje
-            )
-
-            // Gera o PDF usando Puppeteer
-            const pdfBuffer = await generatePdfBuffer(htmlTemplate)
+            // PDF Export usando PDFKit (leve, sem browser)
+            const pdfBuffer = await generateSimplePDF(subs)
             const fileName = `Kovr-Relatorio-${dataHoje.replace(/\//g, '-')}.pdf`
 
             if (channel === 'telegram') {
                 const formData = new FormData()
                 formData.append('chat_id', profile.telegram_chat_id)
 
-                const caption = `📊 <b>Relatório Financeiro Kovr</b>\n\n` +
+                const caption = `📊 <b>Relatório Financeiro Kovr </b>\n\n` +
                     `👤 ${userName}\n` +
                     `📅 ${dataHoje}\n\n` +
                     `💰 <b>Totais Estimados:</b>\n${totalDisplayText}\n\n` +
-                    `📎 <i>PDF profissional em anexo</i>`
+                    `📎 <i>PDF simplificado em anexo</i>`
 
                 formData.append('caption', caption)
                 formData.append('parse_mode', 'HTML')
@@ -481,7 +463,7 @@ export async function POST(request: Request) {
                             </div>
                             <h2 style="color: #111827; font-size: 20px; margin-bottom: 16px;">Olá, ${userName}!</h2>
                             <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
-                                Seu relatório de assinaturas está em anexo. Abrindo o arquivo <strong>PDF</strong>, você terá um resumo profissional de todos os seus serviços.
+                                Segue em anexo o seu relatório simplificado de assinaturas no formato <strong>PDF</strong>.
                             </p>
                             <div style="background: #f5f3ff; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
                                 <p style="color: #6b7280; font-size: 13px; margin: 0 0 8px 0;">Resumo:</p>
