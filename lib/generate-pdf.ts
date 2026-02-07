@@ -5,34 +5,55 @@ export async function generatePdfBuffer(htmlContent: string): Promise<Buffer> {
     let browser;
 
     try {
-        // Configuração Híbrida (Funciona Local e Vercel)
         const isLocal = process.env.NODE_ENV === 'development';
 
+        // Configurações base
+        let options = {};
+
         if (isLocal) {
-            // Local: Usa o puppeteer normal
-            const puppeteerLocal = await import('puppeteer');
-            browser = await puppeteerLocal.default.launch({
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
-                headless: true,
-            });
+            // Local: Usa o puppeteer full instalado como devDependency
+            try {
+                // @ts-ignore
+                const puppeteerLocal = await import('puppeteer');
+                options = {
+                    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                    executablePath: puppeteerLocal.default.executablePath(),
+                    headless: true,
+                };
+            } catch (e) {
+                console.warn('Puppeteer full não encontrado localmente. Tentando puppeteer-core.');
+                options = {
+                    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                    // Se estiver no Linux/Windows, pode tentar achar o Chrome
+                    // Mas o ideal é ter o puppeteer instalado
+                    headless: true,
+                };
+            }
         } else {
-            // Vercel: Usa o Chromium otimizado
-            browser = await puppeteer.launch({
-                args: chromium.args,
+            // Produção (Vercel): Usa puppeteer-core + chromium binário
+
+            // Nota: chromium.font() e chromium.defaultViewport não estão mais disponíveis no @sparticuz/chromium v143+
+            // O pacote já inclui "Open Sans". 
+
+            options = {
+                args: (chromium as any).args,
                 defaultViewport: { width: 1280, height: 720 },
                 executablePath: await chromium.executablePath(),
-                headless: true,
-            });
+                headless: (chromium as any).headless,
+                ignoreHTTPSErrors: true,
+            };
         }
+
+        browser = await puppeteer.launch(options);
 
         const page = await browser.newPage();
 
-        // Carrega o HTML na página virtual
+        // Define o conteúdo e espera carregar
         await page.setContent(htmlContent, {
-            waitUntil: 'networkidle0', // Espera carregar tudo (imagens, fontes)
+            waitUntil: 'networkidle0',
         });
 
-        // Gera o PDF (A4, com background impresso)
+        // Gera o PDF
         const pdfBuffer = await page.pdf({
             format: 'A4',
             printBackground: true,
