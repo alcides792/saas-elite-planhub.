@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium"],
+  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium", "pdfkit"],
 };
 
 export default nextConfig;
