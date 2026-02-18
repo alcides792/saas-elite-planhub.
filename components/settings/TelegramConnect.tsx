@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { createClient } from '@/utils/supabase/client'
+import { createClient } from '@/lib/utils/supabase/client'
 import { CheckCircle, RefreshCw, ExternalLink, Send } from 'lucide-react'
 
 export default function TelegramConnect() {

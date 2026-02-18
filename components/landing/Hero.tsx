@@ -24,11 +24,11 @@ export default function Hero() {
                         Powered by Intelligence
                     </span>
                     <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
-                        Todos os seus pagamentos <br className="hidden md:block" />
-                        recorrentes em <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">um só lugar.</span>
+                        All your recurring <br className="hidden md:block" />
+                        payments in <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">one place.</span>
                     </h1>
                     <p className="max-w-2xl mx-auto text-lg md:text-xl text-zinc-400 mb-10 leading-relaxed">
-                        Acompanhe renovações, receba lembretes no Telegram e use <span className="text-white font-semibold">Inteligência Artificial</span> para otimizar seus gastos. <span className="text-purple-500 font-bold underline decoration-purple-500/30 underline-offset-4">Nunca mais pague</span> por serviços não utilizados.
+                        Track renewals, receive alerts on Telegram, and use <span className="text-white font-semibold">Artificial Intelligence</span> to optimize your spending. <span className="text-purple-500 font-bold underline decoration-purple-500/30 underline-offset-4">Never pay</span> for unused services again.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -36,12 +36,12 @@ export default function Hero() {
                             href="/login"
                             className="w-full sm:w-auto px-8 py-4 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-purple-600/20 flex items-center justify-center gap-2 group active:scale-95"
                         >
-                            Começar Grátis
+                            Start Free
                             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                         <button className="w-full sm:w-auto px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-bold rounded-2xl border border-white/10 transition-all flex items-center justify-center gap-2 active:scale-95">
                             <Play size={18} className="fill-white" />
-                            Saber Mais
+                            Learn More
                         </button>
                     </div>
 

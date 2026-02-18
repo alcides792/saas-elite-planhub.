@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { saveAlertSettings, getProfile } from '@/app/actions/settings'
 import { toast } from "sonner"
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export default function AlertsPage() {
     const [profile, setProfile] = React.useState<any>(null)
@@ -43,12 +44,12 @@ export default function AlertsPage() {
         try {
             const res = await saveAlertSettings(formData)
             if (res.success) {
-                toast.success("Configurações salvas com sucesso!")
+                toast.success("Settings saved successfully!")
             } else {
-                toast.error(res.error || "Erro ao salvar configurações")
+                toast.error(res.error || "Error saving settings")
             }
         } catch (error) {
-            toast.error("Erro inesperado ao salvar")
+            toast.error("Unexpected error saving")
         } finally {
             setIsSaving(false)
         }
@@ -75,13 +76,13 @@ export default function AlertsPage() {
             const data = await res.json()
 
             if (data.success) {
-                toast.success(`Relatório enviado para ${channel === 'telegram' ? 'seu Telegram' : 'seu E-mail'}!`)
+                toast.success(`Report sent to your ${channel === 'telegram' ? 'Telegram' : 'Email'}!`)
                 setExportModal({ open: false, type: null })
             } else {
-                toast.error(data.error || 'Erro ao enviar relatório')
+                toast.error(data.error || 'Error sending report')
             }
         } catch (error) {
-            toast.error('Erro inesperado ao processar exportação')
+            toast.error('Unexpected error processing export')
         } finally {
             setIsExporting(false)
         }
@@ -95,27 +96,30 @@ export default function AlertsPage() {
         )
     }
 
-    const cardStyle = "bg-[#0A0A0A]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 hover:border-white/20 transition-all duration-300 shadow-2xl"
+    const cardStyle = "bg-white dark:bg-[#0A0A0A] border border-gray-200 dark:border-white/10 rounded-xl p-6 hover:border-purple-500/30 transition-all duration-300 shadow-xl dark:shadow-2xl"
 
     return (
         <div className="max-w-6xl mx-auto space-y-10">
             {/* Header Section */}
-            <header className="space-y-2">
-                <motion.h1
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="text-4xl font-black text-white tracking-tight"
-                >
-                    Central de <span className="text-purple-500">Alertas</span>
-                </motion.h1>
-                <motion.p
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="text-zinc-400 text-lg"
-                >
-                    Configure como e quando você quer ser notificado sobre suas finanças.
-                </motion.p>
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                    <motion.h1
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="text-4xl font-black text-gray-900 dark:text-white tracking-tight"
+                    >
+                        Alert <span className="text-purple-600 dark:text-purple-500">Center</span>
+                    </motion.h1>
+                    <motion.p
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="text-gray-500 dark:text-zinc-400 text-lg mt-2"
+                    >
+                        Configure how and when you want to be notified about your finances.
+                    </motion.p>
+                </div>
+                <ThemeToggle />
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -124,7 +128,7 @@ export default function AlertsPage() {
                 <div className="lg:col-span-7 space-y-8">
                     <div className="flex items-center gap-3">
                         <div className="h-1 w-8 bg-purple-500 rounded-full" />
-                        <h2 className="text-sm font-black text-white uppercase tracking-widest">Canais Disponíveis</h2>
+                        <h2 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">Available Channels</h2>
                     </div>
 
                     {/* Telegram Card - Main Focus */}
@@ -140,10 +144,10 @@ export default function AlertsPage() {
                                 <div className="w-12 h-12 relative shrink-0">
                                     <Image src="/icons/whatsapp-3d.png" alt="WhatsApp" fill className="object-contain" />
                                 </div>
-                                <div className="px-2 py-1 rounded-md bg-zinc-800 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Brevemente</div>
+                                <div className="px-2 py-1 rounded-md bg-gray-100 dark:bg-zinc-800 text-[10px] font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-wider">Coming Soon</div>
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-1">WhatsApp</h3>
-                            <p className="text-zinc-500 text-sm">Alertas diretos via chat.</p>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">WhatsApp</h3>
+                            <p className="text-gray-500 dark:text-zinc-500 text-sm">Direct alerts via chat.</p>
                         </div>
 
                         {/* Email Status Card */}
@@ -153,11 +157,11 @@ export default function AlertsPage() {
                                     <Image src="/icons/gmail-3d.png" alt="Gmail" fill className="object-contain" />
                                 </div>
                                 <div className="flex items-center gap-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
-                                    <CheckCircle2 size={12} /> Ativo
+                                    <CheckCircle2 size={12} /> Active
                                 </div>
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-1">E-mail</h3>
-                            <p className="text-zinc-500 text-sm">Enviado para {profile?.email || 'seu email'}.</p>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">Email</h3>
+                            <p className="text-gray-500 dark:text-zinc-500 text-sm">Sent to {profile?.email || 'your email'}.</p>
                         </div>
                     </div>
 
@@ -166,18 +170,18 @@ export default function AlertsPage() {
                         <ComingSoonCard
                             image="/icons/discord-3d.png"
                             title="Discord"
-                            description="Integração com webhook."
+                            description="Webhook integration."
                         />
                         <ComingSoonCard
                             image="/icons/kovr-3d.png"
-                            title="Push Nativo"
-                            description="App Kovr para iOS/Android."
+                            title="Native Push"
+                            description="Kovr App for iOS/Android."
                         />
                     </div>
 
                     {/* Export Actions Box */}
                     <div className={cardStyle}>
-                        <h2 className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-6">Relatórios Inteligentes</h2>
+                        <h2 className="text-sm font-black text-gray-500 dark:text-zinc-500 uppercase tracking-widest mb-6">Smart Reports</h2>
                         <ReportActions onExportClick={handleExportClick} />
                     </div>
                 </div>
@@ -186,35 +190,35 @@ export default function AlertsPage() {
                 <aside className="lg:col-span-5 space-y-8">
                     <div className="flex items-center gap-3">
                         <div className="h-1 w-8 bg-purple-500 rounded-full" />
-                        <h2 className="text-sm font-black text-white uppercase tracking-widest">Configurações</h2>
+                        <h2 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">Configurações</h2>
                     </div>
 
                     <form onSubmit={handleSave} className="space-y-6">
                         {/* Preferences Card */}
                         <div className={cardStyle}>
-                            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
-                                <Bell size={20} className="text-purple-500" />
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                                <Bell size={20} className="text-purple-600 dark:text-purple-500" />
                                 Preferências
                             </h3>
                             <div className="space-y-6">
                                 <div className="flex items-center justify-between group">
                                     <div className="space-y-0.5">
-                                        <Label className="text-base text-zinc-200 group-hover:text-white transition-colors">Lembretes de Fatura</Label>
-                                        <p className="text-xs text-zinc-500 italic">Notificar antes do vencimento.</p>
+                                        <Label className="text-base text-gray-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">Lembretes de Contas</Label>
+                                        <p className="text-xs text-gray-500 dark:text-zinc-500 italic">Notificar antes da data de vencimento.</p>
                                     </div>
                                     <Switch name="notify_expiration" defaultChecked={profile?.notify_expiration ?? true} />
                                 </div>
                                 <div className="flex items-center justify-between group">
                                     <div className="space-y-0.5">
-                                        <Label className="text-base text-zinc-200 group-hover:text-white transition-colors">Resumo Semanal</Label>
-                                        <p className="text-xs text-zinc-500 italic">Gastos totais da semana.</p>
+                                        <Label className="text-base text-gray-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">Resumo Semanal</Label>
+                                        <p className="text-xs text-gray-500 dark:text-zinc-500 italic">Total de gastos da semana.</p>
                                     </div>
                                     <Switch name="notify_weekly_summary" defaultChecked={profile?.notify_weekly_summary ?? true} />
                                 </div>
                                 <div className="flex items-center justify-between group">
                                     <div className="space-y-0.5">
-                                        <Label className="text-base text-zinc-200 group-hover:text-white transition-colors">Alertas de Valor</Label>
-                                        <p className="text-xs text-zinc-500 italic">Preços que subiram.</p>
+                                        <Label className="text-base text-gray-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">Alertas de Valor</Label>
+                                        <p className="text-xs text-gray-500 dark:text-zinc-500 italic">Preços que aumentaram.</p>
                                     </div>
                                     <Switch name="notify_price_change" defaultChecked={profile?.notify_price_change ?? true} />
                                 </div>
@@ -223,18 +227,18 @@ export default function AlertsPage() {
 
                         {/* Timing Card */}
                         <div className={cardStyle}>
-                            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
-                                <Clock size={20} className="text-purple-500" />
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
+                                <Clock size={20} className="text-purple-600 dark:text-purple-500" />
                                 Horário e Prazo
                             </h3>
                             <div className="space-y-5">
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Dias de Antecedência</Label>
+                                    <Label className="text-xs font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-widest">Dias de Antecedência</Label>
                                     <Select name="notify_days_before" defaultValue={String(profile?.notify_days_before ?? "3")}>
-                                        <SelectTrigger className="w-full bg-zinc-900 border-white/10 text-white rounded-xl h-12">
-                                            <SelectValue placeholder="Selecione" />
+                                        <SelectTrigger className="w-full bg-gray-50 dark:bg-zinc-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl h-12">
+                                            <SelectValue placeholder="Selecionar" />
                                         </SelectTrigger>
-                                        <SelectContent className="bg-zinc-900 border-white/10 text-white">
+                                        <SelectContent className="bg-white dark:bg-zinc-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white">
                                             <SelectItem value="1">1 dia antes</SelectItem>
                                             <SelectItem value="3">3 dias antes (Vantagem)</SelectItem>
                                             <SelectItem value="5">5 dias antes</SelectItem>
@@ -243,12 +247,12 @@ export default function AlertsPage() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Horário do Envio</Label>
+                                    <Label className="text-xs font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-widest">Horário de Entrega</Label>
                                     <Select name="notify_time" defaultValue={profile?.notify_time ?? "09"}>
-                                        <SelectTrigger className="w-full bg-zinc-900 border-white/10 text-white rounded-xl h-12">
-                                            <SelectValue placeholder="Selecione" />
+                                        <SelectTrigger className="w-full bg-gray-50 dark:bg-zinc-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl h-12">
+                                            <SelectValue placeholder="Selecionar" />
                                         </SelectTrigger>
-                                        <SelectContent className="bg-zinc-900 border-white/10 text-white">
+                                        <SelectContent className="bg-white dark:bg-zinc-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white">
                                             <SelectItem value="08">08:00 AM</SelectItem>
                                             <SelectItem value="09">09:00 AM</SelectItem>
                                             <SelectItem value="10">10:00 AM</SelectItem>
@@ -266,7 +270,7 @@ export default function AlertsPage() {
                             whileTap={{ scale: 0.99 }}
                             type="submit"
                             disabled={isSaving}
-                            className="w-full py-4 bg-white text-black font-black rounded-xl hover:bg-zinc-200 transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                            className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:bg-black dark:hover:bg-zinc-200 transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50 shadow-xl"
                         >
                             {isSaving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
                             SALVAR CONFIGURAÇÕES
@@ -289,6 +293,6 @@ export default function AlertsPage() {
                 type={exportModal.type}
                 isLoading={isExporting}
             />
-        </div>
+        </div >
     )
 }

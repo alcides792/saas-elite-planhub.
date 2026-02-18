@@ -42,12 +42,6 @@ export default function RegisterPage() {
                             </div>
                             <p className="text-sm font-medium text-zinc-300">Lifetime Access Assets</p>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <div className="w-6 h-6 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/30">
-                                <svg className="w-3.5 h-3.5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                            </div>
-                            <p className="text-sm font-medium text-zinc-300">Family Audit included</p>
-                        </div>
                     </div>
                 </div>
 

@@ -225,15 +225,16 @@ export interface Database {
                     currency: string
                     id: string
                     name: string
-                    notes: string | null
                     payment_method: string | null
                     renewal_date: string | null
                     status: string
-                    updated_at: string
                     user_id: string
                     website: string | null
                     icon: string | null
                     icon_color: string | null
+                    billing_cycle: string | null
+                    next_payment: string | null
+                    end_date: string | null
                 }
                 Insert: {
                     amount?: number

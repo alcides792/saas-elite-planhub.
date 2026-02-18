@@ -133,8 +133,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#FF0000',
         category: 'Entertainment',
         plans: [
-            { name: 'Padrão', price: 5.00 },
-            { name: 'Globoplay + Canais ao Vivo', price: 10.00 }
+            { name: 'Standard', price: 5.00 },
+            { name: 'Standard + Live Channels', price: 10.00 }
         ]
     },
     {
@@ -144,8 +144,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#1D1D1B',
         category: 'Entertainment',
         plans: [
-            { name: 'Gratuito', price: 0.00 },
-            { name: 'Premium (Simulado)', price: 4.99 }
+            { name: 'Free', price: 0.00 },
+            { name: 'Premium (Simulated)', price: 4.99 }
         ]
     },
     {
@@ -155,8 +155,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#000000',
         category: 'Entertainment',
         plans: [
-            { name: 'Abono Mensal', price: 12.99 },
-            { name: 'Estudante', price: 7.99 }
+            { name: 'Monthly Subscription', price: 12.99 },
+            { name: 'Student', price: 7.99 }
         ]
     },
     {
@@ -188,8 +188,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#9146FF',
         category: 'Entertainment',
         plans: [
-            { name: 'Mensal', price: 8.99 },
-            { name: 'Anual', price: 89.99 }
+            { name: 'Monthly', price: 8.99 },
+            { name: 'Yearly', price: 89.99 }
         ]
     },
 
@@ -392,8 +392,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#0064ff',
         category: 'Gaming',
         plans: [
-            { name: 'Mensal', price: 14.99 },
-            { name: '6 Meses', price: 77.94 }
+            { name: 'Monthly', price: 14.99 },
+            { name: '6 Months', price: 77.94 }
         ]
     },
 
@@ -450,8 +450,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#20B2AA',
         category: 'Productivity',
         plans: [
-            { name: 'Mensal', price: 20.00 },
-            { name: 'Anual', price: 200.00 }
+            { name: 'Monthly', price: 20.00 },
+            { name: 'Yearly', price: 200.00 }
         ]
     },
     {
@@ -744,8 +744,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#FF1C1C',
         category: 'Security',
         plans: [
-            { name: 'Mensal', price: 12.95 },
-            { name: '6 Meses', price: 9.99 }
+            { name: 'Monthly', price: 12.95 },
+            { name: '6 Months', price: 9.99 }
         ]
     },
     {
@@ -868,8 +868,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#24A1DE',
         category: 'Social',
         plans: [
-            { name: 'Mensal', price: 4.99 },
-            { name: 'Anual', price: 35.99 }
+            { name: 'Monthly', price: 4.99 },
+            { name: 'Yearly', price: 35.99 }
         ]
     },
     {
@@ -879,8 +879,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#FFFC00',
         category: 'Social',
         plans: [
-            { name: 'Mensal', price: 3.99 },
-            { name: 'Anual', price: 29.99 }
+            { name: 'Monthly', price: 3.99 },
+            { name: 'Yearly', price: 29.99 }
         ]
     },
     {
@@ -890,8 +890,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#FF4500',
         category: 'Social',
         plans: [
-            { name: 'Mensal', price: 5.99 },
-            { name: 'Anual', price: 49.99 }
+            { name: 'Monthly', price: 5.99 },
+            { name: 'Yearly', price: 49.99 }
         ]
     },
     {
@@ -914,8 +914,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#FC4C02',
         category: 'Health',
         plans: [
-            { name: 'Mensal', price: 11.99 },
-            { name: 'Anual', price: 79.99 }
+            { name: 'Monthly', price: 11.99 },
+            { name: 'Yearly', price: 79.99 }
         ]
     },
     {
@@ -947,8 +947,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#FF8200',
         category: 'Health',
         plans: [
-            { name: 'Mensal', price: 12.99 },
-            { name: 'Anual', price: 69.99 }
+            { name: 'Monthly', price: 12.99 },
+            { name: 'Yearly', price: 69.99 }
         ]
     },
     {
@@ -959,7 +959,7 @@ export const POPULAR_SERVICES: Service[] = [
         category: 'Health',
         plans: [
             { name: 'Premium', price: 19.99 },
-            { name: 'Anual', price: 79.99 }
+            { name: 'Yearly', price: 79.99 }
         ]
     },
     {
@@ -969,8 +969,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#00B0B9',
         category: 'Health',
         plans: [
-            { name: 'Mensal', price: 9.99 },
-            { name: 'Anual', price: 79.99 }
+            { name: 'Monthly', price: 9.99 },
+            { name: 'Yearly', price: 79.99 }
         ]
     },
 
@@ -982,8 +982,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#FF9900',
         category: 'Education',
         plans: [
-            { name: 'Mensal', price: 9.99 },
-            { name: 'Anual', price: 119.88 }
+            { name: 'Monthly', price: 9.99 },
+            { name: 'Yearly', price: 119.88 }
         ]
     },
     {
@@ -1037,8 +1037,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#0056D2',
         category: 'Education',
         plans: [
-            { name: 'Mensal', price: 59.00 },
-            { name: 'Anual', price: 399.00 }
+            { name: 'Monthly', price: 59.00 },
+            { name: 'Yearly', price: 399.00 }
         ]
     },
     {
@@ -1059,8 +1059,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#2CE080',
         category: 'Education',
         plans: [
-            { name: 'Premium Mensal', price: 14.99 },
-            { name: 'Premium Anual', price: 89.99 }
+            { name: 'Monthly Premium', price: 14.99 },
+            { name: 'Yearly Premium', price: 89.99 }
         ]
     },
 
@@ -1072,8 +1072,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#FF9900',
         category: 'Shopping',
         plans: [
-            { name: 'Mensal', price: 14.99 },
-            { name: 'Anual', price: 139.00 }
+            { name: 'Monthly', price: 14.99 },
+            { name: 'Yearly', price: 139.00 }
         ]
     },
     {
@@ -1083,8 +1083,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#000000',
         category: 'Utilities',
         plans: [
-            { name: 'Mensal', price: 9.99 },
-            { name: 'Anual', price: 99.99 }
+            { name: 'Monthly', price: 9.99 },
+            { name: 'Yearly', price: 99.99 }
         ]
     },
     {
@@ -1105,8 +1105,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#ea1d2c',
         category: 'Utilities',
         plans: [
-            { name: 'Plano Mensal', price: 2.00 },
-            { name: 'Plano Fidelidade', price: 1.50 }
+            { name: 'Monthly Plan', price: 2.00 },
+            { name: 'Loyalty Plan', price: 1.50 }
         ]
     },
     {
@@ -1116,8 +1116,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#ffe600',
         category: 'Shopping',
         plans: [
-            { name: 'Mensal', price: 17.99 },
-            { name: 'Assinatura', price: 14.99 }
+            { name: 'Monthly', price: 17.99 },
+            { name: 'Subscription', price: 14.99 }
         ]
     },
     {
@@ -1127,8 +1127,8 @@ export const POPULAR_SERVICES: Service[] = [
         color: '#0071ce',
         category: 'Shopping',
         plans: [
-            { name: 'Mensal', price: 12.95 },
-            { name: 'Anual', price: 98.00 }
+            { name: 'Monthly', price: 12.95 },
+            { name: 'Yearly', price: 98.00 }
         ]
     },
     {
@@ -1185,7 +1185,7 @@ export const POPULAR_SERVICES: Service[] = [
         category: 'Dev',
         plans: [
             { name: 'Blaze Plan', price: 25.00 },
-            { name: 'Fixed (Simulado)', price: 10.00 }
+            { name: 'Fixed (Simulated)', price: 10.00 }
         ]
     },
     {

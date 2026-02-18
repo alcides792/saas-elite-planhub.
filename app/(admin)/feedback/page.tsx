@@ -42,7 +42,6 @@ export default function FeedbackPage() {
     const loadPosts = async () => {
         setIsLoading(true);
         setError(null);
-        console.log('Loading posts for category:', selectedCategory);
 
         const { data, error: fetchError } = await getFeedbackPosts(selectedCategory);
 
@@ -50,7 +49,6 @@ export default function FeedbackPage() {
             setError('Failed to load posts. Make sure feedback_schema.sql is applied in Supabase.');
             console.error('Fetch error:', fetchError);
         } else if (data) {
-            console.log('Posts loaded:', data);
             setPosts(data as FeedbackPost[]);
         }
         setIsLoading(false);
@@ -65,7 +63,6 @@ export default function FeedbackPage() {
         setIsLoading(true);
         setError(null);
 
-        console.log('Creating post:', newPost);
         const { data, error: createError } = await createFeedbackPost(newPost);
 
         if (createError) {
@@ -73,7 +70,6 @@ export default function FeedbackPage() {
             console.error('Create error:', createError);
             toast.error(`Error: ${createError}`);
         } else {
-            console.log('Post created successfully:', data);
             setNewPost({ title: '', content: '', category: 'idea' });
             setIsCreating(false);
             await loadPosts();

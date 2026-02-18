@@ -7,29 +7,29 @@ import { cn } from "@/lib/utils"
 
 const features = [
     {
-        title: "Controle",
-        description: "Saiba exatamente quanto sai da sua conta. Todo mês.",
+        title: "Control",
+        description: "Know exactly how much leaves your account. Every month.",
         icon: Layers,
         color: "from-blue-500/20 to-blue-600/20",
         iconColor: "text-blue-400"
     },
     {
-        title: "Fim das Surpresas",
-        description: "Chega de cobranças surpresa. Receba alertas 3 dias antes no Telegram.",
+        title: "No More Surprises",
+        description: "No more surprise charges. Get alerts 3 days before on Telegram.",
         icon: AlarmClock,
         color: "from-purple-500/20 to-purple-600/20",
         iconColor: "text-purple-400"
     },
     {
-        title: "IA Power",
-        description: "Nossa IA analisa seus gastos e sugere onde você pode economizar.",
+        title: "AI Powered",
+        description: "Our AI analyzes your spending and suggests where you can save.",
         icon: ShieldCheck,
         color: "from-emerald-500/20 to-emerald-600/20",
         iconColor: "text-emerald-400"
     },
     {
-        title: "Exportação Profissional",
-        description: "Precisa de analisar os dados ou enviar para a contabilidade? Baixe extratos detalhados em PDF ou CSV (Excel) com um único clique.",
+        title: "Professional Export",
+        description: "Need to analyze data or send to accounting? Download detailed statements in PDF or CSV with a single click.",
         icon: FileText,
         color: "from-orange-500/20 to-orange-600/20",
         iconColor: "text-orange-400"
@@ -42,10 +42,10 @@ export default function Features() {
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
-                        A Solução
+                        The Solution
                     </h2>
                     <p className="text-zinc-400 max-w-xl mx-auto">
-                        Desenvolvemos a tecnologia necessária para que nunca mais perca o controle das suas finanças digitais.
+                        We develop the technology needed so you never lose control of your digital finances again.
                     </p>
                 </div>
 

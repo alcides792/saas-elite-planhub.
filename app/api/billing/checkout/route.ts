@@ -1,6 +1,6 @@
 import DodoPayments from "dodopayments";
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/lib/utils/supabase/server";
 
 // Use conditional initialization to prevent crash if env variables are missing
 const dodo = process.env.DODO_PAYMENTS_API_KEY

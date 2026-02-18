@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { LifeBuoy, Mail, ArrowLeft, Construction } from 'lucide-react';
-import { LayoutProvider, useLayout } from '@/context/LayoutContext';
+import { LayoutProvider, useLayout } from '@/contexts/LayoutContext';
 
 /**
  * HelpCenterContent - The Help Center page content that consumes the layout context for theme support.

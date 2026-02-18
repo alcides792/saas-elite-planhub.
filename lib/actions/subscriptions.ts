@@ -1,32 +1,26 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/utils/supabase/server';
 import { dbToSubscription, subscriptionToDb, type Subscription } from '@/types';
 import type { TablesInsert, TablesUpdate } from '@/types/database.types';
-import { requireProPlan } from '@/utils/gatekeeper';
+import { requireProPlan } from '@/lib/utils/gatekeeper';
 
 /**
  * Get all subscriptions for the authenticated user
  */
 export async function getSubscriptions(): Promise<{ data: Subscription[] | null; error: string | null }> {
     try {
-        console.log('[getSubscriptions] Starting...');
         const supabase = await createClient();
-        console.log('[getSubscriptions] Supabase client created');
 
         // Get authenticated user
-        console.log('[getSubscriptions] Getting session...');
         const { data: { session }, error: authError } = await supabase.auth.getSession();
-        console.log('[getSubscriptions] Session result:', { hasSession: !!session, authError });
 
         if (authError || !session?.user) {
-            console.log('[getSubscriptions] No session or auth error');
             return { data: null, error: 'Unauthorized' };
         }
 
         // Query subscriptions
-        console.log('[getSubscriptions] Querying subscriptions for user:', session.user.id);
         const { data, error } = await supabase
             .from('subscriptions')
             .select('*')
@@ -38,7 +32,6 @@ export async function getSubscriptions(): Promise<{ data: Subscription[] | null;
             return { data: null, error: error.message };
         }
 
-        console.log('[getSubscriptions] Found subscriptions:', data?.length || 0);
 
         // Map database records to TypeScript types
         const subscriptions = data.map(dbToSubscription);
@@ -181,7 +174,6 @@ export async function deleteSubscription(id: string): Promise<{ success: boolean
         }
 
         // Delete from database (RLS ensures user owns this subscription)
-        console.log(`[deleteSubscription] Attempting to delete sub ${id} for user ${session.user.id}`);
         const { error, count } = await supabase
             .from('subscriptions')
             .delete()
@@ -193,7 +185,6 @@ export async function deleteSubscription(id: string): Promise<{ success: boolean
             return { success: false, error: error.message };
         }
 
-        console.log(`[deleteSubscription] Successfully deleted. Rows affected: ${count}`);
 
         // Revalidate the subscriptions page
         revalidatePath('/subscriptions');

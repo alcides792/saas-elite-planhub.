@@ -16,7 +16,6 @@ export async function POST(request: Request) {
         // Extract fields
         const { type, data } = body
 
-        console.log(`🔔 Dodo Webhook Received: [${type}]`)
 
         // Check if it's a Subscription Active or Payment Success event
         if (type === 'subscription.active' || type === 'payment.succeeded') {
@@ -36,7 +35,6 @@ export async function POST(request: Request) {
             }
 
             if (customerEmail) {
-                console.log(`👤 Processing user: ${customerEmail}`)
 
                 // Update profile in Supabase
                 const { error } = await supabase
@@ -54,7 +52,6 @@ export async function POST(request: Request) {
                     return NextResponse.json({ error: 'Database Error' }, { status: 500 })
                 }
 
-                console.log(`✅ Success! User ${customerEmail} updated.`)
             } else {
                 console.warn('⚠️ Email not found in Dodo JSON.')
             }
@@ -68,7 +65,6 @@ export async function POST(request: Request) {
                     .from('profiles')
                     .update({ billing_status: 'canceled' })
                     .eq('email', customerEmail)
-                console.log(`🚫 Subscription for ${customerEmail} cancelled.`)
             }
         }
 

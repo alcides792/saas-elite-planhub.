@@ -1,33 +1,34 @@
 import React from "react"
 import { motion } from "framer-motion"
+import Image from "next/image"
 
 export default function NotificationChannels() {
     const channels = [
         {
             name: "Telegram",
             icon: "/telegram-3d.png",
-            status: "Ativo",
+            status: "Active",
             statusColor: "text-green-400 bg-green-400/10 border-green-400/20",
             active: true
         },
         {
             name: "E-mail",
             icon: "/gmail-icon-v2.png",
-            status: "Ativo",
+            status: "Active",
             statusColor: "text-green-400 bg-green-400/10 border-green-400/20",
             active: true
         },
         {
             name: "Discord",
             icon: "/discord-3d.png",
-            status: "Brevemente",
+            status: "Coming Soon",
             statusColor: "text-purple-400 bg-purple-400/10 border-purple-400/20",
             active: false
         },
         {
             name: "Kovr App",
             icon: "/kovr-logo.png",
-            status: "Brevemente",
+            status: "Coming Soon",
             statusColor: "text-purple-400 bg-purple-400/10 border-purple-400/20",
             active: false
         }
@@ -46,10 +47,10 @@ export default function NotificationChannels() {
                     className="mb-16"
                 >
                     <h2 className="text-3xl md:text-5xl font-black mb-4 tracking-tighter text-white">
-                        SISTEMA DE <span className="text-purple-500">ALERTAS</span>
+                        ALERT <span className="text-purple-500">SYSTEM</span>
                     </h2>
                     <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-                        Escolha onde deseja receber suas notificações de vencimento e alertas de economia.
+                        Choose where you want to receive your expiration notices and savings alerts.
                     </p>
                 </motion.div>
 
@@ -69,9 +70,11 @@ export default function NotificationChannels() {
                                 <div className="absolute inset-0 bg-purple-500/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
 
                                 <div className="w-20 h-20 flex items-center justify-center relative z-10">
-                                    <img
+                                    <Image
                                         src={channel.icon}
                                         alt={channel.name}
+                                        width={80}
+                                        height={80}
                                         className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]"
                                     />
                                 </div>

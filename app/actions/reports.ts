@@ -1,14 +1,14 @@
 'use server'
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/lib/utils/supabase/server'
 
 const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN
 
 export async function sendExportToTelegram(format: 'csv' | 'pdf') {
   const supabase = await createClient()
 
-  // 1. Busca Usuário e Perfil
+  // 1. Fetch User and Profile
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { success: false, error: "Usuário não logado" }
+  if (!user) return { success: false, error: "User not logged in" }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -17,13 +17,13 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
     .single()
 
   if (!profile?.telegram_chat_id) {
-    return { success: false, error: "Telegram não conectado." }
+    return { success: false, error: "Telegram not connected." }
   }
 
-  const userName = profile.full_name || user.user_metadata?.full_name || "Usuário Kovr"
+  const userName = profile.full_name || user.user_metadata?.full_name || "Kovr User"
   const userEmail = profile.email || user.email || ""
 
-  // 2. Busca Assinaturas (Usando colunas reais: amount, billing_type, renewal_date)
+  // 2. Fetch Subscriptions (Using real columns: amount, billing_type, renewal_date)
   const { data: subs, error: subsError } = await supabase
     .from('subscriptions')
     .select('*')
@@ -31,12 +31,12 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
     .order('renewal_date', { ascending: true })
 
   if (subsError) {
-    console.error('Erro ao buscar assinaturas:', subsError)
-    return { success: false, error: "Erro ao buscar dados: " + subsError.message }
+    console.error('Error fetching subscriptions:', subsError)
+    return { success: false, error: "Error fetching data: " + subsError.message }
   }
 
   if (!subs || subs.length === 0) {
-    return { success: false, error: "Nenhuma assinatura encontrada." }
+    return { success: false, error: "No subscriptions found." }
   }
 
   // 3. Lógica de Totais por Moeda (Multi-Currency Support)
@@ -59,7 +59,7 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
   // Formata os totais para exibição
   const formattedTotals = Object.entries(totalsByCurrency).map(([currency, value]) => {
     try {
-      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: currency }).format(value)
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(value)
     } catch (e) {
       return `${currency} ${value.toFixed(2)}`
     }
@@ -68,17 +68,17 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
   const totalDisplayHtml = formattedTotals.join('<br>')
   const totalDisplayText = formattedTotals.join(' + ')
 
-  const dataHoje = new Date().toLocaleDateString('pt-BR')
+  const dataHoje = new Date().toLocaleDateString('en-US')
   let fileContent = ''
   let fileName = ''
   let mimeType = ''
 
   // --- CSV ---
   if (format === 'csv') {
-    const header = 'Nome,Preço,Moeda,Ciclo,Categoria,Início,Próx. Renovação\n'
+    const header = 'Name,Price,Currency,Cycle,Category,Started,Next Renewal\n'
     const rows = subs.map(sub => {
-      const inicio = sub.created_at ? new Date(sub.created_at).toLocaleDateString('pt-BR') : '-'
-      const renovacao = sub.renewal_date ? new Date(sub.renewal_date).toLocaleDateString('pt-BR') : '-'
+      const inicio = sub.created_at ? new Date(sub.created_at).toLocaleDateString('en-US') : '-'
+      const renovacao = sub.renewal_date ? new Date(sub.renewal_date).toLocaleDateString('en-US') : '-'
       return `"${sub.name}",${sub.amount},${sub.currency},${sub.billing_type || sub.billing_cycle},${sub.category},${inicio},${renovacao}`
     }).join('\n')
 
@@ -89,16 +89,16 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
 
   // --- HTML (PDF Visual) ---
   else {
-    fileName = `kovr_resumo_${Date.now()}.html`
+    fileName = `kovr_summary_${Date.now()}.html`
     mimeType = 'text/html'
 
     fileContent = `
     <!DOCTYPE html>
-    <html lang="pt-BR">
+    <html lang="en">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Relatório Kovr</title>
+      <title>Kovr Report</title>
       <script src="https://cdn.tailwindcss.com"></script>
     </head>
     <body class="bg-gray-100 p-6 font-sans">
@@ -107,24 +107,24 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
         <div class="bg-[#0F0F11] p-8 text-white flex justify-between items-center border-b-4 border-purple-600">
           <div>
             <h1 class="text-3xl font-bold tracking-tight">Kovr<span class="text-purple-500">.</span></h1>
-            <p class="text-gray-400 text-sm mt-1">Extrato de Assinaturas</p>
+            <p class="text-gray-400 text-sm mt-1">Subscriptions Statement</p>
           </div>
           <div class="text-right">
-            <p class="text-sm text-gray-400">Data de Emissão</p>
+            <p class="text-sm text-gray-400">Issue Date</p>
             <p class="font-mono font-bold text-lg">${dataHoje}</p>
           </div>
         </div>
 
         <div class="p-8 bg-purple-50/50 flex justify-between items-center border-b border-gray-100">
           <div>
-            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Assinante</p>
+            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Subscriber</p>
             <h2 class="text-xl font-bold text-gray-900">${userName}</h2>
             <p class="text-gray-600 text-sm">${userEmail}</p>
           </div>
           <div class="text-right">
-            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Custo Mensal Total</p>
+            <p class="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Total Monthly Cost</p>
             <h2 class="text-2xl font-bold text-purple-700 leading-tight">${totalDisplayHtml}</h2>
-            <p class="text-xs text-gray-400 mt-1">${subs.length} Serviços Ativos</p>
+            <p class="text-xs text-gray-400 mt-1">${subs.length} Active Services</p>
           </div>
         </div>
 
@@ -132,10 +132,10 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
           <table class="w-full text-left border-collapse">
             <thead>
               <tr>
-                <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b">Serviço</th>
-                <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b">Ciclo</th>
-                <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b text-right">Próx. Pagamento</th>
-                <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b text-right">Valor</th>
+                <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b">Service</th>
+                <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b">Cycle</th>
+                <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b text-right">Next Payment</th>
+                <th class="text-xs font-bold text-gray-400 uppercase tracking-wider py-3 border-b text-right">Amount</th>
               </tr>
             </thead>
             <tbody class="text-sm text-gray-600">
@@ -147,10 +147,10 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
                   </td>
                   <td class="py-4 border-b group-last:border-0 capitalize">${sub.billing_cycle || sub.billing_type}</td>
                   <td class="py-4 border-b group-last:border-0 text-right font-mono text-purple-600">
-                    ${sub.renewal_date ? new Date(sub.renewal_date).toLocaleDateString('pt-BR') : '-'}
+                    ${sub.renewal_date ? new Date(sub.renewal_date).toLocaleDateString('en-US') : '-'}
                   </td>
                   <td class="py-4 border-b group-last:border-0 text-right font-bold text-gray-900">
-                    ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: sub.currency || 'BRL' }).format(Number(sub.amount) || 0)}
+                    ${new Intl.NumberFormat('en-US', { style: 'currency', currency: sub.currency || 'USD' }).format(Number(sub.amount) || 0)}
                   </td>
                 </tr>
               `).join('')}
@@ -159,7 +159,7 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
         </div>
 
         <div class="bg-gray-50 p-6 text-center text-xs text-gray-400 border-t border-gray-100">
-          <p>Relatório gerado automaticamente via Kovr SaaS.</p>
+          <p>Report generated automatically via Kovr SaaS.</p>
         </div>
       </div>
     </body>
@@ -172,11 +172,11 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
     const formData = new FormData()
     formData.append('chat_id', profile.telegram_chat_id)
 
-    const caption = `📊 <b>Relatório Financeiro Kovr</b>\n\n` +
+    const caption = `📊 <b>Kovr Financial Report</b>\n\n` +
       `👤 ${userName}\n` +
       `📅 ${dataHoje}\n\n` +
-      `💰 <b>Totais Estimados:</b>\n${totalDisplayText}\n\n` +
-      `<i>Baixe o arquivo para visualizar.</i>`
+      `💰 <b>Estimated Totals:</b>\n${totalDisplayText}\n\n` +
+      `<i>Download the file to view.</i>`
 
     formData.append('caption', caption)
     formData.append('parse_mode', 'HTML')
@@ -194,7 +194,7 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
 
     return { success: true }
   } catch (error: any) {
-    console.error('Erro Telegram:', error)
-    return { success: false, error: "Erro no envio: " + error.message }
+    console.error('Telegram Error:', error)
+    return { success: false, error: "Error sending: " + error.message }
   }
 }

@@ -49,7 +49,7 @@ export const ExpirationEmail: React.FC<ExpirationEmailProps> = ({
                                             fontWeight: 'bold',
                                             margin: 0,
                                         }}>
-                                            ⚠️ Alerta de Vencimento
+                                            ⚠️ Expiration Alert
                                         </h1>
                                     </td>
                                 </tr>
@@ -63,7 +63,7 @@ export const ExpirationEmail: React.FC<ExpirationEmailProps> = ({
                                             lineHeight: '1.6',
                                             margin: '0 0 20px 0',
                                         }}>
-                                            Olá <strong>{userName}</strong>,
+                                            Hello <strong>{userName}</strong>,
                                         </p>
 
                                         <p style={{
@@ -72,8 +72,8 @@ export const ExpirationEmail: React.FC<ExpirationEmailProps> = ({
                                             lineHeight: '1.6',
                                             margin: '0 0 20px 0',
                                         }}>
-                                            A sua assinatura <strong style={{ color: '#a855f7' }}>{serviceName}</strong> no valor de{' '}
-                                            <strong style={{ color: '#a855f7' }}>{amount} {currency}</strong> vence no dia{' '}
+                                            Your subscription <strong style={{ color: '#a855f7' }}>{serviceName}</strong> valued at{' '}
+                                            <strong style={{ color: '#a855f7' }}>{amount} {currency}</strong> expires on{' '}
                                             <strong style={{ color: '#dc2626' }}>{expirationDate}</strong>.
                                         </p>
 
@@ -90,7 +90,7 @@ export const ExpirationEmail: React.FC<ExpirationEmailProps> = ({
                                                 margin: 0,
                                                 lineHeight: '1.5',
                                             }}>
-                                                💡 <strong>Dica:</strong> Verifique o seu saldo e evite cobranças inesperadas.
+                                                💡 <strong>Tip:</strong> Check your balance and avoid unexpected charges.
                                             </p>
                                         </div>
 
@@ -109,7 +109,7 @@ export const ExpirationEmail: React.FC<ExpirationEmailProps> = ({
                                                         borderRadius: '8px',
                                                         boxShadow: '0 4px 6px rgba(168, 85, 247, 0.3)',
                                                     }}>
-                                                        Ir para Dashboard
+                                                        Go to Dashboard
                                                     </a>
                                                 </td>
                                             </tr>
@@ -121,7 +121,7 @@ export const ExpirationEmail: React.FC<ExpirationEmailProps> = ({
                                             lineHeight: '1.5',
                                             margin: '24px 0 0 0',
                                         }}>
-                                            Este é um alerta automático do Kovr. Gerencie todas as suas assinaturas em um só lugar.
+                                            This is an automatic Kovr alert. Manage all your subscriptions in one place.
                                         </p>
                                     </td>
                                 </tr>
@@ -139,7 +139,7 @@ export const ExpirationEmail: React.FC<ExpirationEmailProps> = ({
                                             color: '#9ca3af',
                                             margin: 0,
                                         }}>
-                                            © 2024 Kovr. Todos os direitos reservados.
+                                            © 2024 Kovr. All rights reserved.
                                         </p>
                                         <p style={{
                                             fontSize: '12px',

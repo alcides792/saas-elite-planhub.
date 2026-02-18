@@ -19,7 +19,7 @@ export default function DemoSection() {
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-blue-400 text-sm font-bold mb-6"
                     >
                         <Play size={14} className="fill-blue-400" />
-                        VÍDEO DEMONSTRAÇÃO
+                        VIDEO DEMO
                     </motion.div>
 
                     <motion.h2
@@ -29,7 +29,7 @@ export default function DemoSection() {
                         transition={{ delay: 0.1 }}
                         className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter"
                     >
-                        VEJA O <span className="text-blue-500">KOVR</span> EM AÇÃO
+                        SEE <span className="text-blue-500">KOVR</span> IN ACTION
                     </motion.h2>
 
                     <motion.p
@@ -39,7 +39,7 @@ export default function DemoSection() {
                         transition={{ delay: 0.2 }}
                         className="text-zinc-400 text-xl max-w-2xl mx-auto"
                     >
-                        Assista como transformamos a gestão de assinaturas em algo simples e automático.
+                        Watch how we transform subscription management into something simple and automatic.
                     </motion.p>
                 </div>
 
@@ -75,7 +75,7 @@ export default function DemoSection() {
                     className="text-center mt-12"
                 >
                     <p className="text-zinc-500 font-medium italic text-lg">
-                        "Gerir as suas assinaturas nunca foi tão simples."
+                        "Managing your subscriptions has never been so simple."
                     </p>
                 </motion.div>
             </div>

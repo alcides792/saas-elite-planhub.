@@ -2,22 +2,27 @@
 
 import { useState, useTransition, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
-    CreditCard, TrendingUp, Zap, Plus, CalendarDays, ArrowRight
+    CreditCard, TrendingUp, Zap, Plus, CalendarDays, ArrowRight,
+    PieChart as PieChartIcon
 } from 'lucide-react';
 import {
     ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip,
     PieChart, Pie, Cell
 } from 'recharts';
 import { format, differenceInDays, isToday, isTomorrow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { useTheme } from 'next-themes';
+import { enUS } from 'date-fns/locale';
 import AddSubscriptionModal from '@/components/AddSubscriptionModal';
 import SubscriptionLogo from '@/components/ui/subscription-logo';
 import type { Subscription } from '@/types';
 import { createSubscription } from '@/lib/actions/subscriptions';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useUser } from '@/contexts/UserContext';
 import { toast } from 'sonner';
+import { calculateYearlyProjection } from '@/lib/utils/analytics';
 
 interface DashboardClientProps {
     subscriptions: Subscription[];
@@ -30,7 +35,7 @@ interface DashboardClientProps {
 }
 
 const CHART_COLORS = ['#7c3aed', '#a855f7', '#c084fc', '#e9d5ff', '#6366f1', '#818cf8'];
-const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const cardVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -44,6 +49,8 @@ const cardVariants = {
 export default function DashboardClient({ subscriptions, stats }: DashboardClientProps) {
     const router = useRouter();
     const { formatMoney } = useUser();
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [isPending, startTransition] = useTransition();
@@ -100,12 +107,26 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                 return acc;
             }, {} as Record<string, number>);
 
-        return Object.entries(grouped).map(([name, value]) => ({ name, value }));
+        const totalValue = Object.values(grouped).reduce((a, b) => a + b, 0);
+
+        return Object.entries(grouped)
+            .map(([name, value]) => ({
+                name,
+                value,
+                percentage: totalValue > 0 ? (value / totalValue) * 100 : 0
+            }))
+            .sort((a, b) => b.value - a.value);
     }, [subscriptions]);
 
     const monthlyChartData = useMemo(() => {
-        return MONTHS.map(month => ({ name: month, value: monthlySpend }));
-    }, [monthlySpend]);
+        const data = calculateYearlyProjection(subscriptions);
+        // Map to match the names expected by the chart if necessary
+        // In utility it's 'month', here chart uses 'name'
+        return data.map(d => ({
+            name: d.month,
+            value: d.total
+        }));
+    }, [subscriptions]);
 
     const upcomingRenewals = useMemo(() => {
         return subscriptions
@@ -116,17 +137,17 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
 
     const formatRenewalDate = (dateStr: string) => {
         const date = new Date(dateStr);
-        if (isToday(date)) return 'Hoje';
-        if (isTomorrow(date)) return 'Amanhã';
+        if (isToday(date)) return 'Today';
+        if (isTomorrow(date)) return 'Tomorrow';
         const days = differenceInDays(date, new Date());
-        if (days < 7) return `Em ${days} dias`;
-        return format(date, 'dd MMM', { locale: ptBR });
+        if (days < 7) return `In ${days} days`;
+        return format(date, 'dd MMM', { locale: enUS });
     };
 
-    const userName = 'Assinante';
+    const userName = 'Subscriber';
 
     return (
-        <div className="text-white">
+        <div className="text-zinc-900 dark:text-white transition-colors duration-300">
             {/* Header */}
             <motion.header
                 initial={{ opacity: 0, y: -20 }}
@@ -134,19 +155,22 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                 className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10"
             >
                 <div>
-                    <h1 className="text-3xl md:text-4xl font-black tracking-tight">
-                        Olá, <span className="text-purple-500">{userName}</span>
+                    <h1 className="text-3xl md:text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
+                        Dashboard
                     </h1>
-                    <p className="text-zinc-500 text-sm mt-1">Visão geral do seu painel financeiro.</p>
+                    <p className="text-zinc-500 text-sm mt-1">Overview of your financial panel.</p>
                 </div>
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    disabled={isPending}
-                    className="flex items-center gap-2 px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm transition-all shadow-lg shadow-purple-600/30 disabled:opacity-50"
-                >
-                    <Plus size={18} strokeWidth={3} />
-                    Nova Assinatura
-                </button>
+                <div className="flex items-center gap-3">
+                    <ThemeToggle />
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        disabled={isPending}
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm transition-all shadow-lg shadow-purple-600/30 disabled:opacity-50"
+                    >
+                        <Plus size={18} strokeWidth={3} />
+                        New Subscription
+                    </button>
+                </div>
             </motion.header>
 
             {/* KPI Grid */}
@@ -156,16 +180,16 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-6 hover:border-purple-500/30 transition-colors"
+                    className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2rem] shadow-sm lg:col-span-1"
                 >
-                    <div className="flex items-center justify-between mb-4">
-                        <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Gasto Mensal</span>
-                        <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="p-3 bg-blue-500/10 dark:bg-blue-500/20 rounded-xl text-blue-600 dark:text-blue-400">
                             <CreditCard size={20} />
                         </div>
                     </div>
-                    <p className="text-4xl font-black text-white">{formatMoney(monthlySpend)}</p>
-                    <p className="text-xs text-zinc-600 mt-2">Baseado em {stats.activeCount} assinaturas ativas</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-neutral-400 uppercase tracking-wider mb-1">Monthly Spend</p>
+                    <p className="text-4xl font-black text-gray-900 dark:text-white">{formatMoney(monthlySpend)}</p>
+                    <p className="text-xs text-zinc-600 mt-2">Based on {stats.activeCount} active subscriptions</p>
                 </motion.div>
 
                 <motion.div
@@ -173,16 +197,16 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-6 hover:border-green-500/30 transition-colors"
+                    className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2rem] shadow-sm lg:col-span-1"
                 >
-                    <div className="flex items-center justify-between mb-4">
-                        <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Projeção Anual</span>
-                        <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center text-green-500">
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="p-3 bg-green-500/10 dark:bg-green-500/20 rounded-xl text-green-600 dark:text-green-400">
                             <TrendingUp size={20} />
                         </div>
                     </div>
-                    <p className="text-4xl font-black text-green-400">{formatMoney(yearlyProjection)}</p>
-                    <p className="text-xs text-zinc-600 mt-2">Mensal x 12 meses</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-neutral-400 uppercase tracking-wider mb-1">Yearly Projection</p>
+                    <p className="text-4xl font-black text-gray-900 dark:text-white">{formatMoney(yearlyProjection)}</p>
+                    <p className="text-xs text-zinc-600 mt-2">Monthly x 12 months</p>
                 </motion.div>
 
                 <motion.div
@@ -190,16 +214,16 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-6 hover:border-orange-500/30 transition-colors"
+                    className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2rem] shadow-sm lg:col-span-1"
                 >
-                    <div className="flex items-center justify-between mb-4">
-                        <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Assinaturas Ativas</span>
-                        <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="p-3 bg-orange-500/10 dark:bg-orange-500/20 rounded-xl text-orange-600 dark:text-orange-400">
                             <Zap size={20} />
                         </div>
                     </div>
-                    <p className="text-4xl font-black text-orange-400">{stats.activeCount}</p>
-                    <p className="text-xs text-zinc-600 mt-2">de {stats.totalCount} registradas</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-neutral-400 uppercase tracking-wider mb-1">Active Subscriptions</p>
+                    <p className="text-4xl font-black text-gray-900 dark:text-white">{stats.activeCount}</p>
+                    <p className="text-xs text-zinc-600 mt-2">of {stats.totalCount} registered</p>
                 </motion.div>
             </div>
 
@@ -211,63 +235,134 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    className="lg:col-span-2 bg-[#0A0A0A] border border-white/5 rounded-3xl p-6"
+                    className="lg:col-span-2 bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2.5rem] shadow-sm relative overflow-hidden"
                 >
-                    <h3 className="text-lg font-bold mb-6">Projeção de Gastos Mensais</h3>
+                    <div className="flex justify-between items-center mb-8">
+                        <div>
+                            <h4 className="text-xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Monthly Spending Projection</h4>
+                            <p className="text-xs text-gray-500 dark:text-neutral-400 font-bold mt-1">Spending evolution based on billings.</p>
+                        </div>
+                    </div>
                     <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={monthlyChartData}>
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#71717a', fontSize: 11 }} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#71717a', fontSize: 11 }} tickFormatter={(v) => `R$${v}`} />
-                                <Tooltip
-                                    contentStyle={{ background: '#111', border: '1px solid #222', borderRadius: '12px' }}
-                                    labelStyle={{ color: '#fff', fontWeight: 'bold' }}
-                                    formatter={(value) => [formatMoney(Number(value) || 0), 'Gasto']}
+                                <XAxis
+                                    dataKey="name"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#71717a', fontSize: 11, fontWeight: 'bold' }}
+                                    tickFormatter={(v) => v.replace('.', '').toUpperCase()}
                                 />
-                                <Bar dataKey="value" fill="#7c3aed" radius={[8, 8, 0, 0]} />
+                                <YAxis
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#71717a', fontSize: 11 }}
+                                    tickFormatter={(v) => formatMoney(v).split(',')[0]}
+                                />
+                                <Tooltip
+                                    contentStyle={{
+                                        background: isDark ? '#0D0D0D' : '#fff',
+                                        border: isDark ? '1px solid #222' : '1px solid #eee',
+                                        borderRadius: '16px',
+                                        backdropFilter: 'blur(10px)',
+                                        color: isDark ? '#fff' : '#000'
+                                    }}
+                                    formatter={(value) => [formatMoney(Number(value) || 0), 'Estimated Spend']}
+                                    labelStyle={{ color: isDark ? '#fff' : '#000', fontWeight: 'bold', textTransform: 'uppercase' }}
+                                />
+                                <Bar dataKey="value" fill="#7c3aed" radius={[8, 8, 4, 4]} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
                 </motion.div>
 
-                {/* Donut Chart - 1/3 */}
                 <motion.div
                     custom={4}
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-6"
+                    className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2.5rem] shadow-sm flex flex-col"
                 >
-                    <h3 className="text-lg font-bold mb-6">Gastos por Categoria</h3>
-                    <div className="h-64 flex items-center justify-center">
-                        {categoryData.length > 0 ? (
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={categoryData}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={90}
-                                        paddingAngle={4}
-                                        dataKey="value"
-                                        stroke="none"
-                                        label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
-                                        labelLine={false}
-                                    >
-                                        {categoryData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip
-                                        contentStyle={{ background: '#111', border: '1px solid #222', borderRadius: '12px' }}
-                                        formatter={(value) => [formatMoney(Number(value) || 0), 'Gasto']}
-                                    />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        ) : (
-                            <p className="text-zinc-600 text-sm">Nenhuma categoria disponível</p>
-                        )}
+                    <div className="flex justify-between items-center mb-8">
+                        <h4 className="text-xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Spending by Category</h4>
+                        <div className="p-2 bg-purple-500/10 rounded-lg">
+                            <PieChartIcon size={18} className="text-purple-500" />
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col flex-1 gap-8">
+                        <div className="h-48 relative">
+                            {categoryData.length > 0 ? (
+                                <>
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={categoryData}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={65}
+                                                outerRadius={85}
+                                                paddingAngle={8}
+                                                dataKey="value"
+                                                stroke="none"
+                                            >
+                                                {categoryData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip
+                                                contentStyle={{
+                                                    background: isDark ? '#111' : '#fff',
+                                                    border: isDark ? '1px solid #222' : '1px solid #eee',
+                                                    borderRadius: '12px',
+                                                    color: isDark ? '#fff' : '#000'
+                                                }}
+                                                formatter={(value) => [formatMoney(Number(value) || 0), 'Spend']}
+                                            />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                        <span className="text-[10px] text-gray-500 dark:text-zinc-500 font-black uppercase">Total</span>
+                                        <span className="text-xl font-black text-gray-900 dark:text-white">
+                                            {formatMoney(categoryData.reduce((acc, curr) => acc + curr.value, 0)).split(',')[0]}
+                                        </span>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="h-full flex items-center justify-center">
+                                    <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest italic">No active subscriptions</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Custom Legend with Progress Bars */}
+                        <div className="space-y-4 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
+                            {categoryData.map((item, i) => (
+                                <div key={i} className="group cursor-default">
+                                    <div className="flex justify-between items-center mb-1.5">
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className="w-2 h-2 rounded-full"
+                                                style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }}
+                                            />
+                                            <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tight">{item.name}</span>
+                                        </div>
+                                        <span className="text-[10px] text-gray-400 dark:text-zinc-500 font-black tracking-widest leading-none">
+                                            {item.percentage.toFixed(0)}%
+                                        </span>
+                                    </div>
+                                    <div className="h-1 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${item.percentage}%` }}
+                                            transition={{ duration: 1, delay: 0.5 + i * 0.1 }}
+                                            className="h-full rounded-full"
+                                            style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </motion.div>
             </div>
@@ -278,16 +373,23 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
-                className="bg-[#0A0A0A] border border-white/5 rounded-3xl p-6"
+                className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2rem] shadow-sm lg:col-span-1"
             >
-                <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                        <CalendarDays size={20} className="text-purple-500" />
-                        <h3 className="text-lg font-bold">Próximas Renovações</h3>
+                <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-purple-500/10 dark:bg-purple-500/20 rounded-xl text-purple-600 dark:text-purple-400">
+                        <CalendarDays size={20} />
                     </div>
-                    <a href="/subscriptions" className="text-xs font-bold text-purple-500 hover:underline flex items-center gap-1">
-                        Ver todas <ArrowRight size={14} />
-                    </a>
+                </div>
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between mb-8">
+                        <h3 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight">Upcoming Renewals</h3>
+                        <Link
+                            href="/subscriptions"
+                            className="text-xs font-black text-purple-500 hover:text-purple-600 uppercase tracking-widest flex items-center gap-2 transition-colors"
+                        >
+                            View All <ArrowRight size={14} />
+                        </Link>
+                    </div>
                 </div>
 
                 {upcomingRenewals.length > 0 ? (

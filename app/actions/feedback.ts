@@ -1,6 +1,6 @@
 'use server';
 
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/utils/supabase/server';
 
 export async function createFeedbackPost(data: {
     title: string;
@@ -31,7 +31,6 @@ export async function createFeedbackPost(data: {
             return { data: null, error: error.message };
         }
 
-        console.log('Post created successfully:', post);
         return { data: post, error: null };
     } catch (error) {
         console.error('Unexpected error:', error);
@@ -82,11 +81,9 @@ export async function getFeedbackPosts(category?: string) {
                 return { data: null, error: fallbackError.message };
             }
 
-            console.log('Fetched posts (fallback):', fallbackData);
             return { data: fallbackData, error: null };
         }
 
-        console.log('Fetched posts:', data);
         return { data, error: null };
     } catch (error) {
         console.error('Unexpected error fetching posts:', error);

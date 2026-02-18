@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
-import { requireProPlan } from '@/utils/gatekeeper';
+import { requireProPlan } from '@/lib/utils/gatekeeper';
 
 export async function POST(req: Request) {
   // CORRECTION: Added 'await' here. In Next.js 15, cookies() is asynchronous.

@@ -18,23 +18,6 @@ export interface Subscription {
     created_at?: string;
 }
 
-export interface FamilyMember {
-    id: string;
-    family_id: string;
-    user_id: string | null;
-    email: string;
-    name: string | null;
-    role: 'owner' | 'admin' | 'member';
-    status: 'active' | 'pending' | 'inactive';
-    avatar: string | null;
-    permissions: {
-        view: boolean;
-        add: boolean;
-        edit: boolean;
-        delete: boolean;
-    };
-    created_at?: string;
-}
 
 export interface StatsCardProps {
     title: string;
@@ -99,10 +82,10 @@ export function dbToSubscription(dbSub: Tables<'subscriptions'>): Subscription {
         website: (dbSub as any).website || null,
         amount: (dbSub as any).amount || 0,
         currency: dbSub.currency,
-        billing_cycle: ((dbSub as any).billing_type || 'monthly') as 'monthly' | 'yearly',
+        billing_cycle: ((dbSub as any).billing_cycle || (dbSub as any).billing_type || 'monthly') as 'monthly' | 'yearly',
         category: dbSub.category || 'other',
         status: dbSub.status as 'active' | 'paused' | 'cancelled',
-        next_payment: (dbSub as any).renewal_date || null,
+        next_payment: (dbSub as any).next_payment || (dbSub as any).renewal_date || null,
         end_date: (dbSub as any).end_date || null,
         paymentMethod: dbSub.payment_method,
         icon: dbSub.icon,

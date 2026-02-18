@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import { createUIMessageStream, createUIMessageStreamResponse, generateId } from 'ai';
-import { createClient } from '@/utils/supabase/server';
-import { requireProPlan } from '@/utils/gatekeeper';
+import { createClient } from '@/lib/utils/supabase/server';
+import { requireProPlan } from '@/lib/utils/gatekeeper';
 import { NextResponse } from 'next/server';
 
 export const maxDuration = 30;
@@ -78,7 +78,6 @@ export async function POST(req: Request) {
       });
     }
 
-    console.log(`🚀 [v2-fresh] Sending ${finalMessages.length} messages to Groq. Key prefix: ${process.env.GROQ_API_KEY?.substring(0, 7)}`);
 
     // 3. Call and Streaming
     const stream = createUIMessageStream({

@@ -11,7 +11,7 @@ import {
     Cookie, FileText, LogOut, X, Menu,
     PanelLeftClose, PanelLeftOpen, ChevronDown, ChevronUp
 } from 'lucide-react';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/utils/supabase/client';
 import { cn } from '@/lib/utils';
 
 // Types for Navigation
@@ -41,7 +41,6 @@ const navSections: NavSection[] = [
         items: [
             { label: 'My Subscriptions', href: '/subscriptions', icon: CreditCard },
             { label: 'Analytics', href: '/analytics', icon: BarChart3 },
-            { label: 'Family', href: '/family', icon: Users },
         ]
     },
     {
@@ -105,39 +104,43 @@ export default function Sidebar() {
     };
 
     const SidebarContent = ({ isMobile = false }: { isMobile?: boolean }) => (
-        <div className="flex flex-col h-full bg-black/95 backdrop-blur-xl text-white">
+        <div className="flex flex-col h-full bg-white dark:bg-black backdrop-blur-xl text-zinc-900 dark:text-white border-r border-gray-200 dark:border-white/10">
             {/* Header / Logo */}
             <div className={cn(
                 "p-8 pb-4 flex items-center justify-between",
                 !isMobile && isCollapsed && "px-4 justify-center"
             )}>
-                <Link href="/dashboard" className="flex items-center gap-3 group">
-                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#7c3aed] to-purple-800 flex items-center justify-center shadow-lg shadow-purple-500/20 active:scale-95 transition-transform shrink-0">
-                        <span className="font-black text-white text-xl">K</span>
-                    </div>
-                    {(!isCollapsed || isMobile) && (
-                        <motion.span
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400"
-                        >
-                            KOVR<span className="text-[#7c3aed]">.</span>
-                        </motion.span>
-                    )}
-                </Link>
-
-                {/* Desktop Collapse Toggle */}
-                {!isMobile && (
-                    <button
-                        onClick={() => setIsCollapsed(!isCollapsed)}
-                        className={cn(
-                            "p-2 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-400 transition-colors",
-                            isCollapsed && "absolute -right-3 top-10 bg-black border border-white/10 shadow-xl z-50 rounded-full"
+                <div className="flex items-center gap-3">
+                    <Link href="/dashboard" className="flex items-center gap-3 group">
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#7c3aed] to-purple-800 flex items-center justify-center shadow-lg shadow-purple-500/20 active:scale-95 transition-transform shrink-0">
+                            <span className="font-black text-white text-xl">K</span>
+                        </div>
+                        {(!isCollapsed || isMobile) && (
+                            <motion.span
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-zinc-900 to-zinc-500 dark:from-white dark:to-neutral-400"
+                            >
+                                KOVR<span className="text-[#7c3aed]">.</span>
+                            </motion.span>
                         )}
-                    >
-                        {isCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
-                    </button>
-                )}
+                    </Link>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    {/* Desktop Collapse Toggle */}
+                    {!isMobile && (
+                        <button
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                            className={cn(
+                                "p-2 rounded-xl bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-neutral-500 dark:text-neutral-400 transition-colors",
+                                isCollapsed && "absolute -right-3 top-10 bg-white dark:bg-black border border-neutral-200 dark:border-white/10 shadow-xl z-50 rounded-full"
+                            )}
+                        >
+                            {isCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+                        </button>
+                    )}
+                </div>
 
                 {/* Mobile Close Button */}
                 {isMobile && (
@@ -158,7 +161,7 @@ export default function Sidebar() {
                 {navSections.map((section) => (
                     <div key={section.title} className="space-y-2">
                         {(!isCollapsed || isMobile) && (
-                            <h3 className="px-4 text-[10px] font-black text-neutral-500 uppercase tracking-[0.2em] whitespace-nowrap">
+                            <h3 className="px-4 text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.2em] whitespace-nowrap">
                                 {section.title}
                             </h3>
                         )}
@@ -173,8 +176,8 @@ export default function Sidebar() {
                                         className={cn(
                                             "flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 relative group text-sm font-semibold",
                                             active
-                                                ? "text-white"
-                                                : "text-neutral-400 hover:text-white",
+                                                ? "text-black dark:text-white"
+                                                : "text-gray-600 dark:text-neutral-400 hover:text-black dark:hover:text-white",
                                             isCollapsed && !isMobile && "justify-center px-0"
                                         )}
                                         title={isCollapsed ? item.label : undefined}
@@ -203,7 +206,7 @@ export default function Sidebar() {
 
             {/* Footer Area - Fixed at bottom */}
             <div className={cn(
-                "p-6 pt-4 border-t border-white/5 bg-black/40 backdrop-blur-md space-y-4",
+                "p-6 pt-4 border-t border-gray-200 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-md space-y-4",
                 isCollapsed && !isMobile && "px-3"
             )}>
                 {/* Footer Toggle Header */}
@@ -245,7 +248,7 @@ export default function Sidebar() {
                                 </div>
                                 {(!isCollapsed || isMobile) && (
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-bold truncate text-white tracking-tight leading-none mb-1">
+                                        <p className="text-sm font-bold truncate text-zinc-900 dark:text-white tracking-tight leading-none mb-1">
                                             {userData.email?.split('@')[0]}
                                         </p>
                                         <div className="flex items-center gap-1.5">
@@ -269,7 +272,7 @@ export default function Sidebar() {
                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                                 <LogOut size={18} className="group-hover:-translate-x-1 transition-transform shrink-0" />
                                 {(!isCollapsed || isMobile) && (
-                                    <span className="tracking-tight uppercase text-xs">Sair da Conta</span>
+                                    <span className="tracking-tight uppercase text-xs">Sign Out</span>
                                 )}
                             </button>
                         </motion.div>
@@ -286,22 +289,24 @@ export default function Sidebar() {
                 initial={false}
                 animate={{ width: isCollapsed ? 80 : 260 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="hidden md:block h-screen shrink-0 border-r border-white/10 sticky top-0 bg-black z-50 overflow-hidden"
+                className="hidden md:block h-screen shrink-0 border-r border-gray-200 dark:border-white/10 sticky top-0 bg-white dark:bg-black z-50 overflow-hidden"
             >
                 <SidebarContent />
             </motion.aside>
 
             {/* Mobile Menu Trigger Button */}
-            <div className="fixed top-0 left-0 right-0 h-16 md:hidden px-4 flex items-center z-40 bg-black/50 backdrop-blur-xl border-b border-white/5 pointer-events-none">
-                <button
-                    onClick={() => setIsMobileOpen(true)}
-                    className="p-2.5 rounded-xl bg-[#7c3aed] text-white shadow-lg active:scale-90 transition-transform pointer-events-auto"
-                >
-                    <Menu size={22} />
-                </button>
-                <div className="ml-4 flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-[#7c3aed] flex items-center justify-center text-white font-black text-sm">K</div>
-                    <span className="font-black text-white tracking-tighter">KOVR.</span>
+            <div className="fixed top-0 left-0 right-0 h-16 md:hidden px-4 flex items-center justify-between z-40 bg-white/50 dark:bg-black/50 backdrop-blur-xl border-b border-gray-200 dark:border-white/10">
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setIsMobileOpen(true)}
+                        className="p-2.5 rounded-xl bg-[#7c3aed] text-white shadow-lg active:scale-90 transition-transform"
+                    >
+                        <Menu size={22} />
+                    </button>
+                    <div className="ml-2 flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-[#7c3aed] flex items-center justify-center text-white font-black text-sm">K</div>
+                        <span className="font-black text-zinc-900 dark:text-white tracking-tighter">KOVR.</span>
+                    </div>
                 </div>
             </div>
 
@@ -324,7 +329,7 @@ export default function Sidebar() {
                             animate={{ x: 0 }}
                             exit={{ x: "-100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 left-0 w-[300px] bg-black z-[110] md:hidden shadow-2xl"
+                            className="fixed inset-y-0 left-0 w-[300px] bg-white dark:bg-black z-[110] md:hidden shadow-2xl"
                         >
                             <SidebarContent isMobile />
                         </motion.aside>

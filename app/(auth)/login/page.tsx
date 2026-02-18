@@ -32,7 +32,7 @@ export default function LoginPage() {
                         Welcome back.
                     </h1>
                     <p className="text-zinc-400 text-lg">
-                        Log in to manage your subscriptions and check your family audit.
+                        Log in to manage your subscriptions.
                     </p>
                 </div>
 
@@ -71,12 +71,6 @@ export default function LoginPage() {
                             <LoginForm />
                         </div>
 
-                        <div className="mt-6 text-center text-sm">
-                            <span className="text-zinc-500">New here? </span>
-                            <Link href="/register" className="font-bold text-purple-600 hover:text-purple-700">
-                                Create account
-                            </Link>
-                        </div>
                     </div>
                 </div>
             </div>

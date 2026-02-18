@@ -17,37 +17,37 @@ interface Tab {
 const tabs: Tab[] = [
     {
         id: "dashboard",
-        label: "Dashboard 360°",
-        shortLabel: "Visão total.",
+        label: "360° Dashboard",
+        shortLabel: "Total vision.",
         icon: LayoutDashboard,
-        description: "Centralize todas as suas assinaturas num painel cyberpunk intuitivo. Acompanhe gastos mensais e anuais em tempo real.",
+        description: "Centralize all your subscriptions in an intuitive cyberpunk dashboard. Track monthly and yearly spending in real-time.",
         gradient: "from-blue-500 via-purple-500 to-pink-500",
         imagePath: "/dashboard-preview.png"
     },
     {
         id: "alerts",
         label: "Smart Alerts",
-        shortLabel: "Alertas.",
+        shortLabel: "Alerts.",
         icon: Bell,
-        description: "Nunca mais seja cobrado de surpresa. O Kovr avisa-o no Telegram ou E-mail 3 dias antes de qualquer renovação.",
+        description: "Never be charged by surprise again. Kovr alerts you on Telegram or Email 3 days before any renewal.",
         gradient: "from-purple-500 via-pink-500 to-red-500",
         imagePath: "/alerts-preview.png"
     },
     {
         id: "ai",
-        label: "IA Analytics",
-        shortLabel: "Inteligência Artificial.",
+        label: "AI Analytics",
+        shortLabel: "Artificial Intelligence.",
         icon: Brain,
-        description: "A nossa Inteligência Artificial analisa o seu histórico, identifica gastos duplicados e sugere onde pode cortar custos.",
+        description: "Our Artificial Intelligence analyzes your history, identifies duplicate spending, and suggests where you can cut costs.",
         gradient: "from-emerald-500 via-teal-500 to-cyan-500",
         imagePath: "/ai-preview.png"
     },
     {
         id: "extension",
-        label: "Extensão Mágica",
-        shortLabel: "1 Clique.",
+        label: "Magic Extension",
+        shortLabel: "1 Click.",
         icon: Globe,
-        description: "Preguiça de adicionar manualmente? Instale a nossa **Extensão do Navegador**. Ela deteta quando está num site de assinatura (como a Netflix) e adiciona ao Kovr com 1 clique.",
+        description: "Too lazy to add manually? Install our Browser Extension. It detects when you're on a subscription site (like Netflix) and adds it to Kovr with 1 click.",
         gradient: "from-orange-500 via-amber-500 to-yellow-500",
         imagePath: "/extension-preview.png"
     }
@@ -72,7 +72,7 @@ export default function InteractiveDemo() {
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-purple-400 text-sm font-bold mb-6"
                     >
                         <LayoutDashboard size={14} />
-                        DEMONSTRAÇÃO INTERATIVA
+                        INTERACTIVE DEMO
                     </motion.div>
 
                     <motion.h2
@@ -82,7 +82,7 @@ export default function InteractiveDemo() {
                         transition={{ delay: 0.1 }}
                         className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter"
                     >
-                        EXPLORE O <span className="text-purple-500">KOVR</span>
+                        EXPLORE <span className="text-purple-500">KOVR</span>
                     </motion.h2>
 
                     <motion.p
@@ -92,7 +92,7 @@ export default function InteractiveDemo() {
                         transition={{ delay: 0.2 }}
                         className="text-zinc-400 text-xl max-w-2xl mx-auto"
                     >
-                        Descubra como cada funcionalidade trabalha para simplificar a gestão das suas assinaturas.
+                        Discover how each feature works to simplify your subscription management.
                     </motion.p>
                 </div>
 
@@ -239,7 +239,7 @@ export default function InteractiveDemo() {
                                         <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r ${currentTab.gradient} bg-opacity-10 border border-white/10`}>
                                             <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
                                             <span className="text-xs font-bold text-purple-300 uppercase tracking-wider">
-                                                Funcionalidade Ativa
+                                                Active Feature
                                             </span>
                                         </div>
                                     </div>

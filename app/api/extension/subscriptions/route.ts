@@ -18,7 +18,6 @@ export async function OPTIONS() {
 }
 
 export async function POST(req: Request) {
-  console.log("💾 [API /subscriptions] Starting save...");
 
   try {
     const authHeader = req.headers.get('Authorization');
@@ -30,7 +29,6 @@ export async function POST(req: Request) {
     const token = authHeader.replace('Bearer ', '');
     const body = await req.json();
 
-    console.log("📦 Payload received:", body);
 
     // 1. Identify User
     const { data: profile, error: profileError } = await supabaseAdmin
@@ -69,7 +67,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: insertError.message }, { status: 500, headers: corsHeaders });
     }
 
-    console.log("✅ [API] Absolute success!");
     return NextResponse.json({ ok: true, data: { success: true } }, { headers: corsHeaders });
 
   } catch (err: any) {

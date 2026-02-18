@@ -1,6 +1,6 @@
 'use server'
 
-import { requireProPlan } from '@/utils/gatekeeper'
+import { requireProPlan } from '@/lib/utils/gatekeeper'
 
 /**
  * Perform an AI request.

@@ -1,7 +1,7 @@
 'use server'
 
 import DodoPayments from "dodopayments";
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/lib/utils/supabase/server'
 
 // Inicialização segura do cliente Dodo
 const dodo = process.env.DODO_PAYMENTS_API_KEY

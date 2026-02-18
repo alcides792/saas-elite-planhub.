@@ -1,6 +1,4 @@
-import { Tables } from '@/types/database.types';
-
-type Subscription = Tables<'subscriptions'>;
+import { Subscription } from '@/types';
 
 export interface MonthlyTrendData {
     month: string;
@@ -33,39 +31,19 @@ export const CATEGORY_COLORS: Record<string, string> = {
 const COLOR_ARRAY = Object.values(CATEGORY_COLORS);
 
 /**
- * Calculate monthly spending trend - shows ONLY REAL historical data
- * Current month: Janeiro 2026
- */
-/**
- * Calculate monthly spending trend - shows average monthly burn (Accrual basis)
+ * Calculate 6-month historical spending trend up to current month
  */
 export function calculateMonthlyTrend(
     subscriptions: Subscription[],
     userCreatedAt?: string
 ): MonthlyTrendData[] {
-    if (subscriptions.length === 0) {
-        return [{
-            month: new Date().toLocaleDateString('pt-PT', { month: 'short' }),
-            total: 0,
-            subscriptionCount: 0,
-            isFuture: false,
-        }];
-    }
-
+    const months: MonthlyTrendData[] = [];
     const now = new Date();
+
+    // Start 5 months ago (6 points total including current month)
+    const startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
     const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    // Find earliest subscription
-    const earliestSubDate = subscriptions.reduce((earliest, sub) => {
-        const subDate = new Date(sub.created_at);
-        return subDate < earliest ? subDate : earliest;
-    }, new Date());
-
-    // Timeline: last 6 months
-    const startDate = new Date(currentMonth);
-    startDate.setMonth(startDate.getMonth() - 5);
-
-    const months: MonthlyTrendData[] = [];
     let iterMonth = new Date(startDate);
 
     while (iterMonth <= currentMonth) {
@@ -75,32 +53,21 @@ export function calculateMonthlyTrend(
         let activeCount = 0;
 
         subscriptions.forEach(sub => {
-            if (sub.status !== 'active') return;
-
-            const subCreated = new Date(sub.created_at);
+            const subCreated = new Date(sub.created_at || new Date().toISOString());
             const subCreatedMonth = new Date(subCreated.getFullYear(), subCreated.getMonth(), 1);
 
-            // Only if subscription existed in this month
+            // Check if sub existed in this month
             if (subCreatedMonth <= iterMonth) {
                 activeCount++;
 
-                // Use monthly equivalent for accrual-based trend
-                switch (sub.billing_type) {
-                    case 'monthly':
-                        monthTotal += sub.amount;
-                        break;
-                    case 'yearly':
-                        monthTotal += sub.amount / 12;
-                        break;
-                    case 'quarterly':
-                        monthTotal += sub.amount / 3;
-                        break;
-                    case 'weekly':
-                        monthTotal += sub.amount * 4.33;
-                        break;
-                    default:
-                        monthTotal += sub.amount;
-                }
+                const amount = (() => {
+                    switch (sub.billing_cycle) {
+                        case 'monthly': return sub.amount;
+                        case 'yearly': return sub.amount / 12;
+                        default: return sub.amount;
+                    }
+                })();
+                monthTotal += amount;
             }
         });
 
@@ -111,7 +78,7 @@ export function calculateMonthlyTrend(
             isFuture: false,
         });
 
-        iterMonth = new Date(iterMonth.getFullYear(), iterMonth.getMonth() + 1, 1);
+        iterMonth.setMonth(iterMonth.getMonth() + 1);
     }
 
     return months;
@@ -133,18 +100,12 @@ export function calculateCategoryBreakdown(subscriptions: Subscription[]): Categ
         const category = sub.category || 'other';
 
         let monthlyAmount = 0;
-        switch (sub.billing_type) {
+        switch (sub.billing_cycle) {
             case 'monthly':
                 monthlyAmount = sub.amount;
                 break;
             case 'yearly':
                 monthlyAmount = sub.amount / 12;
-                break;
-            case 'quarterly':
-                monthlyAmount = sub.amount / 3;
-                break;
-            case 'weekly':
-                monthlyAmount = sub.amount * 4.33;
                 break;
             default:
                 monthlyAmount = sub.amount;
@@ -222,13 +183,9 @@ export function calculateAnalytics(subscriptions: Subscription[]): AnalyticsData
 
     // FIX: Include ALL subscriptions in total regardless of currency filter
     const monthlyTotal = subscriptions.reduce((total, sub) => {
-        // We sum everything numerically. Mixing currencies is not ideal but 
-        // better than silently dropping half the data.
-        switch (sub.billing_type) {
+        switch (sub.billing_cycle) {
             case 'monthly': return total + sub.amount;
             case 'yearly': return total + (sub.amount / 12);
-            case 'quarterly': return total + (sub.amount / 3);
-            case 'weekly': return total + (sub.amount * 4.33);
             default: return total + sub.amount;
         }
     }, 0);
@@ -238,11 +195,9 @@ export function calculateAnalytics(subscriptions: Subscription[]): AnalyticsData
     const categoryTotals = subscriptions.reduce((acc, sub) => {
         const category = sub.category || 'other';
         const monthlyAmount = (() => {
-            switch (sub.billing_type) {
+            switch (sub.billing_cycle) {
                 case 'monthly': return sub.amount;
                 case 'yearly': return sub.amount / 12;
-                case 'quarterly': return sub.amount / 3;
-                case 'weekly': return sub.amount * 4.33;
                 default: return sub.amount;
             }
         })();
@@ -266,11 +221,9 @@ export function calculateAnalytics(subscriptions: Subscription[]): AnalyticsData
         .map(sub => ({
             ...sub,
             monthlyEquivalent: (() => {
-                switch (sub.billing_type) {
+                switch (sub.billing_cycle) {
                     case 'monthly': return sub.amount;
                     case 'yearly': return sub.amount / 12;
-                    case 'quarterly': return sub.amount / 3;
-                    case 'weekly': return sub.amount * 4.33;
                     default: return sub.amount;
                 }
             })(),
@@ -280,12 +233,12 @@ export function calculateAnalytics(subscriptions: Subscription[]): AnalyticsData
 
     const now = new Date();
     const upcomingRenewals = subscriptions
-        .filter(sub => sub.renewal_date && new Date(sub.renewal_date) > now)
-        .sort((a, b) => new Date(a.renewal_date!).getTime() - new Date(b.renewal_date!).getTime());
+        .filter(sub => sub.next_payment && new Date(sub.next_payment) > now)
+        .sort((a, b) => new Date(a.next_payment!).getTime() - new Date(b.next_payment!).getTime());
 
     const nextRenewal = upcomingRenewals[0]
         ? {
-            date: upcomingRenewals[0].renewal_date!,
+            date: upcomingRenewals[0].next_payment!,
             name: upcomingRenewals[0].name,
             amount: upcomingRenewals[0].amount,
         }
@@ -303,4 +256,52 @@ export function calculateAnalytics(subscriptions: Subscription[]): AnalyticsData
         nextRenewals,
         currency,
     };
+}
+
+/**
+ * Calculate spending projection from January up to the current month
+ */
+export function calculateYearlyProjection(subscriptions: Subscription[]): MonthlyTrendData[] {
+    const months: MonthlyTrendData[] = [];
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonthIndex = now.getMonth();
+
+    for (let m = 0; m <= currentMonthIndex; m++) {
+        const iterMonth = new Date(currentYear, m, 1);
+        const monthKey = iterMonth.toLocaleDateString('pt-PT', { month: 'short' });
+
+        let monthTotal = 0;
+        let activeCount = 0;
+
+        subscriptions.forEach(sub => {
+            if (sub.status !== 'active') return;
+
+            const subCreated = new Date(sub.created_at || new Date().toISOString());
+            const subCreatedMonth = new Date(subCreated.getFullYear(), subCreated.getMonth(), 1);
+
+            // Check if sub existed in this month
+            if (subCreatedMonth <= iterMonth) {
+                activeCount++;
+
+                const amount = (() => {
+                    switch (sub.billing_cycle) {
+                        case 'monthly': return sub.amount;
+                        case 'yearly': return sub.amount / 12;
+                        default: return sub.amount;
+                    }
+                })();
+                monthTotal += amount;
+            }
+        });
+
+        months.push({
+            month: monthKey,
+            total: monthTotal,
+            subscriptionCount: activeCount,
+            isFuture: false,
+        });
+    }
+
+    return months;
 }

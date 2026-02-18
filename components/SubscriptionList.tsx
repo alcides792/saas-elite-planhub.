@@ -1,187 +1,151 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { MoreVertical, ExternalLink, Pause, Trash2 } from 'lucide-react';
+import { MoreVertical, Pause, Trash2, Edit3, Plus, Search } from 'lucide-react';
 import SubscriptionLogo from '@/components/ui/subscription-logo';
 import type { Subscription } from '@/types';
 import { useUser } from '@/contexts/UserContext';
+import { format as formatDate } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 
 interface SubscriptionListProps {
     subscriptions: Subscription[];
     onEdit?: (id: string) => void;
     onDelete?: (id: string) => void;
     onPause?: (id: string) => void;
+    onAddFirst?: () => void;
 }
 
-export default function SubscriptionList({ subscriptions, onEdit, onDelete, onPause }: SubscriptionListProps) {
-    const { formatMoney, preferences } = useUser();
-    const getCategoryColor = (category: string) => {
-        const colors: Record<string, string> = {
-            streaming: 'bg-pink-500/10 text-pink-500',
-            productivity: 'bg-blue-500/10 text-blue-500',
-            cloud: 'bg-purple-500/10 text-purple-500',
-            gaming: 'bg-green-500/10 text-green-500',
-            education: 'bg-yellow-500/10 text-yellow-500',
-            other: 'bg-gray-500/10 text-gray-500',
-        };
-        return colors[category] || colors.other;
-    };
+export default function SubscriptionList({
+    subscriptions,
+    onEdit,
+    onDelete,
+    onPause,
+    onAddFirst
+}: SubscriptionListProps) {
+    const { formatMoney } = useUser();
 
-    const getStatusBadge = (status: string) => {
-        if (status === 'active') {
-            return <span className="smart-badge badge-saving">Active</span>;
-        }
-        if (status === 'paused') {
-            return <span className="smart-badge badge-overlap">Paused</span>;
-        }
-        return <span className="smart-badge bg-red-500/20 text-red-500">Cancelled</span>;
+    const getCategoryStyles = (category: string) => {
+        const styles: Record<string, string> = {
+            streaming: 'bg-pink-500/10 text-pink-500 border-pink-500/20',
+            productivity: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
+            software: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20',
+            gaming: 'bg-green-500/10 text-green-500 border-green-500/20',
+            health: 'bg-red-500/10 text-red-500 border-red-500/20',
+            other: 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20',
+        };
+        const cat = category?.toLowerCase() || 'other';
+        return styles[cat] || styles.other;
     };
 
     if (subscriptions.length === 0) {
         return (
-            <div className="plan-hub-card p-12 text-center">
-                <div className="w-16 h-16 rounded-full bg-gray-500/10 backdrop-blur-md dark:bg-white/5 flex items-center justify-center mx-auto mb-4">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="32"
-                        height="32"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className="text-slate-400 dark:text-zinc-500"
-                    >
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                    </svg>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center justify-center p-12 bg-white/70 dark:bg-[#0A0A0A]/40 backdrop-blur-md border border-gray-200 dark:border-white/5 rounded-3xl text-center"
+            >
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500/20 to-indigo-500/20 flex items-center justify-center mb-6">
+                    <Search size={40} className="text-purple-500/50" />
                 </div>
-                <h3 className="text-xl font-black mb-2 text-zinc-900 dark:text-white">No Subscriptions</h3>
-                <p className="text-sm text-dim font-medium">
-                    Add your first subscription to start managing your fleet.
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No subscriptions found</h3>
+                <p className="text-gray-500 dark:text-neutral-400 mb-8 max-w-sm">
+                    Start managing your finances right now by adding your first subscription.
                 </p>
-            </div>
+                <button
+                    onClick={onAddFirst}
+                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 transition-all active:scale-95"
+                >
+                    <Plus size={20} />
+                    <span>Create First Subscription</span>
+                </button>
+            </motion.div>
         );
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {subscriptions.map((sub, index) => (
                 <motion.div
                     key={sub.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className="plan-hub-card p-6 hover:border-indigo-500/30 transition-all group relative !overflow-visible hover:z-[100]"
+                    className="w-full flex items-center justify-between p-4 bg-white/70 dark:bg-[#0A0A0A]/60 border border-gray-200 dark:border-white/5 hover:border-purple-500/30 hover:bg-white dark:hover:bg-black transition-all cursor-pointer rounded-2xl group"
                 >
-                    <div className="flex items-start justify-between">
-                        {/* Left: Icon & Info */}
-                        <div className="flex items-start gap-4 flex-1">
-                            {/* Logo - Using new SubscriptionLogo component */}
+                    {/* 1. Logo & Info */}
+                    <div className="flex items-center gap-4 flex-[2]">
+                        <div className="relative">
                             <SubscriptionLogo
                                 name={sub.name}
                                 domain={sub.website ? new URL(sub.website).hostname : undefined}
                                 size="md"
                                 iconColor={sub.iconColor || undefined}
                             />
-
-                            {/* Info */}
-                            <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <h3 className="font-black text-lg text-zinc-900 dark:text-white">{sub.name}</h3>
-                                    {sub.website && (
-                                        <a
-                                            href={sub.website}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-dim hover:text-indigo-500 transition-colors"
-                                        >
-                                            <ExternalLink size={14} />
-                                        </a>
-                                    )}
-                                </div>
-                                <div className="flex items-center gap-2 flex-wrap">
-                                    <span className={`text-xs font-bold px-2 py-1 rounded-md ${getCategoryColor(sub.category)}`}>
-                                        {sub.category}
-                                    </span>
-                                    {getStatusBadge(sub.status)}
-                                    {sub.paymentMethod && (
-                                        <span className="text-xs text-dim font-medium">{sub.paymentMethod}</span>
-                                    )}
-                                </div>
-                            </div>
+                            {sub.status === 'paused' && (
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-amber-500 border-2 border-neutral-900 rounded-full" />
+                            )}
                         </div>
+                        <div>
+                            <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{sub.name}</h4>
+                            <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border ${getCategoryStyles(sub.category)}`}>
+                                {sub.category}
+                            </span>
+                        </div>
+                    </div>
 
-                        {/* Right: Amount & Actions */}
-                        <div className="flex items-start gap-4">
-                            <div className="text-right">
-                                <p className="text-2xl font-black text-zinc-900 dark:text-white">
-                                    {formatMoney(sub.amount)}
-                                </p>
-                                <p className="text-xs text-dim font-bold uppercase">
-                                    {sub.billing_cycle === 'monthly' && 'Monthly'}
-                                    {sub.billing_cycle === 'yearly' && 'Yearly'}
-                                </p>
-                                {sub.next_payment && (
-                                    <p className="text-xs text-dim font-medium mt-1">
-                                        Renews: {new Date(sub.next_payment).toLocaleDateString(preferences.language)}
-                                    </p>
-                                )}
-                            </div>
+                    {/* 2. Custo */}
+                    <div className="flex-1 text-center hidden sm:block">
+                        <p className="font-bold text-gray-900 dark:text-white text-lg">
+                            {formatMoney(sub.amount)}
+                        </p>
+                        <p className="text-[10px] text-gray-500 dark:text-neutral-400 uppercase font-bold tracking-tighter">
+                            {sub.billing_cycle === 'monthly' ? 'Monthly' : 'Yearly'}
+                        </p>
+                    </div>
 
-                            {/* Actions Menu */}
-                            <div className="relative group/menu">
+                    {/* 3. Ciclo / Vencimento */}
+                    <div className="flex-1 text-right hidden md:block px-4">
+                        <p className="text-sm text-gray-500 dark:text-neutral-400">
+                            {sub.next_payment ? (
+                                <>Renews on <span className="text-gray-900 dark:text-white font-medium">{formatDate(new Date(sub.next_payment), 'dd MMM', { locale: enUS })}</span></>
+                            ) : (
+                                'No date'
+                            )}
+                        </p>
+                    </div>
+
+                    {/* 4. Ações */}
+                    <div className="flex items-center gap-2">
+                        <div className="relative group/actions">
+                            <button className="p-2 text-zinc-500 hover:text-white hover:bg-white/10 rounded-lg transition-all">
+                                <MoreVertical size={20} />
+                            </button>
+
+                            {/* Dropdown context menu */}
+                            <div className="absolute right-0 top-full mt-1 w-48 bg-[#0D0D0D] border border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover/actions:opacity-100 group-hover/actions:visible transition-all z-50 p-1.5 backdrop-blur-xl">
                                 <button
-                                    type="button"
-                                    className="w-8 h-8 rounded-lg bg-gray-500/10 backdrop-blur-md hover:bg-gray-500/20 dark:bg-white/5 dark:hover:bg-white/10 flex items-center justify-center transition-colors text-zinc-500 dark:text-zinc-400"
+                                    onClick={() => onEdit?.(sub.id)}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
                                 >
-                                    <MoreVertical size={16} />
+                                    <Edit3 size={16} />
+                                    Edit
                                 </button>
-
-                                {/* Dropdown */}
-                                <div className="absolute right-0 top-10 w-48 bg-white dark:bg-zinc-900 border border-black/10 dark:border-white/10 p-2 opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all z-[110] rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-                                    {onEdit && (
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                onEdit(sub.id);
-                                            }}
-                                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors text-zinc-900 dark:text-white flex items-center gap-2"
-                                        >
-                                            <ExternalLink size={14} />
-                                            Edit
-                                        </button>
-                                    )}
-                                    {onPause && (
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                onPause(sub.id);
-                                            }}
-                                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-sm font-medium transition-colors flex items-center gap-2 text-zinc-900 dark:text-white"
-                                        >
-                                            <Pause size={14} />
-                                            {sub.status === 'active' ? 'Pause' : 'Reactivate'}
-                                        </button>
-                                    )}
-                                    <div className="h-px bg-black/5 dark:bg-white/5 my-1" />
-                                    {onDelete && (
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                if (confirm('Are you sure you want to delete this subscription?')) {
-                                                    onDelete(sub.id);
-                                                }
-                                            }}
-                                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-red-500/10 text-red-500 text-sm font-bold transition-colors flex items-center gap-2"
-                                        >
-                                            <Trash2 size={14} />
-                                            Delete
-                                        </button>
-                                    )}
-                                </div>
+                                <button
+                                    onClick={() => onPause?.(sub.id)}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                                >
+                                    <Pause size={16} />
+                                    {sub.status === 'active' ? 'Pause' : 'Resume'}
+                                </button>
+                                <div className="h-px bg-white/5 my-1" />
+                                <button
+                                    onClick={() => onDelete?.(sub.id)}
+                                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+                                >
+                                    <Trash2 size={16} />
+                                    Delete
+                                </button>
                             </div>
                         </div>
                     </div>

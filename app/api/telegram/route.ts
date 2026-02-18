@@ -25,7 +25,6 @@ export async function POST(request: Request) {
         if (text.startsWith('/start ') && text.length > 7) {
             const userId = text.split(' ')[1].trim()
 
-            console.log(`🔗 Vinculando User ${userId} ao Chat ${chatId}`)
 
             // Salva no Supabase
             const { error } = await supabase
@@ -34,13 +33,13 @@ export async function POST(request: Request) {
                 .eq('id', userId)
 
             if (error) {
-                console.error('Erro Supabase:', error)
-                await sendMessage(chatId, "❌ Erro ao vincular conta. Tente novamente.")
+                console.error('Supabase Error:', error)
+                await sendMessage(chatId, "❌ Error linking account. Please try again.")
             } else {
-                await sendMessage(chatId, "✅ **Kovr Conectado!**\n\nAgora você receberá seus alertas de vencimento aqui. Pode fechar o Telegram.")
+                await sendMessage(chatId, "✅ **Kovr Connected!**\n\nYou will now receive your expiration alerts here. You can close Telegram.")
             }
         } else if (text === '/start') {
-            await sendMessage(chatId, "⚠️ Por favor, use o botão 'Conectar' dentro do painel do Kovr para iniciar.")
+            await sendMessage(chatId, "⚠️ Please use the 'Connect' button inside the Kovr dashboard to start.")
         }
 
         return NextResponse.json({ ok: true })

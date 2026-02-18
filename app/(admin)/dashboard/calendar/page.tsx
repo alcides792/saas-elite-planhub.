@@ -16,7 +16,7 @@ import {
     getMonth,
     getYear,
 } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 import {
     ChevronLeft,
     ChevronRight,
@@ -27,9 +27,10 @@ import {
     Calendar as CalendarIcon
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/utils/supabase/client';
 import { Subscription, dbToSubscription } from '@/types';
 import SubscriptionLogo from '@/components/ui/subscription-logo';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function CalendarPage() {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -52,7 +53,6 @@ export default function CalendarPage() {
                     return;
                 }
 
-                console.log('[Calendar Fetch] User ID:', user.id);
 
                 const { data, error: sbError } = await supabase
                     .from('subscriptions')
@@ -61,11 +61,8 @@ export default function CalendarPage() {
 
                 if (sbError) throw sbError;
 
-                console.log('[Calendar Fetch] Raw data from Supabase:', data);
-                console.log('[Calendar Fetch] Count:', data?.length || 0);
 
                 const mapped = (data || []).map((dbSub: any) => dbToSubscription(dbSub));
-                console.log('[Calendar Fetch] Mapped subscriptions:', mapped);
                 setSubscriptions(mapped);
             } catch (err: any) {
                 console.error('[Calendar Fetch] Error:', err);
@@ -96,8 +93,6 @@ export default function CalendarPage() {
         const viewedMonthIndex = getMonth(currentDate);
         const viewedYear = getYear(currentDate);
 
-        console.log(`\n--- [Calendar Projection] Month: ${viewedMonthIndex + 1}/${viewedYear} ---`);
-        console.log(`[Calendar Projection] Total subscriptions to process: ${subscriptions.length}`);
 
         subscriptions.forEach(sub => {
             // 1. Get the next_payment string (this is actually the NEXT upcoming renewal)
@@ -125,7 +120,6 @@ export default function CalendarPage() {
             // 3. Get billing cycle
             const cycle = ((sub as any).billing_cycle || (sub as any).billing_type || 'monthly').toLowerCase().trim();
 
-            console.log(`[Processing] ${sub.name} | Cycle: "${cycle}" | NextPayment: ${format(nextPaymentDate, 'yyyy-MM-dd')}`);
 
             // 4. Calculate the last day of the viewed month
             const lastDayOfViewedMonth = getDate(endOfMonth(currentDate));
@@ -139,7 +133,6 @@ export default function CalendarPage() {
             // It will not appear in other months - users need to update renewal_date after each payment
 
             if (viewedMonthIndex !== nextPaymentMonth || viewedYear !== nextPaymentYear) {
-                console.log(`   -> ❌ Viewed ${viewedMonthIndex + 1}/${viewedYear} != renewal ${nextPaymentMonth + 1}/${nextPaymentYear}. Skipping.`);
                 return;
             }
 
@@ -156,7 +149,6 @@ export default function CalendarPage() {
 
                     // If projected date is STRICTLY AFTER end_date, skip
                     if (projectedDate > endDate) {
-                        console.log(`   -> ❌ Skipped due to end_date: projected ${format(projectedDate, 'yyyy-MM-dd')} > end ${format(endDate, 'yyyy-MM-dd')}`);
                         return;
                     }
                 } catch (e) {
@@ -164,11 +156,9 @@ export default function CalendarPage() {
                 }
             }
 
-            console.log(`   -> ✅ Added event for ${sub.name} on day ${getDate(projectedDate)}`);
             events.push({ date: projectedDate, subscription: sub });
         });
 
-        console.log(`--- [Calendar Projection] Total events: ${events.length} ---\n`);
         return events;
     }, [subscriptions, currentDate]);
 
@@ -191,60 +181,63 @@ export default function CalendarPage() {
         return (
             <div className="flex h-[80vh] flex-col items-center justify-center gap-4 text-center">
                 <AlertTriangle className="h-12 w-12 text-red-500" />
-                <h2 className="text-xl font-semibold">Erro ao carregar calendário</h2>
+                <h2 className="text-xl font-semibold">Error loading calendar</h2>
                 <p className="text-gray-400">{error}</p>
             </div>
         );
     }
 
     return (
-        <div className="p-2 sm:p-6 min-h-screen bg-[#050505] text-white">
+        <div className="p-2 sm:p-6 min-h-screen bg-white dark:bg-[#050505] text-gray-900 dark:text-white transition-colors duration-300">
             <header className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4 px-2">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">
-                        Calendário Financeiro
+                    <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+                        Financial Calendar
                     </h1>
-                    <p className="text-gray-400 mt-1">Visão geral dos seus pagamentos</p>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1 font-medium">Overview of your payments</p>
                 </div>
 
-                <div className="flex items-center gap-4 bg-[#111] p-1.5 rounded-2xl border border-white/5">
-                    <button onClick={prevMonth} className="p-2 hover:bg-white/5 rounded-xl transition-all">
-                        <ChevronLeft className="h-5 w-5" />
-                    </button>
-                    <span className="text-lg font-medium min-w-[140px] text-center capitalize">
-                        {format(currentDate, 'MMMM yyyy', { locale: ptBR })}
-                    </span>
-                    <button onClick={nextMonth} className="p-2 hover:bg-white/5 rounded-xl transition-all">
-                        <ChevronRight className="h-5 w-5" />
-                    </button>
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                    <ThemeToggle />
+                    <div className="flex items-center gap-4 bg-gray-50 dark:bg-[#111] p-1.5 rounded-2xl border border-gray-200 dark:border-white/5">
+                        <button onClick={prevMonth} className="p-2 hover:bg-gray-200 dark:hover:bg-white/5 rounded-xl transition-all">
+                            <ChevronLeft className="h-5 w-5" />
+                        </button>
+                        <span className="text-lg font-bold min-w-[140px] text-center capitalize text-gray-900 dark:text-white">
+                            {format(currentDate, 'MMMM yyyy', { locale: enUS })}
+                        </span>
+                        <button onClick={nextMonth} className="p-2 hover:bg-gray-200 dark:hover:bg-white/5 rounded-xl transition-all">
+                            <ChevronRight className="h-5 w-5" />
+                        </button>
+                    </div>
                 </div>
             </header>
 
             <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="bg-[#0a0a0a] p-6 rounded-3xl border border-white/5 flex items-center justify-between">
+                <div className="bg-white dark:bg-zinc-900/50 p-6 rounded-3xl border border-gray-200 dark:border-white/5 flex items-center justify-between shadow-sm dark:shadow-none">
                     <div>
-                        <p className="text-gray-500 text-xs font-bold uppercase tracking-widest leading-none mb-2">Renovações este mês</p>
-                        <p className="text-3xl font-black text-white">{projectedEvents.length}</p>
+                        <p className="text-gray-500 dark:text-zinc-500 text-xs font-black uppercase tracking-widest leading-none mb-2">Renewals this month</p>
+                        <p className="text-3xl font-black text-gray-900 dark:text-white">{projectedEvents.length}</p>
                     </div>
                     <CalendarIcon className="h-8 w-8 text-purple-600 opacity-20" />
                 </div>
-                <div className="bg-[#0a0a0a] p-6 rounded-3xl border border-white/5 flex items-center justify-between">
+                <div className="bg-white dark:bg-zinc-900/50 p-6 rounded-3xl border border-gray-200 dark:border-white/5 flex items-center justify-between shadow-sm dark:shadow-none">
                     <div>
-                        <p className="text-gray-500 text-xs font-bold uppercase tracking-widest leading-none mb-2">Total Estimado</p>
-                        <p className="text-3xl font-black text-green-400">
-                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                        <p className="text-gray-500 dark:text-zinc-500 text-xs font-black uppercase tracking-widest leading-none mb-2">Estimated Total</p>
+                        <p className="text-3xl font-black text-emerald-600 dark:text-emerald-400">
+                            {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
                                 projectedEvents.reduce((acc, curr) => acc + curr.subscription.amount, 0)
                             )}
                         </p>
                     </div>
-                    <TrendingUp className="h-8 w-8 text-green-600 opacity-20" />
+                    <TrendingUp className="h-8 w-8 text-emerald-600 opacity-20" />
                 </div>
             </div>
 
-            <div className="bg-[#0a0a0a] rounded-3xl border border-white/5 shadow-2xl overflow-hidden">
-                <div className="grid grid-cols-7 border-b border-white/5 bg-[#0f0f0f]">
-                    {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((day) => (
-                        <div key={day} className="p-4 text-center text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-widest">
+            <div className="bg-white dark:bg-[#0a0a0a] rounded-3xl border border-gray-200 dark:border-white/5 shadow-xl dark:shadow-2xl overflow-hidden transition-colors">
+                <div className="grid grid-cols-7 border-b border-gray-200 dark:border-white/5 bg-gray-50 dark:bg-[#0f0f0f]">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                        <div key={day} className="p-4 text-center text-[10px] sm:text-xs font-black text-gray-500 dark:text-zinc-500 uppercase tracking-widest">
                             {day}
                         </div>
                     ))}
@@ -260,12 +253,12 @@ export default function CalendarPage() {
                             <div
                                 key={day.toISOString()}
                                 className={`
-                                    relative p-2 sm:p-4 border-r border-b border-white/5 min-h-[90px] sm:min-h-[120px] flex flex-col gap-2
-                                    ${!isCurrentMonth ? 'opacity-20 bg-black/40' : 'hover:bg-white/[0.02]'}
+                                    relative p-2 sm:p-4 border-r border-b border-gray-200 dark:border-white/5 min-h-[90px] sm:min-h-[120px] flex flex-col gap-2 transition-colors
+                                    ${!isCurrentMonth ? 'opacity-20 bg-gray-100 dark:bg-black/40' : 'hover:bg-gray-50 dark:hover:bg-white/[0.02]'}
                                     ${idx % 7 === 6 ? 'border-r-0' : ''}
                                 `}
                             >
-                                <span className={`text-xs sm:text-sm font-semibold inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full ${isToday ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-500'}`}>
+                                <span className={`text-xs sm:text-sm font-bold inline-flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full ${isToday ? 'bg-purple-600 text-white shadow-lg' : 'text-gray-400 dark:text-gray-500'}`}>
                                     {format(day, 'd')}
                                 </span>
 
@@ -283,7 +276,7 @@ export default function CalendarPage() {
                                                 initial={{ opacity: 0, scale: 0.95 }}
                                                 animate={{ opacity: 1, scale: 1 }}
                                                 title={`${event.subscription.name}: ${event.subscription.currency} ${event.subscription.amount}`}
-                                                className="flex items-center gap-2 p-1.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all cursor-help group"
+                                                className="flex items-center gap-2 p-1.5 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/5 hover:border-purple-500/30 transition-all cursor-help group shadow-sm dark:shadow-none"
                                             >
                                                 <SubscriptionLogo
                                                     name={event.subscription.name}
@@ -291,7 +284,7 @@ export default function CalendarPage() {
                                                     size="sm"
                                                     iconColor={event.subscription.iconColor || undefined}
                                                 />
-                                                <div className="truncate text-[10px] sm:text-xs text-gray-400 group-hover:text-white font-medium">
+                                                <div className="truncate text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-white font-bold transition-colors">
                                                     {event.subscription.name}
                                                 </div>
                                             </motion.div>

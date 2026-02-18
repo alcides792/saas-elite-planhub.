@@ -1,7 +1,7 @@
 'use server'
 
-import { requireProPlan } from '@/utils/gatekeeper'
-import { createClient } from '@/utils/supabase/server'
+import { requireProPlan } from '@/lib/utils/gatekeeper'
+import { createClient } from '@/lib/utils/supabase/server'
 
 /**
  * Generate a new extension token for the authenticated user.

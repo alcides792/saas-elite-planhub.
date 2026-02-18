@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface SubscriptionLogoProps {
     name: string;
@@ -51,11 +52,14 @@ export default function SubscriptionLogo({
     // Show logo from Google Favicon API
     return (
         <div className={`${sizeClasses[size]} rounded-xl bg-white/80 backdrop-blur-sm flex items-center justify-center overflow-hidden shadow-sm border border-gray-200/50 ${className}`}>
-            <img
+            <Image
                 src={`https://www.google.com/s2/favicons?domain=${domain}&sz=${imageSizes[size]}`}
                 alt={`${name} logo`}
+                width={imageSizes[size]}
+                height={imageSizes[size]}
                 className="w-full h-full object-contain p-1.5"
                 onError={() => setImageError(true)}
+                unoptimized
             />
         </div>
     );

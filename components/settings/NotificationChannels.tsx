@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Send, MessageSquare, CheckCircle2, Loader2, ExternalLink, BellRing } from 'lucide-react'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { saveDiscordWebhook } from '@/app/actions/notifications'
 import TelegramConnect from './TelegramConnect'
 
@@ -47,7 +48,7 @@ export default function NotificationChannels({
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform">
-                            <img src="/telegram-3d.png" alt="Telegram" className="w-10 h-10 object-contain" />
+                            <Image src="/telegram-3d.png" alt="Telegram" width={40} height={40} className="w-10 h-10 object-contain" />
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-white tracking-tight">Telegram</h3>
@@ -151,7 +152,7 @@ export default function NotificationChannels({
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-2xl flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform">
-                            <img src="/gmail-icon-v2.png" alt="Email" className="w-10 h-10 object-contain" />
+                            <Image src="/gmail-icon-v2.png" alt="Email" width={40} height={40} className="w-10 h-10 object-contain" />
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-white tracking-tight">E-mail</h3>

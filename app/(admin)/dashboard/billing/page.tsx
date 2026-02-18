@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/lib/utils/supabase/server'
 export const dynamic = 'force-dynamic';
 import { redirect } from 'next/navigation'
 import CancelButton from './CancelButton'

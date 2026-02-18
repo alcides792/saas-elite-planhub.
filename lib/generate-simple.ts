@@ -12,7 +12,7 @@ export interface Subscription {
 }
 
 /**
- * Gera um PDF simples usando PDFKit (leve, sem browser).
+ * Generates a simple PDF using PDFKit (lightweight, no browser).
  */
 export async function generateSimplePDF(data: Subscription[]): Promise<Buffer> {
     return new Promise((resolve, reject) => {
@@ -24,15 +24,15 @@ export async function generateSimplePDF(data: Subscription[]): Promise<Buffer> {
             doc.on('end', () => resolve(Buffer.concat(chunks)));
             doc.on('error', reject);
 
-            // Cabeçalho
+            // Header
             doc.fontSize(24)
                 .fillColor('#7c3aed')
-                .text('Relatório Kovr', { align: 'center' });
+                .text('Kovr Report', { align: 'center' });
 
             doc.moveDown(0.5);
             doc.fontSize(10)
                 .fillColor('#6b7280')
-                .text(`Data: ${format(new Date(), 'dd/MM/yyyy')}`, { align: 'center' });
+                .text(`Date: ${format(new Date(), 'MM/dd/yyyy')}`, { align: 'center' });
 
             doc.moveDown(2);
 
@@ -40,19 +40,19 @@ export async function generateSimplePDF(data: Subscription[]): Promise<Buffer> {
             doc.fontSize(12).fillColor('#111827');
 
             if (data.length === 0) {
-                doc.text('Nenhuma assinatura encontrada.', { align: 'center' });
+                doc.text('No subscriptions found.', { align: 'center' });
             } else {
                 data.forEach((sub, index) => {
-                    const price = new Intl.NumberFormat('pt-BR', {
+                    const price = new Intl.NumberFormat('en-US', {
                         style: 'currency',
-                        currency: sub.currency || 'BRL',
+                        currency: sub.currency || 'USD',
                     }).format(sub.amount || 0);
 
                     const renewalDate = sub.renewal_date
-                        ? format(new Date(sub.renewal_date), 'dd/MM/yyyy')
-                        : 'Sem data';
+                        ? format(new Date(sub.renewal_date), 'MM/dd/yyyy')
+                        : 'No date';
 
-                    const category = sub.category || 'Sem categoria';
+                    const category = sub.category || 'No category';
 
                     // Desenha cada linha
                     doc.fontSize(11)
@@ -66,17 +66,17 @@ export async function generateSimplePDF(data: Subscription[]): Promise<Buffer> {
                         .fillColor('#7c3aed')
                         .text(`   ${price}`, { continued: true })
                         .fillColor('#6b7280')
-                        .text(` • Vence: ${renewalDate}`);
+                        .text(` • Due: ${renewalDate}`);
 
                     doc.moveDown(0.8);
                 });
             }
 
-            // Rodapé
+            // Footer
             doc.moveDown(2);
             doc.fontSize(8)
                 .fillColor('#9ca3af')
-                .text('Relatório gerado automaticamente via Kovr • kovr.space', {
+                .text('Report generated automatically via Kovr • kovr.space', {
                     align: 'center',
                 });
 
@@ -88,20 +88,20 @@ export async function generateSimplePDF(data: Subscription[]): Promise<Buffer> {
 }
 
 /**
- * Gera um CSV simples usando manipulação de string pura.
+ * Generates a simple CSV using pure string manipulation.
  */
 export function generateSimpleCSV(data: Subscription[]): Buffer {
-    const header = 'Nome,Categoria,Preco,Moeda,Vencimento\n';
+    const header = 'Name,Category,Price,Currency,Due Date\n';
 
     const rows = data
         .map((sub) => {
             const name = `"${sub.name.replace(/"/g, '""')}"`;
-            const category = sub.category ? `"${sub.category.replace(/"/g, '""')}"` : 'Sem categoria';
+            const category = sub.category ? `"${sub.category.replace(/"/g, '""')}"` : 'No category';
             const price = (sub.amount || 0).toFixed(2);
-            const currency = sub.currency || 'BRL';
+            const currency = sub.currency || 'USD';
             const renewalDate = sub.renewal_date
-                ? format(new Date(sub.renewal_date), 'dd/MM/yyyy')
-                : 'Sem data';
+                ? format(new Date(sub.renewal_date), 'MM/dd/yyyy')
+                : 'No date';
 
             return `${name},${category},${price},${currency},${renewalDate}`;
         })

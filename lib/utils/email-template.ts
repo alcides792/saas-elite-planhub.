@@ -1,6 +1,6 @@
 /**
- * Gera o template HTML profissional para alertas de vencimento de assinatura.
- * Otimizado para Dark Mode e compatibilidade com Gmail/Outlook.
+ * Generates the professional HTML template for subscription expiration alerts.
+ * Optimized for Dark Mode and compatibility with Gmail/Outlook.
  */
 export function getExpiringEmailHtml(
     userName: string,
@@ -19,11 +19,11 @@ export function getExpiringEmailHtml(
 
     return `
     <!DOCTYPE html>
-    <html lang="pt-BR">
+    <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Alerta de Vencimento KOVR</title>
+        <title>KOVR Expiration Alert</title>
     </head>
     <body style="margin: 0; padding: 0; background-color: #050505; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #ffffff;">
         <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #050505;">
@@ -46,9 +46,9 @@ export function getExpiringEmailHtml(
                         <tr>
                             <td style="padding: 0 40px 48px;">
                                 <div style="text-align: center; margin-bottom: 32px;">
-                                    <h2 style="margin: 0 0 12px; font-size: 24px; font-weight: 700; color: #ffffff;">Olá, ${userName}!</h2>
+                                    <h2 style="margin: 0 0 12px; font-size: 24px; font-weight: 700; color: #ffffff;">Hello, ${userName}!</h2>
                                     <p style="margin: 0; font-size: 16px; color: #9CA3AF; line-height: 1.6;">
-                                        Identificamos que uma de suas assinaturas vence hoje. Mantenha seu controle financeiro em dia.
+                                        Identified that one of your subscriptions expires today. Keep your financial control up to date.
                                     </p>
                                 </div>
                                 
@@ -62,13 +62,13 @@ export function getExpiringEmailHtml(
                                             </div>
                                             
                                             <div style="font-size: 11px; font-weight: 800; color: #7c3aed; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 12px; opacity: 0.8;">
-                                                Assinatura vencendo
+                                                Subscription expiring
                                             </div>
                                             <div style="font-size: 36px; font-weight: 900; color: #ffffff; letter-spacing: -1px; margin-bottom: 4px;">
                                                 ${subscriptionName}
                                             </div>
                                             <div style="font-size: 14px; color: #6b7280; font-weight: 500;">
-                                                Vencimento: Hoje
+                                                Due: Today
                                             </div>
                                         </td>
                                     </tr>
@@ -79,14 +79,14 @@ export function getExpiringEmailHtml(
                                     <tr>
                                         <td align="center">
                                             <a href="${renewUrl}" style="display: block; background-color: #7c3aed; color: #ffffff; padding: 20px 40px; border-radius: 18px; font-size: 16px; font-weight: 700; text-decoration: none; text-align: center;">
-                                                Sim, manter ativa (Renovar)
+                                                Yes, keep active (Renew)
                                             </a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="center" style="padding-top: 24px;">
                                             <a href="${deleteUrl}" style="display: inline-block; color: #4B5563; font-size: 14px; font-weight: 600; text-decoration: none; border-bottom: 1px solid #1A1A1A; padding-bottom: 2px;">
-                                                Não, já cancelei este serviço
+                                                No, I've already canceled this service
                                             </a>
                                         </td>
                                     </tr>
@@ -98,8 +98,8 @@ export function getExpiringEmailHtml(
                         <tr>
                             <td align="center" style="background-color: #0c0c0c; padding: 32px 40px; border-top: 1px solid #1A1A1A;">
                                 <p style="margin: 0; font-size: 12px; color: #374151; line-height: 1.8;">
-                                    Este é um alerta automático gerado pelo sistema KOVR.<br>
-                                    Não responda a este e-mail.
+                                    This is an automatic alert generated by the KOVR system.<br>
+                                    Do not reply to this email.
                                 </p>
                                 <div style="margin-top: 16px; font-size: 11px; color: #1f2937;">
                                     © 2024 KOVR SaaS. All rights reserved.

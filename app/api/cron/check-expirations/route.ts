@@ -87,7 +87,7 @@ export async function GET(request: Request) {
                     const cancelLink = `${publicUrl}/api/subscriptions/action?id=${sub.id}&action=delete`
 
                     const emailHtml = getExpiringEmailHtml(
-                        profile.full_name || 'Assinante',
+                        profile.full_name || 'Subscriber',
                         sub.name,
                         renewLink,
                         cancelLink,
@@ -97,7 +97,7 @@ export async function GET(request: Request) {
                     await resend.emails.send({
                         from: 'Kovr <noreply@kovr.space>',
                         to: [profile.email],
-                        subject: `🤖 Kovr Alerta: A sua assinatura ${sub.name} vence hoje!`,
+                        subject: `🤖 Kovr Alert: Your ${sub.name} subscription expires today!`,
                         html: emailHtml
                     })
                     subResults.actions.push('email_sent');
@@ -109,10 +109,10 @@ export async function GET(request: Request) {
             // --- TELEGRAM NOTIFICATION ---
             if (profile.telegram_chat_id) {
                 try {
-                    const message = `🚨 <b>Atenção!</b>\n\nA sua assinatura <b>${sub.name}</b> (${sub.currency} ${sub.amount}) vence hoje!\n\nO que deseja fazer?`;
+                    const message = `🚨 <b>Attention!</b>\n\nYour <b>${sub.name}</b> subscription (${sub.currency} ${sub.amount}) expires today!\n\nWhat would you like to do?`;
                     const buttons = [
-                        { text: "✅ Manter Ativa", url: `${publicUrl}/api/subscriptions/action?id=${sub.id}&action=renew` },
-                        { text: "❌ Cancelar Agora", url: `${publicUrl}/api/subscriptions/action?id=${sub.id}&action=delete` }
+                        { text: "✅ Keep Active", url: `${publicUrl}/api/subscriptions/action?id=${sub.id}&action=renew` },
+                        { text: "❌ Cancel Now", url: `${publicUrl}/api/subscriptions/action?id=${sub.id}&action=delete` }
                     ];
 
                     await sendTelegramMessage(profile.telegram_chat_id, message, buttons);

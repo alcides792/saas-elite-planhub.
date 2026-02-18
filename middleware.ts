@@ -1,5 +1,5 @@
 import { type NextRequest } from 'next/server'
-import { updateSession } from './utils/supabase/middleware'
+import { updateSession } from './lib/utils/supabase/middleware' // Corrected relative path for edge runtime
 
 export async function middleware(request: NextRequest) {
     return await updateSession(request)
