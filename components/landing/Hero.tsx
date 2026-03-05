@@ -20,8 +20,8 @@ export default function Hero() {
                         Powered by Intelligence
                     </span>
                     <h1 className="text-5xl md:text-7xl font-extrabold text-zinc-900 dark:text-white mb-6 tracking-tight">
-                        All your recurring <br className="hidden md:block" />
-                        payments in <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-purple-700 dark:from-purple-400 dark:to-purple-600">one place.</span>
+                        ALL YOUR RECURRING <br className="hidden md:block" />
+                        PAYMENTS IN <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-purple-700 dark:from-purple-400 dark:to-purple-600">ONE PLACE</span>
                     </h1>
                     <p className="max-w-2xl mx-auto text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-10 leading-relaxed">
                         Track renewals, receive alerts on Telegram, and use <span className="text-zinc-900 dark:text-white font-semibold">Artificial Intelligence</span> to optimize your spending. <span className="text-purple-600 dark:text-purple-500 font-bold underline decoration-purple-500/30 underline-offset-4">Never pay</span> for unused services again.

@@ -42,10 +42,10 @@ export default function Features() {
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16 relative z-10">
                     <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4">
-                        The Solution
+                        THE SOLUTION
                     </h2>
                     <p className="text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
-                        We develop the technology needed so you never lose control of your digital finances again.
+                        WE DEVELOP THE TECHNOLOGY NEEDED SO YOU NEVER LOSE CONTROL OF YOUR DIGITAL FINANCES AGAIN
                     </p>
                 </div>
 

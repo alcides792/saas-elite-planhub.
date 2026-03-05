@@ -15,8 +15,8 @@ export default function Pricing() {
     return (
         <section id="pricing" className="py-24 px-6 relative">
             <div className="max-w-7xl mx-auto text-center">
-                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-zinc-900 dark:text-white">Take control.</h2>
-                <p className="text-zinc-600 dark:text-zinc-500 mb-16 text-lg">Choose the plan that best fits your budget.</p>
+                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-zinc-900 dark:text-white">TAKE CONTROL</h2>
+                <p className="text-zinc-600 dark:text-zinc-500 mb-16 text-lg">CHOOSE THE PLAN THAT BEST FITS YOUR BUDGET</p>
 
                 <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
                     {/* Free Plan */}

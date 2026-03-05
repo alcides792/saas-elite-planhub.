@@ -23,8 +23,8 @@ export default function ProblemSection() {
                     </div>
 
                     <h2 className="text-4xl md:text-6xl font-black text-zinc-900 dark:text-white mb-8 tracking-tight">
-                        You're probably paying <br className="hidden md:block" />
-                        for <span className="text-red-500">3 things</span> you've already forgotten about.
+                        YOU'RE PROBABLY PAYING <br className="hidden md:block" />
+                        FOR <span className="text-red-500">3 THINGS</span> YOU'VE ALREADY FORGOTTEN ABOUT
                     </h2>
 
                     <p className="max-w-3xl mx-auto text-xl text-zinc-600 dark:text-zinc-400 mb-12 leading-relaxed">
