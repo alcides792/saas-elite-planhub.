@@ -39,9 +39,14 @@ export function calculateMonthlyTrend(
 ): MonthlyTrendData[] {
     const months: MonthlyTrendData[] = [];
     const now = new Date();
+    const joinDate = userCreatedAt ? new Date(userCreatedAt) : new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    const joinMonth = new Date(joinDate.getFullYear(), joinDate.getMonth(), 1);
 
-    // Start 5 months ago (6 points total including current month)
-    const startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+    // 6-month window (last 5 months + current)
+    const windowStart = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+
+    // The actual start is the later of windowStart or joinMonth
+    const startDate = windowStart > joinMonth ? windowStart : joinMonth;
     const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
     let iterMonth = new Date(startDate);
@@ -56,18 +61,45 @@ export function calculateMonthlyTrend(
             const subCreated = new Date(sub.created_at || new Date().toISOString());
             const subCreatedMonth = new Date(subCreated.getFullYear(), subCreated.getMonth(), 1);
 
-            // Check if sub existed in this month
-            if (subCreatedMonth <= iterMonth) {
-                activeCount++;
+            // 1. Check if the subscription existed in this month/year
+            if (subCreatedMonth > iterMonth) return;
 
-                const amount = (() => {
-                    switch (sub.billing_cycle) {
-                        case 'monthly': return sub.amount;
-                        case 'yearly': return sub.amount / 12;
-                        default: return sub.amount;
+            // 2. Check if the subscription had already ended BEFORE or IN this month
+            if (sub.status === 'cancelled' || sub.status === 'paused') {
+                // Use end_date if set (reliable). Otherwise fallback to current date.
+                const endDate = new Date(sub.end_date || new Date().toISOString());
+                const endDateMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+                // <= means: if cancelled in March, March is also excluded (not just April+)
+                if (endDateMonth <= iterMonth) return;
+            }
+
+            // 3. Billing logic (Cash Flow)
+            let billsThisMonth = false;
+            if (sub.billing_cycle === 'monthly') {
+                billsThisMonth = true;
+            } else if (sub.billing_cycle === 'yearly') {
+                // For yearly, it bills only in the specific month AND it must be exactly N years after creation
+                // Or if next_payment matches
+                if (sub.next_payment) {
+                    const nextPayment = new Date(sub.next_payment);
+                    if (iterMonth.getMonth() === nextPayment.getMonth() && iterMonth.getFullYear() === nextPayment.getFullYear()) {
+                        billsThisMonth = true;
                     }
-                })();
-                monthTotal += amount;
+                } else {
+                    // Cyclic fallback: same month as creation, but what if it's the wrong year?
+                    // Usually we assume it billed in subCreatedMonth, subCreatedMonth + 1 year, etc.
+                    const yearsDiff = iterMonth.getFullYear() - subCreatedMonth.getFullYear();
+                    if (yearsDiff >= 0 && iterMonth.getMonth() === subCreatedMonth.getMonth()) {
+                        billsThisMonth = true;
+                    }
+                }
+            } else {
+                billsThisMonth = true;
+            }
+
+            if (billsThisMonth) {
+                activeCount++;
+                monthTotal += sub.amount;
             }
         });
 
@@ -261,37 +293,70 @@ export function calculateAnalytics(subscriptions: Subscription[]): AnalyticsData
 /**
  * Calculate spending projection from January up to the current month
  */
-export function calculateYearlyProjection(subscriptions: Subscription[]): MonthlyTrendData[] {
+export function calculateYearlyProjection(
+    subscriptions: Subscription[],
+    userCreatedAt?: string
+): MonthlyTrendData[] {
     const months: MonthlyTrendData[] = [];
     const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonthIndex = now.getMonth();
+    const currentMonthDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    const joinDate = userCreatedAt ? new Date(userCreatedAt) : new Date(now.getFullYear(), now.getMonth() - 3, 1);
+    const joinMonth = new Date(joinDate.getFullYear(), joinDate.getMonth(), 1);
 
-    for (let m = 0; m <= currentMonthIndex; m++) {
-        const iterMonth = new Date(currentYear, m, 1);
+    // 6-month window: 5 past months + current month (no future)
+    for (let i = -5; i <= 0; i++) {
+        const iterMonth = new Date(now.getFullYear(), now.getMonth() + i, 1);
+
+        // Registration Clipping: Skip if month is before user joined
+        if (iterMonth < joinMonth) continue;
+
         const monthKey = iterMonth.toLocaleDateString('pt-PT', { month: 'short' });
 
         let monthTotal = 0;
         let activeCount = 0;
 
         subscriptions.forEach(sub => {
-            if (sub.status !== 'active') return;
-
             const subCreated = new Date(sub.created_at || new Date().toISOString());
             const subCreatedMonth = new Date(subCreated.getFullYear(), subCreated.getMonth(), 1);
 
-            // Check if sub existed in this month
-            if (subCreatedMonth <= iterMonth) {
-                activeCount++;
+            // 1. Check if subscription existed in this month/year
+            if (subCreatedMonth > iterMonth) return;
 
-                const amount = (() => {
-                    switch (sub.billing_cycle) {
-                        case 'monthly': return sub.amount;
-                        case 'yearly': return sub.amount / 12;
-                        default: return sub.amount;
+            // 2. Check if subscription had already ended BEFORE or IN this month
+            if (sub.status === 'cancelled' || sub.status === 'paused') {
+                // Use end_date if set (reliable). Otherwise fallback to current date.
+                const endDate = new Date(sub.end_date || new Date().toISOString());
+                const endDateMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+                // <= means: if cancelled in March, March is also excluded
+                if (endDateMonth <= iterMonth) return;
+            }
+
+            // 3. Cash Flow Logic: Does it bill this month?
+            let billsThisMonth = false;
+
+            if (sub.billing_cycle === 'monthly') {
+                billsThisMonth = true;
+            } else if (sub.billing_cycle === 'yearly') {
+                // For yearly, it bills only in the specific month AND it must be exactly N years after creation
+                // Or if next_payment matches
+                if (sub.next_payment) {
+                    const nextPayment = new Date(sub.next_payment);
+                    if (iterMonth.getMonth() === nextPayment.getMonth() && iterMonth.getFullYear() === nextPayment.getFullYear()) {
+                        billsThisMonth = true;
                     }
-                })();
-                monthTotal += amount;
+                } else {
+                    const yearsDiff = iterMonth.getFullYear() - subCreatedMonth.getFullYear();
+                    if (yearsDiff >= 0 && iterMonth.getMonth() === subCreatedMonth.getMonth()) {
+                        billsThisMonth = true;
+                    }
+                }
+            } else {
+                billsThisMonth = true;
+            }
+
+            if (billsThisMonth) {
+                activeCount++;
+                monthTotal += sub.amount;
             }
         });
 
@@ -299,7 +364,7 @@ export function calculateYearlyProjection(subscriptions: Subscription[]): Monthl
             month: monthKey,
             total: monthTotal,
             subscriptionCount: activeCount,
-            isFuture: false,
+            isFuture: iterMonth > currentMonthDate,
         });
     }
 

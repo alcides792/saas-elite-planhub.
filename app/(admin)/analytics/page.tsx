@@ -42,8 +42,8 @@ export default async function AnalyticsPage() {
         );
     }
 
-    // Filter for active ones as originally intended
-    const subscriptionList = (allSubscriptions || []).filter(s => s.status === 'active');
+    // Pass all subscriptions to the calculations; the helper functions handle status correctly per month
+    const subscriptionList = allSubscriptions || [];
 
     // Use creation date for trend
     const userCreatedAt = user.created_at;

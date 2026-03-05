@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from "react"
+import { useSearchParams, useRouter } from 'next/navigation'
 import { motion } from "framer-motion"
 import Image from 'next/image'
 import TelegramConnect from '@/components/settings/TelegramConnect'
@@ -16,6 +17,7 @@ import {
     TrendingUp, CheckCircle2, AlertCircle
 } from 'lucide-react'
 import { saveAlertSettings, getProfile } from '@/app/actions/settings'
+import { disconnectDiscord } from '@/app/actions/notifications'
 import { toast } from "sonner"
 import { ThemeToggle } from '@/components/ThemeToggle'
 
@@ -25,6 +27,15 @@ export default function AlertsPage() {
     const [isSaving, setIsSaving] = React.useState(false)
     const [exportModal, setExportModal] = React.useState<{ open: boolean, type: 'PDF' | 'CSV' | null }>({ open: false, type: null })
     const [isExporting, setIsExporting] = React.useState(false)
+    const [isDisconnectingDiscord, setIsDisconnectingDiscord] = React.useState(false)
+
+    // Discord OAuth2 URL
+    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID
+    const redirectUri = encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}/api/auth/discord/callback`)
+    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=webhook.incoming`
+
+    const searchParams = useSearchParams()
+    const router = useRouter()
 
     React.useEffect(() => {
         async function loadProfile() {
@@ -36,6 +47,26 @@ export default function AlertsPage() {
         }
         loadProfile()
     }, [])
+
+    // Handle Discord OAuth redirect feedback
+    React.useEffect(() => {
+        const success = searchParams.get('success')
+        const error = searchParams.get('error')
+
+        if (success === 'discord_connected') {
+            toast.success('Discord connected successfully!')
+            router.replace('/dashboard/alerts', { scroll: false })
+        } else if (error) {
+            const messages: Record<string, string> = {
+                no_code: 'Discord authorization failed: no code received.',
+                token_exchange_failed: 'Failed to connect Discord. Please try again.',
+                save_failed: 'Connected to Discord but failed to save. Please try again.',
+                unexpected: 'An unexpected error occurred. Please try again.',
+            }
+            toast.error(messages[error] || 'Discord connection failed.')
+            router.replace('/dashboard/alerts', { scroll: false })
+        }
+    }, [searchParams, router])
 
     const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -57,6 +88,23 @@ export default function AlertsPage() {
 
     const handleExportClick = (type: 'PDF' | 'CSV') => {
         setExportModal({ open: true, type })
+    }
+
+    const handleDisconnectDiscord = async () => {
+        setIsDisconnectingDiscord(true)
+        try {
+            const res = await disconnectDiscord()
+            if (res.success) {
+                setProfile((prev: any) => ({ ...prev, discord_webhook: null }))
+                toast.success('Discord disconnected successfully!')
+            } else {
+                toast.error(res.error || 'Error disconnecting Discord')
+            }
+        } catch {
+            toast.error('Unexpected error disconnecting Discord')
+        } finally {
+            setIsDisconnectingDiscord(false)
+        }
     }
 
     const handleExport = async (channel: 'email' | 'telegram') => {
@@ -165,13 +213,55 @@ export default function AlertsPage() {
                         </div>
                     </div>
 
-                    {/* Discord & App (Coming Soon) */}
-                    <div className="grid md:grid-cols-2 gap-4 opacity-75 grayscale hover:grayscale-0 transition-all">
-                        <ComingSoonCard
-                            image="/icons/discord-3d.png"
-                            title="Discord"
-                            description="Webhook integration."
-                        />
+                    {/* Discord & App */}
+                    <div className="grid md:grid-cols-2 gap-4">
+                        {/* Discord Card - OAuth2 */}
+                        <div className={cardStyle}>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="w-12 h-12 relative shrink-0">
+                                    <Image src="/icons/discord-3d.png" alt="Discord" fill className="object-contain" />
+                                </div>
+                                {profile?.discord_webhook ? (
+                                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                                        <CheckCircle2 size={12} /> Connected
+                                    </div>
+                                ) : (
+                                    <div className="px-2 py-1 rounded-md bg-[#5865F2]/10 text-[10px] font-bold text-[#5865F2] uppercase tracking-wider">
+                                        Available
+                                    </div>
+                                )}
+                            </div>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">Discord</h3>
+                            <p className="text-gray-500 dark:text-zinc-500 text-sm mb-4">Webhook integration via OAuth2.</p>
+
+                            {profile?.discord_webhook ? (
+                                <div className="flex flex-col gap-2">
+                                    <div className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-sm font-bold">
+                                        <CheckCircle2 size={16} />
+                                        Discord Connected
+                                    </div>
+                                    <button
+                                        onClick={handleDisconnectDiscord}
+                                        disabled={isDisconnectingDiscord}
+                                        className="px-4 py-2 border border-gray-300 dark:border-white/10 rounded-xl text-sm font-semibold text-gray-600 dark:text-zinc-400 hover:border-red-500/50 hover:text-red-400 transition-all disabled:opacity-50"
+                                    >
+                                        {isDisconnectingDiscord ? (
+                                            <span className="flex items-center justify-center gap-2"><Loader2 size={14} className="animate-spin" /> Disconnecting...</span>
+                                        ) : 'Disconnect'}
+                                    </button>
+                                </div>
+                            ) : (
+                                <a
+                                    href={discordAuthUrl}
+                                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold rounded-xl transition-all text-sm shadow-lg shadow-[#5865F2]/20"
+                                >
+                                    <svg width="20" height="16" viewBox="0 0 71 55" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M60.1 4.6A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.5 37.5 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.6a.2.2 0 00-.1.1C1.5 18.2-.9 31.4.3 44.5a.3.3 0 00.1.2 58.7 58.7 0 0017.7 9 .2.2 0 00.3-.1 42 42 0 003.6-5.9.2.2 0 00-.1-.3 38.6 38.6 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 41.9 41.9 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4 36.3 36.3 0 01-5.5 2.6.2.2 0 00-.1.3 47.1 47.1 0 003.6 5.9.2.2 0 00.3.1 58.5 58.5 0 0017.7-9 .2.2 0 00.1-.2c1.4-15.1-2.4-28.2-10.1-39.8a.2.2 0 00-.1-.1zM23.7 36.5c-3.4 0-6.3-3.2-6.3-7s2.8-7 6.3-7 6.4 3.1 6.3 7-2.8 7-6.3 7zm23.2 0c-3.4 0-6.3-3.2-6.3-7s2.8-7 6.3-7 6.4 3.1 6.3 7-2.8 7-6.3 7z" />
+                                    </svg>
+                                    Connect Discord
+                                </a>
+                            )}
+                        </div>
                         <ComingSoonCard
                             image="/icons/kovr-3d.png"
                             title="Native Push"

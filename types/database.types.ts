@@ -253,6 +253,7 @@ export interface Database {
                     website?: string | null
                     icon?: string | null
                     icon_color?: string | null
+                    end_date?: string | null
                 }
                 Update: {
                     amount?: number
@@ -271,6 +272,7 @@ export interface Database {
                     website?: string | null
                     icon?: string | null
                     icon_color?: string | null
+                    end_date?: string | null
                 }
                 Relationships: [
                     {

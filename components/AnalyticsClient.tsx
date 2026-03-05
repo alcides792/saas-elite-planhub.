@@ -9,8 +9,7 @@ import {
     ArrowDownRight,
     Package,
     ShieldCheck,
-    Zap,
-    Download
+    Zap
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 
@@ -165,18 +164,10 @@ export default function AnalyticsClient({
             {/* Executive Header */}
             <header className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                 <div>
-                    <div className="flex items-center gap-2 mb-2">
-                        <div className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]" />
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-purple-400 font-black">Executive Dashboard</span>
-                    </div>
                     <h1 className="text-5xl font-black text-zinc-900 dark:text-white tracking-tighter">Finance Analytics</h1>
-                    <p className="text-zinc-400 font-medium mt-1">360º view of your recurrent capital flow.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <ThemeToggle />
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-bold text-zinc-300 hover:bg-white/10 transition-all cursor-not-allowed opacity-50">
-                        <Download size={14} /> Export Report
-                    </button>
                 </div>
             </header>
 

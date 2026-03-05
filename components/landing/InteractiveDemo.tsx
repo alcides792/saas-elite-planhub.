@@ -1,8 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LayoutDashboard, Bell, Brain, Globe } from "lucide-react";
+import { LayoutDashboard, Bell, Brain, Globe, Layers } from "lucide-react";
+import Image from "next/image";
+import { useTheme } from "next-themes";
+import LiveDashboardDemo from "./LiveDashboardDemo";
+import LiveAnalyticsDemo from "./LiveAnalyticsDemo";
+import LiveSubscriptionsDemo from "./LiveSubscriptionsDemo";
+import LiveAlertsDemo from "./LiveAlertsDemo";
 
 interface Tab {
     id: string;
@@ -11,7 +17,6 @@ interface Tab {
     icon: React.ElementType;
     description: string;
     gradient: string;
-    imagePath: string;
 }
 
 const tabs: Tab[] = [
@@ -22,7 +27,14 @@ const tabs: Tab[] = [
         icon: LayoutDashboard,
         description: "Centralize all your subscriptions in an intuitive cyberpunk dashboard. Track monthly and yearly spending in real-time.",
         gradient: "from-blue-500 via-purple-500 to-pink-500",
-        imagePath: "/dashboard-preview.png"
+    },
+    {
+        id: "subscriptions",
+        label: "Full Management",
+        shortLabel: "Control.",
+        icon: Layers,
+        description: "Keep all your subscriptions organized in a professional list. Filter by category, price, and renewal date with ease.",
+        gradient: "from-indigo-500 via-blue-500 to-emerald-500",
     },
     {
         id: "alerts",
@@ -31,7 +43,6 @@ const tabs: Tab[] = [
         icon: Bell,
         description: "Never be charged by surprise again. Kovr alerts you on Telegram or Email 3 days before any renewal.",
         gradient: "from-purple-500 via-pink-500 to-red-500",
-        imagePath: "/alerts-preview.png"
     },
     {
         id: "ai",
@@ -40,7 +51,6 @@ const tabs: Tab[] = [
         icon: Brain,
         description: "Our Artificial Intelligence analyzes your history, identifies duplicate spending, and suggests where you can cut costs.",
         gradient: "from-emerald-500 via-teal-500 to-cyan-500",
-        imagePath: "/ai-preview.png"
     },
     {
         id: "extension",
@@ -49,27 +59,34 @@ const tabs: Tab[] = [
         icon: Globe,
         description: "Too lazy to add manually? Install our Browser Extension. It detects when you're on a subscription site (like Netflix) and adds it to Kovr with 1 click.",
         gradient: "from-orange-500 via-amber-500 to-yellow-500",
-        imagePath: "/extension-preview.png"
     }
 ];
 
 export default function InteractiveDemo() {
     const [activeTab, setActiveTab] = useState<string>("dashboard");
+    const [mounted, setMounted] = useState(false);
+    const { resolvedTheme } = useTheme();
     const currentTab = tabs.find(tab => tab.id === activeTab) || tabs[0];
 
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+
+
     return (
-        <section className="py-24 bg-black relative overflow-hidden">
+        <section className="py-24 relative overflow-hidden transition-colors duration-500">
             {/* Background Atmosphere */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] bg-purple-600/5 blur-[150px] rounded-full pointer-events-none" />
 
-            <div className="max-w-7xl mx-auto px-6 relative z-10">
+            <div className="max-w-[1400px] mx-auto px-6 relative z-10">
                 {/* Header */}
                 <div className="text-center mb-16">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-purple-400 text-sm font-bold mb-6"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-purple-600 dark:text-purple-400 text-sm font-bold mb-6"
                     >
                         <LayoutDashboard size={14} />
                         INTERACTIVE DEMO
@@ -80,9 +97,9 @@ export default function InteractiveDemo() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 }}
-                        className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tighter"
+                        className="text-4xl md:text-6xl font-black text-zinc-900 dark:text-white mb-6 tracking-tighter"
                     >
-                        EXPLORE <span className="text-purple-500">KOVR</span>
+                        EXPLORE <span className="text-purple-600 dark:text-purple-500">KOVR</span>
                     </motion.h2>
 
                     <motion.p
@@ -90,16 +107,16 @@ export default function InteractiveDemo() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.2 }}
-                        className="text-zinc-400 text-xl max-w-2xl mx-auto"
+                        className="text-zinc-600 dark:text-zinc-400 text-xl max-w-2xl mx-auto"
                     >
                         Discover how each feature works to simplify your subscription management.
                     </motion.p>
                 </div>
 
-                {/* Interactive Demo Grid */}
-                <div className="grid lg:grid-cols-[280px_1fr_320px] gap-8 items-start">
-                    {/* Tab Buttons - Left Column */}
-                    <div className="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0">
+                {/* Interactive Demo Grid - 2 Columns Layout */}
+                <div className="grid lg:grid-cols-[350px_1fr] gap-12 items-start">
+                    {/* Tab Selection - Left Column */}
+                    <div className="flex flex-col gap-4">
                         {tabs.map((tab, idx) => {
                             const Icon = tab.icon;
                             const isActive = activeTab === tab.id;
@@ -113,138 +130,127 @@ export default function InteractiveDemo() {
                                     transition={{ delay: idx * 0.1 }}
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`
-                                        relative flex items-center gap-4 px-6 py-4 rounded-2xl
-                                        transition-all duration-300 whitespace-nowrap lg:whitespace-normal
+                                        relative flex flex-col items-start gap-4 px-8 py-6 rounded-3xl
+                                        transition-all duration-500 text-left
                                         ${isActive
-                                            ? 'bg-purple-600/20 border-2 border-purple-500 shadow-[0_0_30px_rgba(168,85,247,0.3)]'
-                                            : 'bg-zinc-900/50 border border-white/5 hover:border-white/10 hover:bg-zinc-900/80'
-                                        }
+                                            ? 'bg-white dark:bg-zinc-900 shadow-xl shadow-purple-500/10 border-2 border-purple-500'
+                                            : 'bg-zinc-100/50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-white/5 hover:bg-white dark:hover:bg-zinc-900/50 hover:border-zinc-300 dark:hover:border-white/10'}
                                     `}
                                 >
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="activeTab"
-                                            className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 rounded-2xl"
-                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                        />
-                                    )}
-
-                                    <div className={`
-                                        relative z-10 p-2 rounded-xl
-                                        ${isActive ? 'bg-purple-500/20' : 'bg-white/5'}
-                                    `}>
-                                        <Icon size={20} className={isActive ? 'text-purple-400' : 'text-zinc-400'} />
-                                    </div>
-
-                                    <div className="relative z-10 text-left">
-                                        <div className={`font-bold text-sm ${isActive ? 'text-white' : 'text-zinc-400'}`}>
-                                            {tab.label}
+                                    <div className="flex items-center gap-4 relative z-10 w-full">
+                                        <div className={`
+                                            p-3 rounded-xl transition-colors duration-300
+                                            ${isActive ? 'bg-purple-600 dark:bg-purple-500 text-white' : 'bg-zinc-200 dark:bg-white/5 text-zinc-500 dark:text-zinc-400'}
+                                        `}>
+                                            <Icon size={24} />
                                         </div>
-                                        <div className={`text-xs ${isActive ? 'text-purple-300' : 'text-zinc-600'}`}>
-                                            {tab.shortLabel}
+
+                                        <div className="flex flex-col">
+                                            <div className={`font-black text-lg ${isActive ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                                                {tab.label}
+                                            </div>
+                                            <div className={`text-sm font-bold uppercase tracking-wider ${isActive ? 'text-purple-600 dark:text-purple-400' : 'text-zinc-400 dark:text-zinc-600'}`}>
+                                                {tab.shortLabel}
+                                            </div>
                                         </div>
                                     </div>
+
+                                    {/* Expanded Description when Active */}
+                                    <AnimatePresence>
+                                        {isActive && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="overflow-hidden relative z-10"
+                                            >
+                                                <p className="mt-4 text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                                                    {tab.description}
+                                                </p>
+
+                                                <div className="mt-6 pt-4 border-t border-zinc-100 dark:border-white/5 flex items-center gap-2">
+                                                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
+                                                    <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-widest">
+                                                        Active Tool
+                                                    </span>
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </motion.button>
                             );
                         })}
                     </div>
 
-                    {/* Preview Area - Center Column */}
+                    {/* Full Preview Area - Right Column */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        className="relative group"
+                        className="relative group lg:sticky lg:top-24"
                     >
-                        {/* Glowing Backlight */}
-                        <div className="absolute -inset-6 bg-gradient-to-r from-purple-600 to-blue-600 rounded-[3rem] blur-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
+                        {/* Glowing Backlight - Larger and brighter */}
+                        <div className="absolute -inset-10 bg-gradient-to-r from-purple-600/20 to-blue-600/20 blur-[100px] rounded-full pointer-events-none" />
+                        <div className="absolute -inset-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-700" />
 
-                        <div className="relative aspect-video w-full rounded-[2.5rem] overflow-hidden border border-white/10 bg-zinc-900 shadow-2xl">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={activeTab}
-                                    initial={{ opacity: 0, scale: 1.05 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ duration: 0.4 }}
-                                    className={`absolute inset-0 bg-gradient-to-br ${currentTab.gradient} opacity-20`}
-                                />
-                            </AnimatePresence>
-
-                            {/* Placeholder for actual screenshots */}
-                            <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="relative aspect-[16/11] w-full rounded-2xl overflow-hidden border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 shadow-2xl transition-all duration-500 group-hover:scale-[1.01]">
+                            {/* Actual Preview Image or Placeholder */}
+                            <div className="absolute inset-0 w-full h-full flex items-center justify-center">
                                 <AnimatePresence mode="wait">
                                     <motion.div
-                                        key={activeTab}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        transition={{ duration: 0.3 }}
-                                        className="text-center"
+                                        key={activeTab + (activeTab === "dashboard" && mounted ? resolvedTheme : "")}
+                                        initial={{ opacity: 0, scale: 1.05 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        transition={{ duration: 0.4 }}
+                                        className="relative w-full h-full flex items-center justify-center"
                                     >
-                                        {React.createElement(currentTab.icon, {
-                                            size: 80,
-                                            className: "mx-auto mb-4 text-white/20"
-                                        })}
-                                        <p className="text-white/40 text-sm font-mono">
-                                            {currentTab.label} Preview
-                                        </p>
+                                        {activeTab === "dashboard" ? (
+                                            <div className="w-full h-full scale-[0.6] sm:scale-[0.75] md:scale-[0.9] lg:scale-[1.02] transition-transform origin-center">
+                                                <LiveDashboardDemo />
+                                            </div>
+                                        ) : activeTab === "ai" ? (
+                                            <div className="w-full h-full scale-[0.6] sm:scale-[0.75] md:scale-[0.9] lg:scale-[1.02] transition-transform origin-center">
+                                                <LiveAnalyticsDemo />
+                                            </div>
+                                        ) : activeTab === "subscriptions" ? (
+                                            <div className="w-full h-full scale-[0.6] sm:scale-[0.75] md:scale-[0.9] lg:scale-[1.02] transition-transform origin-center">
+                                                <LiveSubscriptionsDemo />
+                                            </div>
+                                        ) : activeTab === "alerts" ? (
+                                            <div className="w-full h-full scale-[0.6] sm:scale-[0.75] md:scale-[0.9] lg:scale-[1.02] transition-transform origin-center">
+                                                <LiveAlertsDemo />
+                                            </div>
+                                        ) : (
+                                            <div className="text-center group-hover:scale-110 transition-transform duration-500">
+                                                {React.createElement(currentTab.icon, {
+                                                    size: 120,
+                                                    className: "mx-auto mb-6 text-zinc-400/10 dark:text-white/10"
+                                                })}
+                                                <p className="text-zinc-500/20 dark:text-white/20 text-xl font-mono">
+                                                    {currentTab.label} Preview
+                                                </p>
+                                            </div>
+                                        )}
                                     </motion.div>
                                 </AnimatePresence>
                             </div>
 
                             {/* Grid Overlay for Cyberpunk Effect */}
                             <div
-                                className="absolute inset-0 opacity-5 pointer-events-none"
+                                className="absolute inset-0 opacity-[0.03] pointer-events-none"
                                 style={{
                                     backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
                                                      linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-                                    backgroundSize: '20px 20px'
+                                    backgroundSize: '30px 30px'
                                 }}
                             />
                         </div>
-                    </motion.div>
 
-                    {/* Description - Right Column */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        className="lg:sticky lg:top-24"
-                    >
-                        <div className="p-8 rounded-[2.5rem] bg-zinc-900/50 border border-white/5 backdrop-blur-sm">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={activeTab}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    <div className="flex items-center gap-3 mb-6">
-                                        {React.createElement(currentTab.icon, {
-                                            size: 24,
-                                            className: "text-purple-400"
-                                        })}
-                                        <h3 className="text-2xl font-black text-white">
-                                            {currentTab.label}
-                                        </h3>
-                                    </div>
-
-                                    <p className="text-zinc-400 leading-relaxed text-lg">
-                                        {currentTab.description}
-                                    </p>
-
-                                    <div className="mt-8 pt-6 border-t border-white/5">
-                                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r ${currentTab.gradient} bg-opacity-10 border border-white/10`}>
-                                            <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                                            <span className="text-xs font-bold text-purple-300 uppercase tracking-wider">
-                                                Active Feature
-                                            </span>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            </AnimatePresence>
+                        {/* Floating elements to decorate */}
+                        <div className="absolute -top-6 -right-6 w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-12 transition-transform group-hover:rotate-0">
+                            <Brain className="text-white" size={24} />
                         </div>
                     </motion.div>
                 </div>

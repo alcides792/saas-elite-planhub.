@@ -6,6 +6,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { LucideIcon, LogIn, UserPlus } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ThemeToggle } from "@/components/ThemeToggle"
 
 interface NavItem {
     name: string
@@ -142,8 +143,9 @@ export function NavBar({ items, className, user }: NavBarProps) {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
                                 style={{ opacity: isMobile ? 1 : opacity, scale: isMobile ? 1 : scale }}
-                                className="flex items-center border-l border-white/10 ml-2 pl-2 gap-1 sm:gap-2 overflow-hidden"
+                                className="flex items-center border-l border-white/10 ml-2 pl-2 gap-1 sm:gap-4 overflow-hidden"
                             >
+                                <ThemeToggle />
                                 <Link
                                     href="/login"
                                     className="flex items-center gap-2 text-xs font-bold px-3 sm:px-4 py-2 rounded-full text-white/70 hover:text-white transition-colors whitespace-nowrap"
@@ -166,8 +168,9 @@ export function NavBar({ items, className, user }: NavBarProps) {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
                                 style={{ opacity: isMobile ? 1 : opacity, scale: isMobile ? 1 : scale }}
-                                className="flex items-center border-l border-white/10 ml-2 pl-2 overflow-hidden"
+                                className="flex items-center border-l border-white/10 ml-2 pl-2 gap-4 overflow-hidden"
                             >
+                                <ThemeToggle />
                                 <Link
                                     href="/dashboard"
                                     className="bg-purple-600 text-white text-xs font-bold px-6 py-2 rounded-full hover:bg-purple-500 transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] active:scale-95 whitespace-nowrap"

@@ -38,13 +38,13 @@ const features = [
 
 export default function Features() {
     return (
-        <section id="features" className="py-20 bg-black/50">
+        <section id="features" className="py-20 transition-colors duration-500">
             <div className="container mx-auto px-6">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+                <div className="text-center mb-16 relative z-10">
+                    <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4">
                         The Solution
                     </h2>
-                    <p className="text-zinc-400 max-w-xl mx-auto">
+                    <p className="text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
                         We develop the technology needed so you never lose control of your digital finances again.
                     </p>
                 </div>
@@ -57,7 +57,7 @@ export default function Features() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="group relative p-8 rounded-3xl bg-zinc-900/50 border border-white/5 hover:border-purple-500/30 transition-all hover:shadow-2xl hover:shadow-purple-500/5 overflow-hidden"
+                            className="group relative p-8 rounded-3xl bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-white/5 hover:border-purple-500/30 transition-all hover:shadow-2xl hover:shadow-purple-500/5 overflow-hidden shadow-sm dark:shadow-none"
                         >
                             {/* Glow Effect */}
                             <div className={cn(
@@ -72,10 +72,10 @@ export default function Features() {
                                 <feature.icon size={28} />
                             </div>
 
-                            <h3 className="text-2xl font-bold text-white mb-4">
+                            <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-4">
                                 {feature.title}
                             </h3>
-                            <p className="text-zinc-400 leading-relaxed">
+                            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
                                 {feature.description}
                             </p>
                         </motion.div>

@@ -35,7 +35,7 @@ export default function NotificationChannels() {
     ]
 
     return (
-        <section className="py-24 bg-black relative overflow-hidden">
+        <section className="py-24 relative overflow-hidden transition-colors duration-500">
             {/* Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none" />
 
@@ -46,10 +46,10 @@ export default function NotificationChannels() {
                     viewport={{ once: true }}
                     className="mb-16"
                 >
-                    <h2 className="text-3xl md:text-5xl font-black mb-4 tracking-tighter text-white">
-                        ALERT <span className="text-purple-500">SYSTEM</span>
+                    <h2 className="text-3xl md:text-5xl font-black mb-4 tracking-tighter text-zinc-900 dark:text-white">
+                        ALERT <span className="text-purple-600 dark:text-purple-500">SYSTEM</span>
                     </h2>
-                    <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
+                    <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl mx-auto">
                         Choose where you want to receive your expiration notices and savings alerts.
                     </p>
                 </motion.div>
@@ -63,7 +63,7 @@ export default function NotificationChannels() {
                             viewport={{ once: true }}
                             transition={{ delay: idx * 0.1 }}
                             whileHover={{ y: -5 }}
-                            className="p-8 rounded-[2.5rem] bg-zinc-900/40 border border-white/5 backdrop-blur-sm flex flex-col items-center gap-6 group hover:border-purple-500/30 transition-all shadow-xl shadow-black/50"
+                            className="p-8 rounded-[2.5rem] bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-white/5 backdrop-blur-sm flex flex-col items-center gap-6 group hover:border-purple-500/30 transition-all shadow-xl shadow-black/5 dark:shadow-black/50"
                         >
                             <div className="relative">
                                 {/* Icon Glow */}
@@ -81,7 +81,7 @@ export default function NotificationChannels() {
                             </div>
 
                             <div className="space-y-2">
-                                <h3 className="text-xl font-bold text-white tracking-tight">{channel.name}</h3>
+                                <h3 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">{channel.name}</h3>
                                 <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${channel.statusColor} inline-block`}>
                                     ● {channel.status}
                                 </span>

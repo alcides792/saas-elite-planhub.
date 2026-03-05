@@ -30,8 +30,8 @@ export const TestimonialsColumn = (props: {
                 {[...new Array(2)].map((_, index) => (
                     <React.Fragment key={index}>
                         {props.testimonials.map(({ text, image, name, role }, i) => (
-                            <div key={i} className="p-6 rounded-3xl border border-white/5 bg-[#0F0F11] shadow-xl shadow-black/20 max-w-xs w-full hover:border-purple-500/30 transition-colors duration-300">
-                                <div className="text-zinc-300 text-sm leading-relaxed">"{text}"</div>
+                            <div key={i} className="p-6 rounded-3xl border border-zinc-200 dark:border-white/5 bg-white/50 dark:bg-[#0F0F11]/50 shadow-xl shadow-black/5 dark:shadow-black/20 max-w-xs w-full hover:border-purple-500/30 transition-colors duration-300 backdrop-blur-sm">
+                                <div className="text-zinc-600 dark:text-zinc-300 text-sm leading-relaxed">"{text}"</div>
                                 <div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/5">
                                     <div className="relative h-10 w-10 shrink-0">
                                         <Image
@@ -42,8 +42,8 @@ export const TestimonialsColumn = (props: {
                                         />
                                     </div>
                                     <div className="flex flex-col">
-                                        <div className="font-bold text-white text-sm">{name}</div>
-                                        <div className="text-xs text-purple-400 font-medium">{role}</div>
+                                        <div className="font-bold text-zinc-900 dark:text-white text-sm">{name}</div>
+                                        <div className="text-xs text-purple-600 dark:text-purple-400 font-medium">{role}</div>
                                     </div>
                                 </div>
                             </div>
@@ -100,13 +100,13 @@ export const TestimonialsSection = () => {
     const col3 = testimonials.slice(4, 6);
 
     return (
-        <section className="relative py-24 overflow-hidden border-t border-white/5 bg-[#09090b]">
+        <section className="relative py-24 overflow-hidden border-t border-zinc-200 dark:border-white/5 transition-colors duration-500">
             <div className="container mx-auto px-6 relative z-10">
                 <div className="text-center max-w-2xl mx-auto mb-16">
-                    <h2 className="text-3xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">
+                    <h2 className="text-3xl font-bold mb-4 text-zinc-900 dark:text-white">
                         Loved by thousands.
                     </h2>
-                    <p className="text-zinc-500">
+                    <p className="text-zinc-600 dark:text-zinc-500">
                         Join thousands of people who stopped wasting money on useless subscriptions.
                     </p>
                 </div>

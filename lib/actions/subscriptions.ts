@@ -226,10 +226,18 @@ export async function toggleSubscriptionStatus(id: string): Promise<{ data: Subs
         // Toggle status
         const newStatus = currentSub.status === 'active' ? 'paused' : 'active';
 
+        // When pausing/cancelling, record the end_date. When reactivating, clear it.
+        const updatePayload: any = { status: newStatus };
+        if (newStatus === 'paused') {
+            updatePayload.end_date = new Date().toISOString().split('T')[0]; // today
+        } else {
+            updatePayload.end_date = null; // clear on reactivation
+        }
+
         // Update in database
         const { data, error } = await supabase
             .from('subscriptions')
-            .update({ status: newStatus } as TablesUpdate<'subscriptions'>)
+            .update(updatePayload as TablesUpdate<'subscriptions'>)
             .eq('id', id)
             .eq('user_id', session.user.id)
             .select()

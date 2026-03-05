@@ -20,15 +20,13 @@ import {
     Calendar,
     ArrowRight,
     Terminal,
-    Settings2,
-    Download,
-    Youtube
+    Settings2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getProfile, updateProfile } from '@/app/actions/settings';
 import { useUser } from '@/contexts/UserContext';
-import ConnectExtension from '@/components/ConnectExtension';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import PremiumSelect from '@/components/ui/PremiumSelect';
 
 // Custom UI Components
 const BentoCard = ({ children, className = "", title, icon: Icon, description, badge }: any) => (
@@ -110,8 +108,6 @@ export default function SettingsPage() {
     const [profile, setProfile] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
-    const [isRotating, setIsRotating] = useState(false);
-    const [copied, setCopied] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
     const [formData, setFormData] = useState({
@@ -154,14 +150,6 @@ export default function SettingsPage() {
             showToast(res.error || 'Failed to save', 'error');
         }
         setIsSaving(false);
-    };
-
-    const copyKey = () => {
-        if (profile?.extension_api_key) {
-            navigator.clipboard.writeText(profile.extension_api_key);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        }
     };
 
     if (isLoading) {
@@ -257,91 +245,40 @@ export default function SettingsPage() {
                     </div>
                 </BentoCard>
 
-                {/* 2. Chrome Extension Section (Top Right - 7 columns) */}
-                <BentoCard
-                    title="Kovr Extension"
-                    icon={Download}
-                    description="Manage your subscriptions directly from the browser"
-                    badge="Manual Installation"
-                    className="md:col-span-7"
-                >
-                    <div className="mt-6 space-y-8">
-                        <div className="p-8 bg-gray-50 dark:bg-zinc-950 border border-gray-200 dark:border-purple-500/20 rounded-[2.5rem] relative group overflow-hidden">
-                            {/* Animated Circuit Line */}
-                            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-30 animate-pulse" />
-
-                            <div className="space-y-4 mb-8">
-                                <p className="text-sm text-gray-600 dark:text-zinc-300 font-medium leading-relaxed">
-                                    Download our extension to manage your subscriptions directly from the browser. Since we are not yet in the Chrome Store, you need to install it manually.
-                                </p>
-                            </div>
-
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <a
-                                    href="/extension.zip"
-                                    download
-                                    className="flex-1 flex items-center justify-center gap-3 bg-purple-600 text-white px-6 py-4 rounded-2xl font-black text-sm transition-all hover:bg-purple-700 hover:scale-[1.02] active:scale-95 shadow-lg shadow-purple-500/20"
-                                >
-                                    <Download size={20} />
-                                    DOWNLOAD EXTENSION (.ZIP)
-                                </a>
-                                <a
-                                    href="https://youtube.com"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex-1 flex items-center justify-center gap-3 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-gray-900 dark:text-white px-6 py-4 rounded-2xl font-black text-sm transition-all hover:bg-gray-100 dark:hover:bg-zinc-700 hover:scale-[1.02] active:scale-95 shadow-sm"
-                                >
-                                    <Youtube size={20} className="text-red-500" />
-                                    WATCH INSTALLATION TUTORIAL
-                                </a>
-                            </div>
-                        </div>
-
-                        {/* Extension Connection Section - Keeping ConnectExtension for the API Key display/checking */}
-                        <div className="mt-2 border-t border-white/5 pt-8">
-                            <ConnectExtension />
-                        </div>
-                    </div>
-                </BentoCard>
-
-                {/* 3. Preferences (Middle Row - 4 columns) */}
+                {/* 2. Preferences (Middle Row - 7 columns) */}
                 <BentoCard
                     title="Global Settings"
                     icon={Globe}
                     description="Regional & Financial"
-                    className="md:col-span-4"
+                    className="md:col-span-7"
                 >
                     <div className="mt-4 space-y-6">
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-gray-500 dark:text-zinc-500 uppercase tracking-[0.2em] ml-2 block">Main Currency</label>
-                            <div className="relative">
-                                <Coins size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-600" />
-                                <select
-                                    value={formData.currency}
-                                    onChange={(e: any) => setFormData({ ...formData, currency: e.target.value })}
-                                    className="w-full bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-xl pl-11 pr-5 py-3 appearance-none text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all font-bold"
-                                >
-                                    <option value="USD">US Dollar ($) (Default)</option>
-                                    <option value="EUR">Euro (€)</option>
-                                    <option value="BRL">Brazilian Real (R$)</option>
-                                    <option value="AOA">Angolan Kwanza (AOA)</option>
-                                    <option value="MZN">Mozambican Metical (MZN)</option>
-                                </select>
-                            </div>
+                            <PremiumSelect
+                                value={formData.currency}
+                                onChange={(val) => setFormData({ ...formData, currency: val })}
+                                options={[
+                                    { value: 'USD', label: 'US Dollar ($) (Default)' },
+                                    { value: 'EUR', label: 'Euro (€)' },
+                                    { value: 'BRL', label: 'Brazilian Real (R$)' },
+                                    { value: 'AOA', label: 'Angolan Kwanza (AOA)' },
+                                    { value: 'MZN', label: 'Mozambican Metical (MZN)' },
+                                ]}
+                                icon={Coins}
+                            />
                         </div>
                         <div className="space-y-2">
                             <label className="text-[10px] font-black text-gray-500 dark:text-zinc-500 uppercase tracking-[0.2em] ml-2 block">Base Language</label>
-                            <div className="relative">
-                                <Globe size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-600" />
-                                <select
-                                    value={formData.language}
-                                    onChange={(e: any) => setFormData({ ...formData, language: e.target.value })}
-                                    className="w-full bg-gray-50 dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-xl pl-11 pr-5 py-3 appearance-none text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all font-bold"
-                                >
-                                    <option value="en-US">English (USA) (Default)</option>
-                                    <option value="pt-BR">Portuguese (Brazil)</option>
-                                </select>
-                            </div>
+                            <PremiumSelect
+                                value={formData.language}
+                                onChange={(val) => setFormData({ ...formData, language: val })}
+                                options={[
+                                    { value: 'en-US', label: 'English (USA) (Default)' },
+                                    { value: 'pt-BR', label: 'Portuguese (Brazil)' },
+                                ]}
+                                icon={Globe}
+                            />
                         </div>
                     </div>
                 </BentoCard>
@@ -374,15 +311,6 @@ export default function SettingsPage() {
                     color: white;
                 }
                 
-                select option {
-                    background-color: white;
-                    color: black;
-                }
-
-                :global(.dark) select option {
-                    background-color: #09090b;
-                    color: #fff;
-                }
 
                 @keyframes pulse-slow {
                     0%, 100% { opacity: 0.1; }

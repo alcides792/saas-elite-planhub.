@@ -9,7 +9,8 @@ import {
     CreditCard, BarChart3, Users, Settings,
     DollarSign, MessageSquare, HelpCircle, Shield,
     Cookie, FileText, LogOut, X, Menu,
-    PanelLeftClose, PanelLeftOpen, ChevronDown, ChevronUp
+    PanelLeftClose, PanelLeftOpen, ChevronDown, ChevronUp,
+    Puzzle
 } from 'lucide-react';
 import { createClient } from '@/lib/utils/supabase/client';
 import { cn } from '@/lib/utils';
@@ -32,6 +33,7 @@ const navSections: NavSection[] = [
         items: [
             { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
             { label: 'AI Assistant', href: '/dashboard/chat', icon: Bot },
+            { label: 'Extension', href: '/dashboard/extension', icon: Puzzle },
             { label: 'Alerts', href: '/dashboard/alerts', icon: Bell },
             { label: 'Calendar', href: '/dashboard/calendar', icon: Calendar },
         ]

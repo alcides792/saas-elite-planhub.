@@ -2,6 +2,7 @@ import React from 'react';
 import { Zap } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/utils/supabase/server';
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default async function Navbar() {
     const supabase = await createClient();
@@ -22,6 +23,7 @@ export default async function Navbar() {
 
 
                     <div className="flex items-center gap-4">
+                        <ThemeToggle />
                         {user ? (
                             <Link
                                 href="/dashboard"

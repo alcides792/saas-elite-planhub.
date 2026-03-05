@@ -3,6 +3,7 @@
 import { useState, useTransition, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Search, Filter, Wallet, TrendingUp, Layers, ChevronDown } from 'lucide-react';
+import PremiumSelect from '@/components/ui/PremiumSelect';
 import SubscriptionList from '@/components/SubscriptionList';
 import AddSubscriptionModal from '@/components/AddSubscriptionModal';
 import type { Subscription } from '@/types';
@@ -178,39 +179,35 @@ export default function SubscriptionsClient({ initialSubscriptions }: Subscripti
                     />
                 </div>
                 <div className="flex gap-4">
-                    <div className="relative min-w-[160px]">
-                        <select
-                            value={filterCategory}
-                            onChange={(e) => setFilterCategory(e.target.value)}
-                            className="w-full appearance-none bg-black/5 dark:bg-white/5 border border-neutral-200 dark:border-white/10 rounded-xl py-3 pl-4 pr-10 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all cursor-pointer"
-                        >
-                            <option value="all">All Categories</option>
-                            <option value="streaming">Streaming</option>
-                            <option value="entertainment">Entertainment</option>
-                            <option value="music">Music</option>
-                            <option value="software">Software</option>
-                            <option value="productivity">Productivity</option>
-                            <option value="gaming">Gaming</option>
-                            <option value="shopping">Shopping</option>
-                            <option value="health">Health</option>
-                            <option value="other">Other</option>
-                        </select>
-                        <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
-                    </div>
-                    <div className="relative min-w-[180px]">
-                        <select
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value as SortOption)}
-                            className="w-full appearance-none bg-black/5 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl py-3 pl-4 pr-10 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all cursor-pointer"
-                        >
-                            <option value="newest">Most Recent</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="price-desc">Price: High to Low</option>
-                            <option value="price-asc">Price: Low to High</option>
-                            <option value="name-asc">Name: A-Z</option>
-                        </select>
-                        <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
-                    </div>
+                    <PremiumSelect
+                        value={filterCategory}
+                        onChange={setFilterCategory}
+                        options={[
+                            { value: 'all', label: 'All Categories' },
+                            { value: 'streaming', label: 'Streaming' },
+                            { value: 'entertainment', label: 'Entertainment' },
+                            { value: 'music', label: 'Music' },
+                            { value: 'software', label: 'Software' },
+                            { value: 'productivity', label: 'Productivity' },
+                            { value: 'gaming', label: 'Gaming' },
+                            { value: 'shopping', label: 'Shopping' },
+                            { value: 'health', label: 'Health' },
+                            { value: 'other', label: 'Other' },
+                        ]}
+                        className="min-w-[170px]"
+                    />
+                    <PremiumSelect
+                        value={sortBy}
+                        onChange={(val) => setSortBy(val as SortOption)}
+                        options={[
+                            { value: 'newest', label: 'Most Recent' },
+                            { value: 'oldest', label: 'Oldest First' },
+                            { value: 'price-desc', label: 'Price: High to Low' },
+                            { value: 'price-asc', label: 'Price: Low to High' },
+                            { value: 'name-asc', label: 'Name: A-Z' },
+                        ]}
+                        className="min-w-[190px]"
+                    />
                 </div>
             </div>
 

@@ -9,8 +9,8 @@ import {
     PieChart as PieChartIcon
 } from 'lucide-react';
 import {
-    ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip,
-    PieChart, Pie, Cell
+    ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip,
+    PieChart, Pie, Cell, CartesianGrid
 } from 'recharts';
 import { format, differenceInDays, isToday, isTomorrow } from 'date-fns';
 import { useTheme } from 'next-themes';
@@ -32,6 +32,7 @@ interface DashboardClientProps {
         activeCount: number;
         totalCount: number;
     };
+    userCreatedAt?: string;
 }
 
 const CHART_COLORS = ['#7c3aed', '#a855f7', '#c084fc', '#e9d5ff', '#6366f1', '#818cf8'];
@@ -46,7 +47,7 @@ const cardVariants = {
     })
 };
 
-export default function DashboardClient({ subscriptions, stats }: DashboardClientProps) {
+export default function DashboardClient({ subscriptions, stats, userCreatedAt }: DashboardClientProps) {
     const router = useRouter();
     const { formatMoney } = useUser();
     const { theme } = useTheme();
@@ -119,14 +120,15 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
     }, [subscriptions]);
 
     const monthlyChartData = useMemo(() => {
-        const data = calculateYearlyProjection(subscriptions);
+        const data = calculateYearlyProjection(subscriptions, userCreatedAt);
         // Map to match the names expected by the chart if necessary
         // In utility it's 'month', here chart uses 'name'
         return data.map(d => ({
             name: d.month,
-            value: d.total
+            value: d.total,
+            isFuture: d.isFuture
         }));
-    }, [subscriptions]);
+    }, [subscriptions, userCreatedAt]);
 
     const upcomingRenewals = useMemo(() => {
         return subscriptions
@@ -245,7 +247,14 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                     </div>
                     <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={monthlyChartData}>
+                            <AreaChart data={monthlyChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#7c3aed" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#7c3aed" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#333" : "#e5e7eb"} vertical={false} opacity={isDark ? 0.3 : 0.5} />
                                 <XAxis
                                     dataKey="name"
                                     axisLine={false}
@@ -270,8 +279,17 @@ export default function DashboardClient({ subscriptions, stats }: DashboardClien
                                     formatter={(value) => [formatMoney(Number(value) || 0), 'Estimated Spend']}
                                     labelStyle={{ color: isDark ? '#fff' : '#000', fontWeight: 'bold', textTransform: 'uppercase' }}
                                 />
-                                <Bar dataKey="value" fill="#7c3aed" radius={[8, 8, 4, 4]} />
-                            </BarChart>
+                                <Area
+                                    type="monotone"
+                                    dataKey="value"
+                                    stroke="#7c3aed"
+                                    strokeWidth={4}
+                                    fillOpacity={1}
+                                    fill="url(#colorValue)"
+                                    animationDuration={1000}
+                                    activeDot={{ r: 6, strokeWidth: 0, fill: '#7c3aed' }}
+                                />
+                            </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </motion.div>

@@ -15,20 +15,16 @@ export default function Hero() {
             </div>
 
             <div className="container mx-auto px-6 text-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                >
+                <div>
                     <span className="inline-block px-4 py-1.5 mb-6 text-sm font-semibold tracking-wide text-purple-400 uppercase bg-purple-400/10 border border-purple-400/20 rounded-full">
                         Powered by Intelligence
                     </span>
-                    <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tight">
+                    <h1 className="text-5xl md:text-7xl font-extrabold text-zinc-900 dark:text-white mb-6 tracking-tight">
                         All your recurring <br className="hidden md:block" />
-                        payments in <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">one place.</span>
+                        payments in <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-purple-700 dark:from-purple-400 dark:to-purple-600">one place.</span>
                     </h1>
-                    <p className="max-w-2xl mx-auto text-lg md:text-xl text-zinc-400 mb-10 leading-relaxed">
-                        Track renewals, receive alerts on Telegram, and use <span className="text-white font-semibold">Artificial Intelligence</span> to optimize your spending. <span className="text-purple-500 font-bold underline decoration-purple-500/30 underline-offset-4">Never pay</span> for unused services again.
+                    <p className="max-w-2xl mx-auto text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-10 leading-relaxed">
+                        Track renewals, receive alerts on Telegram, and use <span className="text-zinc-900 dark:text-white font-semibold">Artificial Intelligence</span> to optimize your spending. <span className="text-purple-600 dark:text-purple-500 font-bold underline decoration-purple-500/30 underline-offset-4">Never pay</span> for unused services again.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -39,22 +35,19 @@ export default function Hero() {
                             Start Free
                             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
-                        <button className="w-full sm:w-auto px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-bold rounded-2xl border border-white/10 transition-all flex items-center justify-center gap-2 active:scale-95">
-                            <Play size={18} className="fill-white" />
+                        <button className="w-full sm:w-auto px-8 py-4 bg-zinc-100 hover:bg-zinc-200 dark:bg-white/5 dark:hover:bg-white/10 text-zinc-900 dark:text-white font-bold rounded-2xl border border-zinc-200 dark:border-white/10 transition-all flex items-center justify-center gap-2 active:scale-95">
+                            <Play size={18} className="fill-current" />
                             Learn More
                         </button>
                     </div>
 
                     {/* Trust badges/Social proof could go here */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.8, duration: 1 }}
+                    <div
                         className="mt-16 flex flex-wrap justify-center items-center gap-8 opacity-40 grayscale"
                     >
                         {/* Placeholder for logos or trust signals */}
-                    </motion.div>
-                </motion.div>
+                    </div>
+                </div>
             </div>
         </section>
     )

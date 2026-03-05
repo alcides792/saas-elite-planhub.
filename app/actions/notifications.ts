@@ -34,9 +34,20 @@ export async function saveDiscordWebhook(url: string) {
     return { success: true }
 }
 
+export async function disconnectDiscord() {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: "Usuário não logado" }
+
+    const { error } = await supabase.from('profiles').update({ discord_webhook: null }).eq('id', user.id)
+    if (error) return { error: "Erro ao desconectar Discord" }
+
+    return { success: true }
+}
+
 // --- UNIVERSAL SENDER ---
 
-export async function sendNotification(userId: string, message: string, channel: 'telegram' | 'discord' | 'all' = 'all') {
+export async function sendNotification(userId: string, message: string, channel: 'telegram' | 'discord' | 'all' = 'all', buttons?: any[]) {
     const supabase = await createClient()
 
     // Busca as configs do usuário
@@ -54,7 +65,12 @@ export async function sendNotification(userId: string, message: string, channel:
             await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: profile.telegram_chat_id, text: message, parse_mode: 'Markdown' })
+                body: JSON.stringify({
+                    chat_id: profile.telegram_chat_id,
+                    text: message,
+                    parse_mode: 'HTML',
+                    ...(buttons && buttons.length > 0 ? { reply_markup: { inline_keyboard: [buttons] } } : {})
+                })
             })
         } catch (e) {
             console.error("Error sending Telegram notification:", e)
