@@ -170,6 +170,8 @@ export interface Database {
                     notify_days_before: number
                     updated_at: string | null
                     extension_token: string | null
+                    extension_connected: boolean
+                    last_extension_sync: string | null
                     billing_status: string
                     dodo_subscription_id: string | null
                     trial_ends_at: string | null
@@ -186,6 +188,8 @@ export interface Database {
                     notify_days_before?: number
                     updated_at?: string | null
                     extension_token?: string | null
+                    extension_connected?: boolean
+                    last_extension_sync?: string | null
                     billing_status?: string
                     dodo_subscription_id?: string | null
                     trial_ends_at?: string | null
@@ -202,6 +206,8 @@ export interface Database {
                     notify_days_before?: number
                     updated_at?: string | null
                     extension_token?: string | null
+                    extension_connected?: boolean
+                    last_extension_sync?: string | null
                     billing_status?: string
                     dodo_subscription_id?: string | null
                     trial_ends_at?: string | null

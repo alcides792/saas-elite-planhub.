@@ -21,9 +21,9 @@ export default function NotificationChannels() {
         {
             name: "Discord",
             icon: "/discord-3d.png",
-            status: "Coming Soon",
-            statusColor: "text-purple-400 bg-purple-400/10 border-purple-400/20",
-            active: false
+            status: "Active",
+            statusColor: "text-green-400 bg-green-400/10 border-green-400/20",
+            active: true
         },
         {
             name: "Kovr App",

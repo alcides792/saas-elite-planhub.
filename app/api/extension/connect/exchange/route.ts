@@ -47,13 +47,23 @@ export async function POST(req: Request) {
     // (Can be a JWT or a secure random string)
     const extensionToken = 'ext_' + crypto.randomBytes(24).toString('hex');
 
-    // 4. Save this token to user profile
-    const { error: updateError } = await supabaseAdmin
+    const { data: profileData, error: updateError } = await supabaseAdmin
       .from('profiles')
-      .update({ extension_token: extensionToken }) // Ensure this column exists in 'profiles'
-      .eq('id', codeRecord.user_id);
+      .update({
+        extension_token: extensionToken,
+        extension_connected: true,
+        last_extension_sync: new Date().toISOString(),
+      })
+      .eq('id', codeRecord.user_id)
+      .select('email, full_name, plan') // Selecionamos os campos reais
+      .single();
 
-    if (updateError) throw updateError;
+    if (updateError || !profileData) {
+      console.error('Update/Fetch error:', updateError);
+      throw updateError || new Error('Profile not found');
+    }
+
+    const isPremium = profileData.plan === 'pro';
 
     // 5. Delete used code (prevent reuse)
     await supabaseAdmin.from('connect_codes').delete().eq('code', code);
@@ -63,7 +73,11 @@ export async function POST(req: Request) {
       ok: true,
       data: {
         extension_token: extensionToken,
-        user: { email: 'Connected' } // Optional extra data
+        user: {
+          email: profileData.email || '',
+          full_name: profileData.full_name || 'Utilizador',
+          is_premium: isPremium
+        }
       }
     }, { headers: corsHeaders });
 

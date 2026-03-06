@@ -25,10 +25,10 @@ export async function GET(req: Request) {
 
     const token = authHeader.replace('Bearer ', '');
 
-    // 1. Busca o ID do usuário usando o token (na tabela profiles)
+    // 1. Busca os dados do usuário usando o token
     const { data: profile, error } = await supabaseAdmin
       .from('profiles')
-      .select('id') // Só precisamos do ID
+      .select('email, full_name, plan')
       .eq('extension_token', token)
       .single();
 
@@ -36,18 +36,16 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: false, error: 'token_expired' }, { status: 401, headers: corsHeaders });
     }
 
-    // 2. Busca o EMAIL REAL na tabela do sistema (auth.users)
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.admin.getUserById(profile.id);
-
-    const email = user?.email || 'Email Oculto';
+    const isPremium = profile.plan === 'pro';
 
     // 3. Retorna tudo
     return NextResponse.json({
       ok: true,
       data: {
-        email: email, 
-        is_premium: true,
-        limit: 9999,
+        email: profile.email || '',
+        full_name: profile.full_name || 'Utilizador',
+        is_premium: isPremium,
+        limit: isPremium ? 9999 : 5,
         subs_count: 0,
         can_add: true
       }
