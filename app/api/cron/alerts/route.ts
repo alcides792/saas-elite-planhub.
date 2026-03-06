@@ -139,22 +139,47 @@ export async function GET(request: Request) {
                 // Skip past renewals
                 if (daysUntilRenewal < 0) continue
 
-                // ── Build action links & buttons ──
+                // ── Build action links ──
                 const renewLink = `${publicUrl}/api/subscriptions/action?id=${sub.id}&action=renew`
                 const cancelLink = `${publicUrl}/api/subscriptions/action?id=${sub.id}&action=delete`
-
-                const telegramButtons = [
-                    { text: '✅ Keep Active', url: renewLink },
-                    { text: '❌ Cancel Now', url: cancelLink },
-                ]
 
                 // ── Rule A: Advance warning (X days before) ──
                 if (daysUntilRenewal === notifyDaysBefore) {
                     const daysLabel = notifyDaysBefore > 1 ? `${notifyDaysBefore} days` : '1 day'
+                    const formattedDate = format(renewalDate, 'dd/MM/yyyy')
 
-                    // Telegram (HTML) / Discord (Markdown) messages
-                    const messageHTML = `🚨 <b>Kovr Alert:</b> Your <b>${sub.name}</b> subscription (${sub.currency} ${sub.amount}) renews in <b>${daysLabel}</b>!`
-                    const messageMD = `🚨 **Kovr Alert:** Your **${sub.name}** subscription (${sub.currency} ${sub.amount}) renews in **${daysLabel}**!`
+                    // Telegram (HTML)
+                    const messageHTML = `🚨 <b>KOVR INSIGHT: Projeta a tua Poupança!</b>\n\n` +
+                        `A tua assinatura <b>${sub.name}</b> renova em <b>${daysLabel}</b>.\n\n` +
+                        `📊 <b>Resumo da Transação:</b>\n` +
+                        `• <b>Serviço:</b> ${sub.name}\n` +
+                        `• <b>Investimento:</b> <code>${sub.currency} ${sub.amount}</code>\n` +
+                        `• <b>Data Crítica:</b> ${formattedDate}\n\n` +
+                        `💡 <b>Dica Kovr:</b>\n` +
+                        `Não deixes o teu dinheiro no piloto automático. Se este serviço já não faz parte da tua rotina, cancela-o agora e poupa <b>${sub.currency} ${sub.amount}</b> este mês!\n\n` +
+                        `⚠️ <b>Ação Necessária:</b>\n` +
+                        `Para interromper a cobrança, o cancelamento deve ser feito no painel oficial da <a href="${sub.website || '#'}">${sub.name}</a>.\n\n` +
+                        `<i>Após cancelar no site, clica abaixo para atualizarmos o teu dashboard.</i>`
+
+                    // Discord (Markdown)
+                    const messageMD = `🚨 **KOVR INSIGHT: Projeta a tua Poupança!**\n\n` +
+                        `A tua assinatura **${sub.name}** renova em **${daysLabel}**.\n\n` +
+                        `📊 **Resumo da Transação:**\n` +
+                        `• **Serviço:** ${sub.name}\n` +
+                        `• **Investimento:** \`${sub.currency} ${sub.amount}\`\n` +
+                        `• **Data Crítica:** ${formattedDate}\n\n` +
+                        `💡 **Dica Kovr:**\n` +
+                        `Não deixes o teu dinheiro no piloto automático. Se este serviço já não faz parte da tua rotina, cancela-o agora e poupa **${sub.currency} ${sub.amount}** este mês!\n\n` +
+                        `⚠️ **Ação Necessária:**\n` +
+                        `Para interromper a cobrança, o cancelamento deve ser feito no painel oficial:\n` +
+                        `🔗 [Aceder ao site da ${sub.name}](${sub.website || 'https://google.com'})\n\n` +
+                        `*Após cancelar no site, clica abaixo para atualizarmos o teu dashboard.*`
+
+                    const telegramButtons = [
+                        { text: '✅ Vou Manter', url: renewLink },
+                        { text: '✂️ Já cancelei no site', url: cancelLink },
+                    ]
+
                     await dispatchToUser(profile, messageHTML, messageMD, telegramButtons)
 
                     // Email notification
@@ -188,6 +213,12 @@ export async function GET(request: Request) {
                     // Telegram (HTML) / Discord (Markdown) messages
                     const messageHTML = `⚠️ <b>Kovr Alert:</b> Your <b>${sub.name}</b> subscription (${sub.currency} ${sub.amount}) renews <b>TODAY</b>!`
                     const messageMD = `⚠️ **Kovr Alert:** Your **${sub.name}** subscription (${sub.currency} ${sub.amount}) renews **TODAY**!`
+
+                    const telegramButtons = [
+                        { text: '✅ Vou Manter', url: renewLink },
+                        { text: '✂️ Já cancelei no site', url: cancelLink },
+                    ]
+
                     await dispatchToUser(profile, messageHTML, messageMD, telegramButtons)
 
                     // Email notification
