@@ -12,8 +12,8 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Kovr - Smart Subscription Manager",
-  description: "Track, manage, and optimize your recurring expenses in one place.",
+  title: "Kovr | O teu gestor inteligente de assinaturas",
+  description: "Gere as tuas subscrições, recebe alertas de renovação e descobre onde podes poupar dinheiro todos os meses. Nunca mais pagues por serviços que não usas.",
 };
 
 export default function RootLayout({

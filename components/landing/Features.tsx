@@ -40,42 +40,55 @@ export default function Features() {
     return (
         <section id="features" className="py-20 transition-colors duration-500">
             <div className="container mx-auto px-6">
-                <div className="text-center mb-16 relative z-10">
-                    <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4">
-                        THE SOLUTION
+                <div className="text-center mb-20 relative z-10">
+                    <h2 className="text-4xl md:text-6xl font-black text-[#1a1a1a] dark:text-white mb-6 tracking-tighter uppercase">
+                        DOMINA AS TUAS <span className="text-[#1fe2c3]">FINANÇAS</span>
                     </h2>
-                    <p className="text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">
-                        WE DEVELOP THE TECHNOLOGY NEEDED SO YOU NEVER LOSE CONTROL OF YOUR DIGITAL FINANCES AGAIN
+                    <p className="text-[#1a1a1a]/70 dark:text-zinc-400 max-w-2xl mx-auto text-xl font-bold italic">
+                        CRIAMOS A TECNOLOGIA PARA QUE NUNCA MAIS PERCAS O CONTROLO DOS TEUS GASTOS DIGITAIS
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {features.map((feature, index) => (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    {[
+                        {
+                            title: "Extensão Chrome de Detecção Automática",
+                            description: "A nossa extensão identifica subscrições enquanto navegas, sem precisares de introduzir dados manualmente.",
+                            icon: Layers,
+                            color: "bg-[#1fe2c3]"
+                        },
+                        {
+                            title: "Alertas de Renovação",
+                            description: "Recebe notificações via Telegram ou Discord 3 dias antes de qualquer cobrança. Acabaram-se as surpresas.",
+                            icon: AlarmClock,
+                            color: "bg-[#faed27]"
+                        },
+                        {
+                            title: "Controlo Financeiro Simples",
+                            description: "Um dashboard limpo e direto. Vê exatamente para onde vai o teu dinheiro todos os meses.",
+                            icon: ShieldCheck,
+                            color: "bg-purple-500"
+                        }
+                    ].map((feature, index) => (
                         <motion.div
                             key={index}
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="group relative p-8 rounded-3xl bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-white/5 hover:border-purple-500/30 transition-all hover:shadow-2xl hover:shadow-purple-500/5 overflow-hidden shadow-sm dark:shadow-none"
+                            transition={{ duration: 0.4, delay: index * 0.1 }}
+                            className="group relative p-10 bg-white border-4 border-[#1a1a1a] hover:translate-x-[-8px] hover:translate-y-[-8px] hover:shadow-[12px_12px_0px_0px_rgba(26,26,26,1)] transition-all"
                         >
-                            {/* Glow Effect */}
                             <div className={cn(
-                                "absolute -top-10 -right-10 w-32 h-32 blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity rounded-full bg-gradient-to-br",
+                                "w-20 h-20 border-4 border-[#1a1a1a] flex items-center justify-center mb-8 transform -rotate-3 group-hover:rotate-0 transition-transform",
                                 feature.color
-                            )} />
-
-                            <div className={cn(
-                                "w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-white/5 border border-white/10 group-hover:scale-110 transition-transform",
-                                feature.iconColor
                             )}>
-                                <feature.icon size={28} />
+                                <feature.icon size={40} className="text-[#1a1a1a]" />
                             </div>
 
-                            <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-4">
+                            <h2 className="text-2xl font-black text-[#1a1a1a] mb-6 leading-tight">
                                 {feature.title}
-                            </h3>
-                            <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                            </h2>
+                            <p className="text-[#1a1a1a]/80 font-medium text-lg">
                                 {feature.description}
                             </p>
                         </motion.div>

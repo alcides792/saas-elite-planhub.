@@ -15,37 +15,33 @@ export default function Hero() {
             </div>
 
             <div className="container mx-auto px-6 text-center">
-                <div>
-                    <span className="inline-block px-4 py-1.5 mb-6 text-sm font-semibold tracking-wide text-purple-400 uppercase bg-purple-400/10 border border-purple-400/20 rounded-full">
-                        Powered by Intelligence
+                <div className="max-w-4xl mx-auto">
+                    <span className="inline-block px-6 py-2 mb-8 text-xs font-black tracking-widest text-[#1a1a1a] dark:text-[#1fe2c3] uppercase bg-[#1fe2c3]/10 border-2 border-[#1a1a1a] dark:border-[#1fe2c3] rounded-sm transform -rotate-1">
+                        PARE DE PERDER DINHEIRO
                     </span>
-                    <h1 className="text-5xl md:text-7xl font-extrabold text-zinc-900 dark:text-white mb-6 tracking-tight">
-                        ALL YOUR RECURRING <br className="hidden md:block" />
-                        PAYMENTS IN <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-purple-700 dark:from-purple-400 dark:to-purple-600">ONE PLACE</span>
+                    <h1 className="text-5xl md:text-8xl font-black text-[#1a1a1a] dark:text-white mb-8 tracking-tighter leading-none">
+                        NUNCA MAIS PAGUES <br className="hidden md:block" />
+                        POR ASSINATURAS <br className="hidden md:block" />
+                        <span className="bg-[#1fe2c3] text-[#1a1a1a] px-4 border-2 border-[#1a1a1a]">QUE NÃO USAS.</span>
                     </h1>
-                    <p className="max-w-2xl mx-auto text-lg md:text-xl text-zinc-600 dark:text-zinc-400 mb-10 leading-relaxed">
-                        Track renewals, receive alerts on Telegram, and use <span className="text-zinc-900 dark:text-white font-semibold">Artificial Intelligence</span> to optimize your spending. <span className="text-purple-600 dark:text-purple-500 font-bold underline decoration-purple-500/30 underline-offset-4">Never pay</span> for unused services again.
+                    <p className="max-w-2xl mx-auto text-xl md:text-2xl text-[#1a1a1a]/80 dark:text-zinc-400 mb-12 font-medium leading-tight">
+                        O Kovr centraliza todos os teus gastos mensais num único lugar e envia-te <span className="text-[#1a1a1a] dark:text-white font-bold underline decoration-4 decoration-[#1fe2c3] underline-offset-4">alertas inteligentes</span> antes de qualquer renovação.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                        <Link
+                            href="/register"
+                            className="w-full sm:w-auto px-10 py-5 bg-[#1fe2c3] text-[#1a1a1a] font-black text-xl border-4 border-[#1a1a1a] hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_0px_rgba(26,26,26,1)] transition-all flex items-center justify-center gap-3 group"
+                        >
+                            Começar Agora
+                            <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
                         <Link
                             href="/login"
-                            className="w-full sm:w-auto px-8 py-4 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-purple-600/20 flex items-center justify-center gap-2 group active:scale-95"
+                            className="w-full sm:w-auto px-10 py-5 bg-white text-[#1a1a1a] font-black text-xl border-4 border-[#1a1a1a] hover:bg-zinc-100 transition-all flex items-center justify-center gap-3"
                         >
-                            Start Free
-                            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                            Fazer Login
                         </Link>
-                        <button className="w-full sm:w-auto px-8 py-4 bg-zinc-100 hover:bg-zinc-200 dark:bg-white/5 dark:hover:bg-white/10 text-zinc-900 dark:text-white font-bold rounded-2xl border border-zinc-200 dark:border-white/10 transition-all flex items-center justify-center gap-2 active:scale-95">
-                            <Play size={18} className="fill-current" />
-                            Learn More
-                        </button>
-                    </div>
-
-                    {/* Trust badges/Social proof could go here */}
-                    <div
-                        className="mt-16 flex flex-wrap justify-center items-center gap-8 opacity-40 grayscale"
-                    >
-                        {/* Placeholder for logos or trust signals */}
                     </div>
                 </div>
             </div>
