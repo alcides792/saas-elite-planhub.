@@ -17,33 +17,32 @@ export default function ProblemSection() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
                 >
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 text-sm font-bold text-red-400 uppercase bg-red-400/10 border border-red-400/20 rounded-full">
-                        <AlertTriangle size={14} />
-                        Stop Wasting Money
+                    <div className="inline-flex items-center gap-3 px-6 py-2 mb-8 text-sm font-black text-[#1a1a1a] uppercase bg-red-400 border-4 border-[#1a1a1a] shadow-[4px_4px_0px_#1a1a1a]">
+                        <AlertTriangle size={18} />
+                        PARA DE PERDER DINHEIRO
                     </div>
 
-                    <h2 className="text-4xl md:text-6xl font-black text-zinc-900 dark:text-white mb-8 tracking-tight">
-                        YOU'RE PROBABLY PAYING <br className="hidden md:block" />
-                        FOR <span className="text-red-500">3 THINGS</span> YOU'VE ALREADY FORGOTTEN ABOUT
+                    <h2 className="text-4xl md:text-7xl font-black text-zinc-900 dark:text-white mb-8 tracking-tighter uppercase leading-none">
+                        PROVAVELMENTE ESTÁS A PAGAR <br className="hidden md:block" />
+                        POR <span className="text-red-500 bg-white border-4 border-[#1a1a1a] px-2">3 COISAS</span> QUE JÁ NEM LEMBRAS
                     </h2>
 
-                    <p className="max-w-3xl mx-auto text-xl text-zinc-600 dark:text-zinc-400 mb-12 leading-relaxed">
-                        That free trial from 6 months ago? It's still charging you.
-                        The gym app you used twice? Yeah, that one too.
+                    <p className="max-w-3xl mx-auto text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 mb-12 font-bold italic">
+                        Aquele período gratuito de há 6 meses? Continua a cobrar.
+                        A app do ginásio que usaste duas vezes? Sim, essa também.
                     </p>
 
-                    <div className="relative max-w-4xl mx-auto mb-16 p-8 md:p-12 rounded-[2.5rem] bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-white/5 backdrop-blur-sm">
-                        <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-6xl text-purple-500 opacity-20 font-serif">"</span>
-                        <h3 className="text-2xl md:text-4xl font-bold text-zinc-900 dark:text-white italic leading-tight">
-                            Your bank statement is a cemetery of good intentions.
+                    <div className="relative max-w-4xl mx-auto mb-16 p-10 md:p-14 bg-white dark:bg-[#1a1a1a] border-[6px] border-[#1a1a1a] shadow-[12px_12px_0px_#1a1a1a]">
+                        <h3 className="text-2xl md:text-5xl font-black text-[#1a1a1a] dark:text-white italic leading-tight uppercase tracking-tighter">
+                            "O teu extrato bancário é um cemitério de boas intenções."
                         </h3>
                     </div>
 
                     <div className="space-y-4">
-                        <p className="text-2xl font-bold text-zinc-900 dark:text-white uppercase tracking-tighter">
-                            End the subscription chaos.
+                        <p className="text-3xl font-black text-zinc-900 dark:text-white uppercase tracking-tighter">
+                            ACABA COM O CAOS DAS ASSINATURAS HOJE.
                         </p>
-                        <div className="w-24 h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent mx-auto" />
+                        <div className="w-48 h-2 bg-[#1fe2c3] border-2 border-[#1a1a1a] mx-auto" />
                     </div>
                 </motion.div>
             </div>

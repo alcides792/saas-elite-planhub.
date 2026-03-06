@@ -77,7 +77,7 @@ export default function Sidebar() {
     const [showFooter, setShowFooter] = useState(true);
     const [userData, setUserData] = useState<{ email?: string; plan?: string }>({
         email: 'u13096246@gmail.com',
-        plan: 'Free Plan'
+        plan: 'Plano Único ($27)'
     });
 
     useEffect(() => {
@@ -87,7 +87,7 @@ export default function Sidebar() {
             if (user) {
                 setUserData({
                     email: user.email,
-                    plan: 'Free Plan'
+                    plan: 'Plano Único ($27)'
                 });
             }
         };
@@ -106,7 +106,7 @@ export default function Sidebar() {
     };
 
     const SidebarContent = ({ isMobile = false }: { isMobile?: boolean }) => (
-        <div className="flex flex-col h-full bg-white dark:bg-black backdrop-blur-xl text-zinc-900 dark:text-white border-r border-gray-200 dark:border-white/10">
+        <div className="flex flex-col min-h-full bg-white dark:bg-black backdrop-blur-xl text-zinc-900 dark:text-white border-r border-gray-200 dark:border-white/10">
             {/* Header / Logo */}
             <div className={cn(
                 "p-8 pb-4 flex items-center justify-between",
@@ -157,7 +157,7 @@ export default function Sidebar() {
 
             {/* Navigation Area - Scrollable */}
             <div className={cn(
-                "flex-1 overflow-y-auto py-2 pb-10 space-y-8 scrollbar-hide",
+                "flex-1 py-2 pb-10 space-y-8",
                 (!isCollapsed || isMobile) ? "px-6" : "px-3"
             )}>
                 {navSections.map((section) => (

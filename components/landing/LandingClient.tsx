@@ -2,13 +2,9 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import {
-    Zap
-} from 'lucide-react';
+import { Zap, Plus, Minus, Check } from 'lucide-react';
 
 import { TestimonialsSection } from "@/components/landing/ui/testimonials-columns";
-import InteractiveDemo from "@/components/landing/InteractiveDemo";
-
 // New Modular Components
 import Hero from "@/components/landing/Hero";
 import ProblemSection from "@/components/landing/ProblemSection";
@@ -18,6 +14,49 @@ import NotificationChannels from "@/components/landing/NotificationChannels";
 
 export default function LandingClient() {
 
+
+    const FAQSection = () => {
+        const [openIndex, setOpenIndex] = React.useState<number | null>(null);
+
+        const faqs = [
+            { q: "Como é que o Kovr rastreia as minhas assinaturas?", a: "O Kovr analisa de forma segura o teu histórico de transações utilizando ligações encriptadas de nível bancário para identificar pagamentos recorrentes." },
+            { q: "É seguro ligar as minhas contas?", a: "Absolutamente. Utilizamos encriptação AES-256. Nunca vemos as tuas credenciais de login e apenas temos acesso de leitura aos dados de transações." },
+            { q: "Como funciona a extensão de detecção?", a: "A nossa extensão identifica automaticamente serviços de subscrição enquanto navegas, ajudando-te a manter um inventário sempre atualizado." },
+            { q: "Posso gerir tudo pelo telemóvel?", a: "Sim! O Kovr é totalmente responsivo e podes receber alertas diretamente no Telegram ou Discord." },
+            { q: "O que acontece depois do período experimental?", a: "Se adorares o Kovr (e as poupanças!), transitas para o nosso plano Pro. Podes cancelar a qualquer momento sem qualquer atrito." }
+        ];
+
+        return (
+            <section id="faq" className="py-24 px-6 border-t-8 border-[#1a1a1a] bg-zinc-50 dark:bg-black relative overflow-hidden">
+                <div className="max-w-4xl mx-auto relative z-10">
+                    <h2 className="text-5xl md:text-8xl font-black mb-20 text-center text-[#1a1a1a] dark:text-white uppercase tracking-tighter leading-none">
+                        DÚVIDAS? <br /> <span className="text-[#faed27] bg-[#1a1a1a] px-4">TEMOS RESPOSTAS.</span>
+                    </h2>
+
+                    <div className="space-y-6">
+                        {faqs.map((faq, idx) => (
+                            <div key={idx} className="bg-white dark:bg-[#1a1a1a] border-4 border-[#1a1a1a] shadow-[8px_8px_0px_#1a1a1a]">
+                                <button
+                                    onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+                                    className="w-full p-8 flex justify-between items-center text-left group"
+                                >
+                                    <span className="text-xl md:text-2xl font-black text-[#1a1a1a] dark:text-white uppercase tracking-tight">{faq.q}</span>
+                                    <div className={`p-2 border-4 border-[#1a1a1a] bg-[#1fe2c3] transition-transform duration-0 ${openIndex === idx ? 'rotate-180 scale-110' : ''}`}>
+                                        {openIndex === idx ? <Minus className="w-6 h-6 stroke-[4px]" /> : <Plus className="w-6 h-6 stroke-[4px]" />}
+                                    </div>
+                                </button>
+                                {openIndex === idx && (
+                                    <div className="px-8 pb-8 border-t-4 border-[#1a1a1a] bg-white dark:bg-[#1a1a1a]">
+                                        <p className="pt-6 text-xl text-[#1a1a1a] dark:text-zinc-300 font-bold leading-relaxed">{faq.a}</p>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        );
+    };
 
     const testimonials = [
         {
@@ -91,11 +130,6 @@ export default function LandingClient() {
                     <ProblemSection />
                 </section>
 
-                {/* Interactive Product Demo */}
-                <section>
-                    <InteractiveDemo />
-                </section>
-
                 {/* Notification Channels Section */}
                 <section>
                     <NotificationChannels />
@@ -115,26 +149,8 @@ export default function LandingClient() {
                     <TestimonialsSection />
                 </section>
 
-                {/* FAQ */}
-                <section id="faq" className="py-24 px-6 border-t-4 border-[#1a1a1a]">
-                    <div className="max-w-3xl mx-auto">
-                        <h2 className="text-4xl md:text-6xl font-black mb-16 text-center text-[#1a1a1a] dark:text-white uppercase tracking-tighter">Perguntas Frequentes</h2>
-                        <div className="space-y-6">
-                            {[
-                                { q: "Como é que o Kovr rastreia as minhas assinaturas?", a: "O Kovr analisa de forma segura o teu histórico de transações utilizando ligações encriptadas de nível bancário para identificar pagamentos recorrentes." },
-                                { q: "É seguro ligar as minhas contas?", a: "Absolutamente. Utilizamos encriptação AES-256. Nunca vemos as tuas credenciais de login e apenas temos acesso de leitura aos dados de transações." },
-                                { q: "Como funciona a extensão de detecção?", a: "A nossa extensão identifica automaticamente serviços de subscrição enquanto navegas, ajudando-te a manter um inventário sempre atualizado." },
-                                { q: "Posso gerir tudo pelo telemóvel?", a: "Sim! O Kovr é totalmente responsivo e podes receber alertas diretamente no Telegram ou Discord." },
-                                { q: "O que acontece depois do período experimental?", a: "Se adorares o Kovr (e as poupanças!), transitas para o nosso plano Pro. Podes cancelar a qualquer momento sem qualquer atrito." }
-                            ].map((item, i) => (
-                                <motion.div key={i} {...fadeInUp} className="bg-white p-8 border-4 border-[#1a1a1a] hover:translate-x-[-4px] hover:translate-y-[-4px] transition-all">
-                                    <h4 className="text-xl font-black mb-4 text-[#1a1a1a]">{item.q}</h4>
-                                    <p className="text-[#1a1a1a]/80 text-lg font-medium leading-relaxed">{item.a}</p>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
+                {/* FAQ Section with Brutalista Design & Logic */}
+                <FAQSection />
 
                 {/* Final CTA */}
                 <section className="py-24 px-6 relative transition-colors duration-500">

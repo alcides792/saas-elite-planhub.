@@ -46,15 +46,15 @@ export default function NotificationChannels() {
                     viewport={{ once: true }}
                     className="mb-16"
                 >
-                    <h2 className="text-3xl md:text-5xl font-black mb-4 tracking-tighter text-zinc-900 dark:text-white">
-                        ALERT <span className="text-purple-600 dark:text-purple-500">SYSTEM</span>
+                    <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter text-[#1a1a1a] dark:text-white uppercase">
+                        SISTEMA DE <span className="text-[#1fe2c3] bg-[#1a1a1a] px-4">ALERTA</span>
                     </h2>
-                    <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-2xl mx-auto">
-                        Choose where you want to receive your expiration notices and savings alerts.
+                    <p className="text-[#1a1a1a] dark:text-zinc-400 text-xl font-bold max-w-2xl mx-auto italic">
+                        ESCOLHE ONDE QUERES RECEBER OS TEUS AVISOS DE RENOVAÇÃO E ALERTAS DE POUPANÇA.
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {channels.map((channel, idx) => (
                         <motion.div
                             key={idx}
@@ -62,29 +62,25 @@ export default function NotificationChannels() {
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
                             transition={{ delay: idx * 0.1 }}
-                            whileHover={{ y: -5 }}
-                            className="p-8 rounded-[2.5rem] bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200 dark:border-white/5 backdrop-blur-sm flex flex-col items-center gap-6 group hover:border-purple-500/30 transition-all shadow-xl shadow-black/5 dark:shadow-black/50"
+                            className="p-10 bg-white dark:bg-zinc-900/50 border-4 border-[#1a1a1a] shadow-[8px_8px_0px_#1a1a1a] flex flex-col items-center gap-8 group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[12px_12px_0px_#1a1a1a] transition-all"
                         >
                             <div className="relative">
-                                {/* Icon Glow */}
-                                <div className="absolute inset-0 bg-purple-500/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                                <div className="w-20 h-20 flex items-center justify-center relative z-10">
+                                <div className="w-24 h-24 flex items-center justify-center relative z-10 p-4 border-2 border-[#1a1a1a] bg-zinc-50 dark:bg-[#1a1a1a] transform group-hover:rotate-3 transition-transform">
                                     <Image
                                         src={channel.icon}
                                         alt={channel.name}
                                         width={80}
                                         height={80}
-                                        className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]"
+                                        className="w-full h-full object-contain"
                                     />
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <h3 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">{channel.name}</h3>
-                                <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${channel.statusColor} inline-block`}>
-                                    ● {channel.status}
-                                </span>
+                            <div className="space-y-4">
+                                <h3 className="text-2xl font-black text-[#1a1a1a] dark:text-white tracking-tight uppercase">{channel.name}</h3>
+                                <div className={`text-xs font-black uppercase tracking-widest px-4 py-2 border-2 border-[#1a1a1a] ${channel.statusColor} bg-white shadow-[2px_2px_0px_#1a1a1a]`}>
+                                    ● {channel.active ? 'ATIVO' : 'EM BREVE'}
+                                </div>
                             </div>
                         </motion.div>
                     ))}

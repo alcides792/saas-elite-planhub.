@@ -40,7 +40,7 @@
   .dark p,
   .dark span,
   .dark div {
-    @apply text-zinc-300;
+    color: var(--foreground);
   }
 
   /* Light Mode Base Styles */

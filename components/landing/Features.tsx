@@ -76,7 +76,7 @@ export default function Features() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.4, delay: index * 0.1 }}
-                            className="group relative p-10 bg-white border-4 border-[#1a1a1a] hover:translate-x-[-8px] hover:translate-y-[-8px] hover:shadow-[12px_12px_0px_0px_rgba(26,26,26,1)] transition-all"
+                            className="group relative p-10 bg-white dark:bg-zinc-900/50 border-4 border-[#1a1a1a] hover:translate-x-[-8px] hover:translate-y-[-8px] hover:shadow-[12px_12px_0px_0px_rgba(26,26,26,1)] transition-all"
                         >
                             <div className={cn(
                                 "w-20 h-20 border-4 border-[#1a1a1a] flex items-center justify-center mb-8 transform -rotate-3 group-hover:rotate-0 transition-transform",
@@ -85,10 +85,10 @@ export default function Features() {
                                 <feature.icon size={40} className="text-[#1a1a1a]" />
                             </div>
 
-                            <h2 className="text-2xl font-black text-[#1a1a1a] mb-6 leading-tight">
+                            <h2 className="text-2xl font-black text-[#1a1a1a] dark:text-white mb-6 leading-tight">
                                 {feature.title}
                             </h2>
-                            <p className="text-[#1a1a1a]/80 font-medium text-lg">
+                            <p className="text-[#1a1a1a]/80 dark:text-zinc-400 font-medium text-lg">
                                 {feature.description}
                             </p>
                         </motion.div>

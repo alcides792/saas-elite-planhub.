@@ -15,45 +15,37 @@ export default function Pricing() {
     return (
         <section id="pricing" className="py-24 px-6 relative">
             <div className="max-w-7xl mx-auto text-center">
-                <h2 className="text-4xl md:text-5xl font-bold mb-4 text-zinc-900 dark:text-white">TAKE CONTROL</h2>
-                <p className="text-zinc-600 dark:text-zinc-500 mb-16 text-lg">CHOOSE THE PLAN THAT BEST FITS YOUR BUDGET</p>
+                <h2 className="text-4xl md:text-7xl font-black mb-6 text-[#1a1a1a] dark:text-white uppercase tracking-tighter">RETOMA O CONTROLO</h2>
+                <p className="text-[#1a1a1a] font-bold italic mb-16 text-xl">ESCOLHE O PLANO QUE MELHOR SE ADAPTA AO TEU BOLSO</p>
 
-                <div className="grid md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
-                    {/* Free Plan */}
-                    <motion.div {...fadeInUp} className="bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 p-8 rounded-[2rem] text-left flex flex-col shadow-sm dark:shadow-none">
-                        <span className="text-zinc-500 text-sm font-bold uppercase tracking-widest">Free Plan</span>
-                        <div className="my-6">
-                            <span className="text-5xl font-black text-zinc-900 dark:text-white">Free</span>
+                <div className="flex justify-center items-stretch max-w-2xl mx-auto">
+                    {/* Unique Pro Plan */}
+                    <motion.div
+                        {...fadeInUp}
+                        className="bg-[#1fe2c3] border-4 border-[#1a1a1a] p-12 text-left flex flex-col shadow-[12px_12px_0px_#1a1a1a] hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[16px_16px_0px_#1a1a1a] transition-all relative overflow-hidden w-full"
+                    >
+                        <div className="absolute top-0 right-0 bg-[#1a1a1a] px-6 py-2 text-xs font-black uppercase text-white border-l-4 border-b-4 border-[#1a1a1a]">Mais Popular</div>
+                        <span className="text-[#1a1a1a] text-xs font-black uppercase tracking-widest bg-white px-3 py-1 border-2 border-[#1a1a1a] self-start mb-6">PLANO ÚNICO</span>
+                        <div className="mb-6 border-b-4 border-[#1a1a1a] pb-4">
+                            <span className="text-7xl font-black text-[#1a1a1a]">$27</span>
+                            <span className="text-[#1a1a1a] ml-2 font-black text-xl">/ ano</span>
                         </div>
-                        <p className="text-zinc-600 dark:text-zinc-400 mb-8 italic">Track 3 subscriptions for free forever.</p>
-                        <ul className="space-y-4 mb-10 text-zinc-600 dark:text-zinc-400 flex-grow">
-                            {["Up to 3 Subscriptions", "Telegram Alerts", "Basic Dashboard", "AI Suggestions"].map((f, i) => (
-                                <li key={i} className="flex items-center gap-3"><Check className="w-5 h-5 text-purple-600 dark:text-purple-500" /><span>{f}</span></li>
+                        <p className="text-[#1a1a1a] font-black mb-4 italic text-xl">3 DIAS DE TESTE GRÁTIS</p>
+                        <p className="text-[#1a1a1a] font-bold mb-8 italic text-lg opacity-80">Experimenta tudo sem compromisso. Depois, apenas $2d0,25 por mês (faturado anualmente).</p>
+
+                        <ul className="space-y-4 mb-10 text-[#1a1a1a] font-bold flex-grow">
+                            {[
+                                "Assinaturas Ilimitadas",
+                                "IA Generativa Avançada",
+                                "Alertas Inteligentes (Telegram/Discord)",
+                                "Extensão Chrome Premium",
+                                "Cancelamento em 1-Click",
+                                "Paga apenas se gostares"
+                            ].map((f, i) => (
+                                <li key={i} className="flex items-center gap-3"><Check className="w-6 h-6 text-[#1a1a1a] stroke-[4px]" /><span>{f}</span></li>
                             ))}
                         </ul>
-                        <button className="w-full bg-zinc-900 text-white dark:bg-zinc-800 dark:text-white py-4 rounded-xl font-bold hover:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors mt-auto">Get Started</button>
-                    </motion.div>
-
-                    {/* Pro Plan */}
-                    <motion.div
-                        whileHover={{ y: -10 }}
-                        className="relative p-[2px] rounded-[2rem] bg-gradient-to-br from-purple-500 to-purple-900 dark:from-purple-400 dark:to-purple-800 shadow-2xl z-10 flex flex-col"
-                    >
-                        <div className="bg-white dark:bg-zinc-950 rounded-[1.9rem] p-10 text-center text-zinc-900 dark:text-white relative overflow-hidden flex flex-col h-full">
-                            <div className="absolute top-0 right-0 bg-purple-600 px-4 py-1 rounded-bl-xl text-[10px] font-black uppercase text-white">Recommended</div>
-                            <span className="text-purple-400 text-sm font-bold uppercase tracking-widest">Pro Plan</span>
-                            <div className="my-6">
-                                <span className="text-6xl font-black">$27</span>
-                                <span className="text-purple-400 ml-2">/ year</span>
-                            </div>
-                            <p className="text-zinc-600 dark:text-zinc-300 mb-8 font-semibold italic">Unlimited for the price of a coffee.</p>
-                            <ul className="text-left space-y-4 mb-10 text-zinc-600 dark:text-zinc-300 flex-grow">
-                                {["Unlimited Subscriptions", "Advanced Generative AI", "Smart Alerts", "Priority Support", "Data Export"].map((f, i) => (
-                                    <li key={i} className="flex items-center gap-3"><Check className="w-5 h-5 text-purple-600 dark:text-purple-500" /><span>{f}</span></li>
-                                ))}
-                            </ul>
-                            <motion.button whileHover={{ scale: 1.05 }} className="w-full bg-purple-600 text-white py-4 rounded-xl font-black text-lg shadow-lg hover:bg-purple-500 transition-colors mt-auto">Get Lifetime Access ⚡</motion.button>
-                        </div>
+                        <button className="w-full bg-[#1a1a1a] text-white py-6 border-4 border-[#1a1a1a] font-black text-2xl hover:bg-zinc-800 transition-colors mt-auto uppercase shadow-[4px_4px_0px_#ffffff]">Começar Teste Grátis ⚡</button>
                     </motion.div>
                 </div>
             </div>

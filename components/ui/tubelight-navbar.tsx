@@ -31,12 +31,12 @@ export function NavBar({ items, className, user }: NavBarProps) {
 
     // Stretch animation: from pill to wide bar - smoother progression
     const navWidth = useTransform(scrollY, [0, 250], ["auto", "95%"])
-    const navMaxWidth = useTransform(scrollY, [0, 250], ["550px", "1400px"])
-    const navRadius = useTransform(scrollY, [0, 250], ["9999px", "20px"])
-    const navPadding = useTransform(scrollY, [0, 250], ["4px", "8px 24px"])
+    const navMaxWidth = useTransform(scrollY, [0, 250], ["550px", "100%"])
+    const navRadius = useTransform(scrollY, [0, 250], ["9999px", "12px"])
+    const navPadding = useTransform(scrollY, [0, 250], ["4px", "8px 16px"])
 
     // Logo and Auth widths for layout stability - increased to avoid clipping
-    const sideWidth = useTransform(scrollY, [50, 200], ["0px", "240px"])
+    const sideWidth = useTransform(scrollY, [50, 200], ["0px", "320px"])
 
     // Logo opacity and scale - appears when stretched
     const logoOpacity = useTransform(scrollY, [120, 250], [0, 1])

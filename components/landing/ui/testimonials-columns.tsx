@@ -30,20 +30,20 @@ export const TestimonialsColumn = (props: {
                 {[...new Array(2)].map((_, index) => (
                     <React.Fragment key={index}>
                         {props.testimonials.map(({ text, image, name, role }, i) => (
-                            <div key={i} className="p-6 rounded-3xl border border-zinc-200 dark:border-white/5 bg-white/50 dark:bg-[#0F0F11]/50 shadow-xl shadow-black/5 dark:shadow-black/20 max-w-xs w-full hover:border-purple-500/30 transition-colors duration-300 backdrop-blur-sm">
-                                <div className="text-zinc-600 dark:text-zinc-300 text-sm leading-relaxed">"{text}"</div>
-                                <div className="flex items-center gap-3 mt-4 pt-4 border-t border-white/5">
-                                    <div className="relative h-10 w-10 shrink-0">
+                            <div key={i} className="p-8 rounded-none border-4 border-[#1a1a1a] bg-white shadow-[8px_8px_0px_#1a1a1a] max-w-xs w-full transition-transform hover:-translate-y-1">
+                                <div className="text-[#1a1a1a] text-lg font-bold leading-tight italic">"{text}"</div>
+                                <div className="flex items-center gap-4 mt-6 pt-6 border-t-4 border-[#1a1a1a]">
+                                    <div className="relative h-12 w-12 shrink-0 border-2 border-[#1a1a1a] rounded-none overflow-hidden">
                                         <Image
                                             src={image}
                                             alt={name}
                                             fill
-                                            className="rounded-full object-cover border border-white/10"
+                                            className="object-cover"
                                         />
                                     </div>
                                     <div className="flex flex-col">
-                                        <div className="font-bold text-zinc-900 dark:text-white text-sm">{name}</div>
-                                        <div className="text-xs text-purple-600 dark:text-purple-400 font-medium">{role}</div>
+                                        <div className="font-black text-[#1a1a1a] text-base uppercase tracking-tighter">{name}</div>
+                                        <div className="text-sm text-[#1fe2c3] bg-[#1a1a1a] px-2 font-black uppercase inline-block w-fit">{role}</div>
                                     </div>
                                 </div>
                             </div>
@@ -57,40 +57,40 @@ export const TestimonialsColumn = (props: {
 
 const testimonials: TestimonialData[] = [
     {
-        text: "I used to forget to cancel Adobe and LinkedIn trials every year. Kovr sent me an alert 3 days before and I saved $400 easily!",
+        text: "Costumava esquecer-me de cancelar os trials da Adobe e LinkedIn todos os anos. O Kovr enviou-me um alerta 3 dias antes e poupei $400 facilmente!",
         image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
         name: "Mariana Costa",
-        role: "Freelance Designer",
+        role: "Designer Freelance",
     },
     {
-        text: "The dashboard is addictive. Seeing all my monthly expenses in one place made me cancel 4 services I didn't even use anymore.",
+        text: "O dashboard é viciante. Ver todos os meus gastos mensais num só lugar fez-me cancelar 4 serviços que já nem usava mais.",
         image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
         name: "Carlos Mendes",
-        role: "Software Engineer",
+        role: "Engenheiro de Software",
     },
     {
-        text: "The AI is insane. I asked 'Where can I cut costs?' and it listed duplicate subscriptions I had on Spotify and Apple Music.",
+        text: "A IA é inacreditável. Perguntei 'Onde posso cortar custos?' e ela listou subscrições duplicadas que eu tinha no Spotify e Apple Music.",
         image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
         name: "Ana Julia",
-        role: "Digital Marketing",
+        role: "Marketing Digital",
     },
     {
-        text: "Simple, direct, and pays for itself in the first month. Just by cancelling a premium Tinder plan I forgot about, the annual sub was already worth it.",
+        text: "Simples, direto e paga-se a si mesmo no primeiro mês. Só de cancelar um plano premium do Tinder que me esqueci, a subscrição anual já valeu a pena.",
         image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
         name: "Pedro Henrique",
-        role: "Student",
+        role: "Estudante",
     },
     {
-        text: "Best $27 I spent this year. The peace of mind knowing I won't have surprise charges on my card is worth much more.",
+        text: "Os melhores $27 que gastei este ano. A paz de espírito de saber que não vou ter cobranças surpresa no cartão vale muito mais.",
         image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
         name: "Sofia Lemos",
         role: "Product Manager",
     },
     {
-        text: "The family sharing feature is great. Now I know exactly who owes what for Netflix and Disney+.",
+        text: "A funcionalidade de partilha familiar é ótima. Agora sei exatamente quem deve o quê pelo Netflix e Disney+.",
         image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=100&h=100&fit=crop",
         name: "Lucas Ferreira",
-        role: "Parent",
+        role: "Pai de Família",
     },
 ];
 
@@ -100,14 +100,14 @@ export const TestimonialsSection = () => {
     const col3 = testimonials.slice(4, 6);
 
     return (
-        <section className="relative py-24 overflow-hidden border-t border-zinc-200 dark:border-white/5 transition-colors duration-500">
+        <section className="relative py-24 overflow-hidden border-t-8 border-[#1a1a1a] bg-zinc-50">
             <div className="container mx-auto px-6 relative z-10">
-                <div className="text-center max-w-2xl mx-auto mb-16">
-                    <h2 className="text-3xl font-bold mb-4 text-zinc-900 dark:text-white">
-                        Loved by thousands.
+                <div className="text-center max-w-4xl mx-auto mb-20">
+                    <h2 className="text-5xl md:text-8xl font-black mb-6 text-[#1a1a1a] uppercase tracking-tighter leading-none">
+                        AMADO POR <br /> <span className="text-white bg-[#1a1a1a] px-4">MILHARES.</span>
                     </h2>
-                    <p className="text-zinc-600 dark:text-zinc-500">
-                        Join thousands of people who stopped wasting money on useless subscriptions.
+                    <p className="text-[#1a1a1a] text-xl md:text-2xl font-bold uppercase italic opacity-80">
+                        JUNTA-TE A QUEM JÁ PAROU DE DEITAR DINHEIRO FORA COM ASSINATURAS INÚTEIS.
                     </p>
                 </div>
 

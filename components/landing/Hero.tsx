@@ -16,7 +16,7 @@ export default function Hero() {
 
             <div className="container mx-auto px-6 text-center">
                 <div className="max-w-4xl mx-auto">
-                    <span className="inline-block px-6 py-2 mb-8 text-xs font-black tracking-widest text-[#1a1a1a] dark:text-[#1fe2c3] uppercase bg-[#1fe2c3]/10 border-2 border-[#1a1a1a] dark:border-[#1fe2c3] rounded-sm transform -rotate-1">
+                    <span className="inline-block px-6 py-2 mb-8 text-xs font-black text-[#1a1a1a] dark:text-[#1fe2c3] uppercase bg-[#1fe2c3]/10 border-2 border-[#1a1a1a] dark:border-[#1fe2c3] rounded-sm transform -rotate-1">
                         PARE DE PERDER DINHEIRO
                     </span>
                     <h1 className="text-5xl md:text-8xl font-black text-[#1a1a1a] dark:text-white mb-8 tracking-tighter leading-none">
