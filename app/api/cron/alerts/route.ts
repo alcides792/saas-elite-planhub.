@@ -88,7 +88,6 @@ export async function GET(request: Request) {
                 website,
                 user_id,
                 profiles (
-                    email,
                     full_name,
                     telegram_chat_id,
                     discord_webhook,
@@ -119,6 +118,15 @@ export async function GET(request: Request) {
             try {
                 const profile = sub.profiles as any
                 if (!profile) continue
+
+                // Fetch user email from auth.users (not stored in profiles table)
+                let userEmail: string | null = null
+                try {
+                    const { data: authUser } = await supabase.auth.admin.getUserById(sub.user_id)
+                    userEmail = authUser?.user?.email || null
+                } catch (e) {
+                    console.error(`[cron/alerts] Failed to fetch email for user ${sub.user_id}`)
+                }
 
                 // Extract user preferences with sensible defaults
                 const notifyDaysBefore: number = profile.notify_days_before ?? 3
@@ -183,7 +191,7 @@ export async function GET(request: Request) {
                     await dispatchToUser(profile, messageHTML, messageMD, telegramButtons)
 
                     // Email notification
-                    if (notifyEmails && profile.email) {
+                    if (notifyEmails && userEmail) {
                         try {
                             const emailHtml = getExpiringEmailHtml(
                                 profile.full_name || 'Subscriber',
@@ -194,7 +202,7 @@ export async function GET(request: Request) {
                             )
                             await resend.emails.send({
                                 from: 'Kovr <noreply@kovr.space>',
-                                to: [profile.email],
+                                to: [userEmail],
                                 subject: `🚨 Kovr Alert: Your ${sub.name} subscription renews in ${daysLabel}!`,
                                 html: emailHtml,
                             })
@@ -222,7 +230,7 @@ export async function GET(request: Request) {
                     await dispatchToUser(profile, messageHTML, messageMD, telegramButtons)
 
                     // Email notification
-                    if (notifyEmails && profile.email) {
+                    if (notifyEmails && userEmail) {
                         try {
                             const emailHtml = getExpiringEmailHtml(
                                 profile.full_name || 'Subscriber',
@@ -233,7 +241,7 @@ export async function GET(request: Request) {
                             )
                             await resend.emails.send({
                                 from: 'Kovr <noreply@kovr.space>',
-                                to: [profile.email],
+                                to: [userEmail],
                                 subject: `⚠️ Kovr Alert: Your ${sub.name} subscription expires today!`,
                                 html: emailHtml,
                             })
