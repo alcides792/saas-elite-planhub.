@@ -11,6 +11,7 @@ import ProModal from '@/components/ProModal';
 import { createSubscription, deleteSubscription, toggleSubscriptionStatus } from '@/lib/actions/subscriptions';
 import { useUser } from '@/contexts/UserContext';
 import { toast } from 'sonner';
+import UserMenu from '@/components/UserMenu';
 
 interface SubscriptionsClientProps {
     initialSubscriptions: Subscription[];
@@ -119,14 +120,17 @@ export default function SubscriptionsClient({ initialSubscriptions }: Subscripti
                     <h1 className="text-4xl font-bold text-zinc-900 dark:text-white mb-2">My Subscriptions</h1>
                     <p className="text-zinc-400">Manage your recurring expenses and never miss a due date.</p>
                 </div>
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    disabled={isPending}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold hover:from-purple-500 hover:to-indigo-500 transition-all shadow-lg shadow-purple-500/20 active:scale-95 disabled:opacity-50"
-                >
-                    <Plus size={20} strokeWidth={2.5} />
-                    <span>New Subscription</span>
-                </button>
+                <div className="flex items-center gap-3">
+                    <UserMenu />
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        disabled={isPending}
+                        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold hover:from-purple-500 hover:to-indigo-500 transition-all shadow-lg shadow-purple-500/20 active:scale-95 disabled:opacity-50"
+                    >
+                        <Plus size={20} strokeWidth={2.5} />
+                        <span>New Subscription</span>
+                    </button>
+                </div>
             </header>
 
             {/* KPIs */}

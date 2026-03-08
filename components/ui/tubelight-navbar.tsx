@@ -31,12 +31,13 @@ export function NavBar({ items, className, user }: NavBarProps) {
 
     // Stretch animation: from pill to wide bar - smoother progression
     const navWidth = useTransform(scrollY, [0, 250], ["auto", "95%"])
-    const navMaxWidth = useTransform(scrollY, [0, 250], ["550px", "100%"])
+    const navMaxWidth = useTransform(scrollY, [0, 250], ["550px", "1200px"])
     const navRadius = useTransform(scrollY, [0, 250], ["9999px", "12px"])
-    const navPadding = useTransform(scrollY, [0, 250], ["4px", "8px 16px"])
+    const navPadding = useTransform(scrollY, [0, 250], ["4px", "8px 12px"])
 
-    // Logo and Auth widths for layout stability - increased to avoid clipping
-    const sideWidth = useTransform(scrollY, [50, 200], ["0px", "320px"])
+    // Logo and Auth widths for layout stability - pushed to the corners
+    const sideWidth = useTransform(scrollY, [50, 200], ["0px", "280px"])
+    const sideFlex = useTransform(scrollY, [50, 200], [0, 1])
 
     // Logo opacity and scale - appears when stretched
     const logoOpacity = useTransform(scrollY, [120, 250], [0, 1])
@@ -67,16 +68,17 @@ export function NavBar({ items, className, user }: NavBarProps) {
                     borderRadius: isMobile ? "9999px" : navRadius,
                     padding: isMobile ? "6px" : navPadding
                 }}
-                className="flex items-center justify-center bg-black/40 border border-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] pointer-events-auto transition-colors duration-300 hover:bg-black/50 pr-4 sm:pr-6"
+                className="flex items-center justify-between bg-black/40 border border-white/10 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] pointer-events-auto transition-colors duration-300 hover:bg-black/50"
             >
                 {/* Left Section (Logo) */}
                 <motion.div
                     style={{
                         opacity: isMobile ? 0 : logoOpacity,
                         scale: isMobile ? 0 : logoScale,
-                        width: isMobile ? 0 : sideWidth
+                        width: isMobile ? 0 : sideWidth,
+                        flex: isMobile ? 0 : sideFlex
                     }}
-                    className="hidden md:flex items-center gap-2 text-white font-bold text-lg tracking-wider overflow-hidden shrink-0 pl-2"
+                    className="hidden md:flex items-center gap-2 text-white font-bold text-lg tracking-wider overflow-hidden shrink-0 pl-8"
                 >
                     <Image
                         src="/kovr-logo.png"
@@ -89,7 +91,7 @@ export function NavBar({ items, className, user }: NavBarProps) {
                 </motion.div>
 
                 {/* Navigation Items - Perfectly Centered */}
-                <div className="flex items-center gap-1 flex-1 justify-center">
+                <div className="flex items-center gap-1 justify-center px-2">
                     {items.map((item) => {
                         const Icon = item.icon
                         const isActive = activeTab === item.name
@@ -100,7 +102,7 @@ export function NavBar({ items, className, user }: NavBarProps) {
                                 href={item.url}
                                 onClick={() => setActiveTab(item.name)}
                                 className={cn(
-                                    "relative cursor-pointer text-sm font-semibold px-4 sm:px-6 py-2 rounded-full transition-colors",
+                                    "relative cursor-pointer text-sm font-semibold px-2 sm:px-4 py-2 rounded-full transition-colors",
                                     "text-white/70 hover:text-white shrink-0",
                                     isActive && "text-white",
                                 )}
@@ -132,7 +134,10 @@ export function NavBar({ items, className, user }: NavBarProps) {
 
                 {/* Right Section (Auth) */}
                 <motion.div
-                    style={{ width: isMobile ? "auto" : sideWidth }}
+                    style={{
+                        width: isMobile ? "auto" : sideWidth,
+                        flex: isMobile ? 0 : sideFlex
+                    }}
                     className="flex items-center justify-end shrink-0"
                 >
                     <AnimatePresence>
@@ -142,8 +147,12 @@ export function NavBar({ items, className, user }: NavBarProps) {
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
-                                style={{ opacity: isMobile ? 1 : opacity, scale: isMobile ? 1 : scale }}
-                                className="flex items-center border-l border-white/10 ml-2 pl-2 gap-1 sm:gap-4 overflow-hidden"
+                                style={{
+                                    opacity: isMobile ? 1 : logoOpacity,
+                                    scale: isMobile ? 1 : logoScale,
+                                    overflow: "hidden"
+                                }}
+                                className="flex items-center gap-1 sm:gap-2 pr-8"
                             >
                                 <ThemeToggle />
                                 <Link
@@ -167,8 +176,12 @@ export function NavBar({ items, className, user }: NavBarProps) {
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
-                                style={{ opacity: isMobile ? 1 : opacity, scale: isMobile ? 1 : scale }}
-                                className="flex items-center border-l border-white/10 ml-2 pl-2 gap-4 overflow-hidden"
+                                style={{
+                                    opacity: isMobile ? 1 : logoOpacity,
+                                    scale: isMobile ? 1 : logoScale,
+                                    overflow: "hidden"
+                                }}
+                                className="flex items-center gap-4 pr-8"
                             >
                                 <ThemeToggle />
                                 <Link

@@ -32,8 +32,8 @@ export default function ProblemSection() {
                         A app do ginásio que usaste duas vezes? Sim, essa também.
                     </p>
 
-                    <div className="relative max-w-4xl mx-auto mb-16 p-10 md:p-14 bg-white dark:bg-[#1a1a1a] border-[6px] border-[#1a1a1a] shadow-[12px_12px_0px_#1a1a1a]">
-                        <h3 className="text-2xl md:text-5xl font-black text-[#1a1a1a] dark:text-white italic leading-tight uppercase tracking-tighter">
+                    <div className="relative max-w-4xl mx-auto mb-16 p-10 md:p-14 bg-white border-[6px] border-[#1a1a1a] shadow-[12px_12px_0px_#1a1a1a]">
+                        <h3 className="text-2xl md:text-5xl font-black text-[#1a1a1a] italic leading-tight uppercase tracking-tighter">
                             "O teu extrato bancário é um cemitério de boas intenções."
                         </h3>
                     </div>

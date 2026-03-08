@@ -25,7 +25,7 @@ const Pie = dynamic(() => import('recharts').then(mod => mod.Pie), { ssr: false 
 const Cell = dynamic(() => import('recharts').then(mod => mod.Cell), { ssr: false });
 const ReferenceLine = dynamic(() => import('recharts').then(mod => mod.ReferenceLine), { ssr: false });
 import { motion } from 'framer-motion';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import UserMenu from '@/components/UserMenu';
 import { useUser } from '@/contexts/UserContext';
 import { formatDate } from '@/lib/utils/analytics';
 import { useTheme } from 'next-themes';
@@ -167,7 +167,7 @@ export default function AnalyticsClient({
                     <h1 className="text-5xl font-black text-zinc-900 dark:text-white tracking-tighter">Finance Analytics</h1>
                 </div>
                 <div className="flex items-center gap-3">
-                    <ThemeToggle />
+                    <UserMenu />
                 </div>
             </header>
 

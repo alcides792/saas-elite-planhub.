@@ -2,10 +2,14 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { getProfile } from '@/app/actions/settings';
+import { createClient } from '@/lib/utils/supabase/client';
 
 interface UserPreferences {
     currency: string;
     language: string;
+    full_name: string;
+    avatar_url: string;
+    email: string;
 }
 
 interface UserContextType {
@@ -19,16 +23,25 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: React.ReactNode }) {
     const [preferences, setPreferences] = useState<UserPreferences>({
         currency: 'EUR',
-        language: 'en-US'
+        language: 'en-US',
+        full_name: '',
+        avatar_url: '',
+        email: ''
     });
 
     const refreshPreferences = useCallback(async () => {
         try {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+
             const res = await getProfile();
             if (res.success && res.profile) {
                 setPreferences({
                     currency: res.profile.currency || 'EUR',
-                    language: res.profile.language || 'en-US'
+                    language: res.profile.language || 'en-US',
+                    full_name: res.profile.full_name || '',
+                    avatar_url: res.profile.avatar_url || '',
+                    email: user?.email || ''
                 });
             } else {
                 console.warn('[UserContext] Failed to load profile:', res.error);

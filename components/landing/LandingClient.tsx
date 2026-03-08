@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Zap, Plus, Minus, Check } from 'lucide-react';
+import Link from 'next/link';
 
 import { TestimonialsSection } from "@/components/landing/ui/testimonials-columns";
 // New Modular Components
@@ -27,27 +28,27 @@ export default function LandingClient() {
         ];
 
         return (
-            <section id="faq" className="py-24 px-6 border-t-8 border-[#1a1a1a] bg-zinc-50 dark:bg-black relative overflow-hidden">
+            <section id="faq" className="py-24 px-6 border-t-8 border-[#1a1a1a] bg-zinc-50 relative overflow-hidden">
                 <div className="max-w-4xl mx-auto relative z-10">
-                    <h2 className="text-5xl md:text-8xl font-black mb-20 text-center text-[#1a1a1a] dark:text-white uppercase tracking-tighter leading-none">
+                    <h2 className="text-5xl md:text-8xl font-black mb-20 text-center text-[#1a1a1a] uppercase tracking-tighter leading-none">
                         DÚVIDAS? <br /> <span className="text-[#faed27] bg-[#1a1a1a] px-4">TEMOS RESPOSTAS.</span>
                     </h2>
 
                     <div className="space-y-6">
                         {faqs.map((faq, idx) => (
-                            <div key={idx} className="bg-white dark:bg-[#1a1a1a] border-4 border-[#1a1a1a] shadow-[8px_8px_0px_#1a1a1a]">
+                            <div key={idx} className="bg-white border-4 border-[#1a1a1a] shadow-[8px_8px_0px_#1a1a1a]">
                                 <button
                                     onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
                                     className="w-full p-8 flex justify-between items-center text-left group"
                                 >
-                                    <span className="text-xl md:text-2xl font-black text-[#1a1a1a] dark:text-white uppercase tracking-tight">{faq.q}</span>
+                                    <span className="text-xl md:text-2xl font-black text-[#1a1a1a] uppercase tracking-tight">{faq.q}</span>
                                     <div className={`p-2 border-4 border-[#1a1a1a] bg-[#1fe2c3] transition-transform duration-0 ${openIndex === idx ? 'rotate-180 scale-110' : ''}`}>
                                         {openIndex === idx ? <Minus className="w-6 h-6 stroke-[4px]" /> : <Plus className="w-6 h-6 stroke-[4px]" />}
                                     </div>
                                 </button>
                                 {openIndex === idx && (
-                                    <div className="px-8 pb-8 border-t-4 border-[#1a1a1a] bg-white dark:bg-[#1a1a1a]">
-                                        <p className="pt-6 text-xl text-[#1a1a1a] dark:text-zinc-300 font-bold leading-relaxed">{faq.a}</p>
+                                    <div className="px-8 pb-8 border-t-4 border-[#1a1a1a] bg-white">
+                                        <p className="pt-6 text-xl text-[#1a1a1a] font-bold leading-relaxed">{faq.a}</p>
                                     </div>
                                 )}
                             </div>
@@ -102,15 +103,15 @@ export default function LandingClient() {
         <div className="min-h-screen w-full bg-white dark:bg-black relative selection:bg-purple-500/30 transition-colors duration-500">
             {/* Theme-aware Background (Requested Light Mode Texture + Dark Mode Grid) */}
             <div
-                className="absolute inset-0 z-0 pointer-events-none transition-colors duration-500"
+                className="absolute inset-0 z-0 pointer-events-none transition-colors duration-500 landing-bg"
             >
                 <style jsx>{`
-                    div {
+                    .landing-bg {
                         background-color: #ffffff;
                         background-image: radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.35) 1px, transparent 0);
                         background-size: 20px 20px;
                     }
-                    :global(.dark) div {
+                    :global(.dark) .landing-bg {
                         background-color: #000000;
                         background-image: radial-gradient(circle, rgba(255, 255, 255, 0.2) 1.5px, transparent 1.5px);
                         background-size: 30px 30px;
@@ -169,15 +170,16 @@ export default function LandingClient() {
             </main>
 
             {/* Footer */}
-            <footer className="py-12 border-t-4 border-[#1a1a1a] px-6">
+            <footer className="py-12 border-t-4 border-[#1a1a1a] px-6 relative z-10 bg-white dark:bg-black">
                 <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="flex items-center gap-2 text-[#1a1a1a]">
-                        <Zap className="w-4 h-4 fill-current" /><span className="font-bold uppercase tracking-tighter">Kovr</span>
-                        <span className="text-xs ml-2 font-bold opacity-60">© 2024 Kovr AI. Todos os direitos reservados.</span>
+                    <div className="flex items-center gap-2 text-[#1a1a1a] dark:text-white">
+                        <Zap className="w-4 h-4 fill-current text-[#1a1a1a] dark:text-[#faed27]" />
+                        <span className="font-bold uppercase tracking-tighter">Kovr</span>
+                        <span className="text-xs ml-2 font-bold opacity-60">© 2025 Kovr AI. Todos os direitos reservados.</span>
                     </div>
                     <div className="flex gap-6 text-sm font-bold">
-                        <a href="#" className="hover:underline transition-colors uppercase">Termos</a>
-                        <a href="#" className="hover:underline transition-colors uppercase">Privacidade</a>
+                        <Link href="/terms-of-service" className="text-[#1a1a1a] dark:text-white hover:underline transition-colors uppercase">Termos de Serviço</Link>
+                        <Link href="/privacy-policy" className="text-[#1a1a1a] dark:text-white hover:underline transition-colors uppercase">Privacidade</Link>
                     </div>
                 </div>
             </footer>

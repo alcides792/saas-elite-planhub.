@@ -176,11 +176,11 @@ export default function RegisterForm() {
                 {/* Terms */}
                 <div className="text-xs text-zinc-500 font-medium text-center">
                     By creating an account, you agree to our{' '}
-                    <Link href="/terms" className="text-purple-600 hover:text-purple-700 font-bold">
+                    <Link href="/terms-of-service" className="text-purple-600 hover:text-purple-700 font-bold">
                         Terms of Service
                     </Link>{' '}
                     and{' '}
-                    <Link href="/privacy" className="text-purple-600 hover:text-purple-700 font-bold">
+                    <Link href="/privacy-policy" className="text-purple-600 hover:text-purple-700 font-bold">
                         Privacy Policy
                     </Link>
                 </div>

@@ -19,7 +19,7 @@ import AddSubscriptionModal from '@/components/AddSubscriptionModal';
 import SubscriptionLogo from '@/components/ui/subscription-logo';
 import type { Subscription } from '@/types';
 import { createSubscription } from '@/lib/actions/subscriptions';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import UserMenu from '@/components/UserMenu';
 import { useUser } from '@/contexts/UserContext';
 import { toast } from 'sonner';
 import { calculateYearlyProjection } from '@/lib/utils/analytics';
@@ -163,7 +163,7 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                     <p className="text-zinc-500 text-sm mt-1">Overview of your financial panel.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <ThemeToggle />
+                    <UserMenu />
                     <button
                         onClick={() => setIsModalOpen(true)}
                         disabled={isPending}

@@ -62,10 +62,10 @@ export default function NotificationChannels() {
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
                             transition={{ delay: idx * 0.1 }}
-                            className="p-10 bg-white dark:bg-zinc-900/50 border-4 border-[#1a1a1a] shadow-[8px_8px_0px_#1a1a1a] flex flex-col items-center gap-8 group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[12px_12px_0px_#1a1a1a] transition-all"
+                            className="p-10 bg-white border-4 border-[#1a1a1a] shadow-[8px_8px_0px_#1a1a1a] flex flex-col items-center gap-8 group hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[12px_12px_0px_#1a1a1a] transition-all"
                         >
                             <div className="relative">
-                                <div className="w-24 h-24 flex items-center justify-center relative z-10 p-4 border-2 border-[#1a1a1a] bg-zinc-50 dark:bg-[#1a1a1a] transform group-hover:rotate-3 transition-transform">
+                                <div className="w-24 h-24 flex items-center justify-center relative z-10 p-4 border-2 border-[#1a1a1a] bg-zinc-50 transform group-hover:rotate-3 transition-transform">
                                     <Image
                                         src={channel.icon}
                                         alt={channel.name}
@@ -77,7 +77,7 @@ export default function NotificationChannels() {
                             </div>
 
                             <div className="space-y-4">
-                                <h3 className="text-2xl font-black text-[#1a1a1a] dark:text-white tracking-tight uppercase">{channel.name}</h3>
+                                <h3 className="text-2xl font-black text-[#1a1a1a] tracking-tight uppercase">{channel.name}</h3>
                                 <div className={`text-xs font-black uppercase tracking-widest px-4 py-2 border-2 border-[#1a1a1a] ${channel.statusColor} bg-white shadow-[2px_2px_0px_#1a1a1a]`}>
                                     ● {channel.active ? 'ATIVO' : 'EM BREVE'}
                                 </div>

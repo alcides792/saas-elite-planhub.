@@ -30,7 +30,7 @@ import { motion } from 'framer-motion';
 import { createClient } from '@/lib/utils/supabase/client';
 import { Subscription, dbToSubscription } from '@/types';
 import SubscriptionLogo from '@/components/ui/subscription-logo';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import UserMenu from '@/components/UserMenu';
 
 export default function CalendarPage() {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -198,7 +198,7 @@ export default function CalendarPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
-                    <ThemeToggle />
+                    <UserMenu />
                     <div className="flex items-center gap-4 bg-gray-50 dark:bg-[#111] p-1.5 rounded-2xl border border-gray-200 dark:border-white/5">
                         <button onClick={prevMonth} className="p-2 hover:bg-gray-200 dark:hover:bg-white/5 rounded-xl transition-all">
                             <ChevronLeft className="h-5 w-5" />

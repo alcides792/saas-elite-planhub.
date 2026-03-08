@@ -31,7 +31,7 @@ export default function Pricing() {
                             <span className="text-[#1a1a1a] ml-2 font-black text-xl">/ ano</span>
                         </div>
                         <p className="text-[#1a1a1a] font-black mb-4 italic text-xl">3 DIAS DE TESTE GRÁTIS</p>
-                        <p className="text-[#1a1a1a] font-bold mb-8 italic text-lg opacity-80">Experimenta tudo sem compromisso. Depois, apenas $2d0,25 por mês (faturado anualmente).</p>
+                        <p className="text-[#1a1a1a] font-bold mb-8 italic text-lg opacity-80">Experimenta tudo sem compromisso. Depois, apenas $2,25 por mês (faturado anualmente).</p>
 
                         <ul className="space-y-4 mb-10 text-[#1a1a1a] font-bold flex-grow">
                             {[

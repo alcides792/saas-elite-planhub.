@@ -47,8 +47,9 @@ export async function getFeedbackPosts(category?: string) {
             .from('feedback_posts')
             .select(`
         *,
-        profiles!left (
-          full_name
+        profiles:user_id (
+          full_name,
+          avatar_url
         )
       `)
             .order('votes', { ascending: false })

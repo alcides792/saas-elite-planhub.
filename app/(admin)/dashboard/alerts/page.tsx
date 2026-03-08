@@ -19,7 +19,7 @@ import {
 import { saveAlertSettings, getProfile } from '@/app/actions/settings'
 import { disconnectDiscord } from '@/app/actions/notifications'
 import { toast } from "sonner"
-import { ThemeToggle } from '@/components/ThemeToggle'
+import UserMenu from '@/components/UserMenu'
 
 export default function AlertsPage() {
     const [profile, setProfile] = React.useState<any>(null)
@@ -167,7 +167,7 @@ export default function AlertsPage() {
                         Configure how and when you want to be notified about your finances.
                     </motion.p>
                 </div>
-                <ThemeToggle />
+                <UserMenu />
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

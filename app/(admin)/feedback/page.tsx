@@ -20,6 +20,7 @@ interface FeedbackPost {
     created_at: string;
     profiles?: {
         full_name: string | null;
+        avatar_url: string | null;
     } | null;
 }
 
@@ -282,11 +283,19 @@ export default function FeedbackPage() {
                                         </p>
                                         <div className="flex items-center gap-4 text-[11px] font-bold text-zinc-400 border-t border-zinc-100 dark:border-white/5 pt-3 mt-auto">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center text-[8px] text-primary">
-                                                    {(post.profiles?.full_name || 'U').charAt(0)}
+                                                <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] text-primary overflow-hidden border border-zinc-200 dark:border-white/10 shrink-0">
+                                                    {post.profiles?.avatar_url ? (
+                                                        <img
+                                                            src={post.profiles.avatar_url}
+                                                            alt={post.profiles.full_name || 'User'}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        (post.profiles?.full_name || 'U').charAt(0).toUpperCase()
+                                                    )}
                                                 </div>
                                                 <span className="text-zinc-600 dark:text-zinc-300">
-                                                    {post.profiles?.full_name || 'Anonymous User'}
+                                                    {post.profiles?.full_name || 'Utilizador Kovr'}
                                                 </span>
                                             </div>
                                             <span>•</span>
