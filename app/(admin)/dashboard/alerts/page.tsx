@@ -280,7 +280,7 @@ export default function AlertsPage() {
                 <aside className="lg:col-span-5 space-y-8">
                     <div className="flex items-center gap-3">
                         <div className="h-1 w-8 bg-purple-500 rounded-full" />
-                        <h2 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">Configurações</h2>
+                        <h2 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">Settings</h2>
                     </div>
 
                     <form onSubmit={handleSave} className="space-y-6">
@@ -288,27 +288,27 @@ export default function AlertsPage() {
                         <div className={cardStyle}>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
                                 <Bell size={20} className="text-purple-600 dark:text-purple-500" />
-                                Preferências
+                                Preferences
                             </h3>
                             <div className="space-y-6">
                                 <div className="flex items-center justify-between group">
                                     <div className="space-y-0.5">
-                                        <Label className="text-base text-gray-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">Lembretes de Contas</Label>
-                                        <p className="text-xs text-gray-500 dark:text-zinc-500 italic">Notificar antes da data de vencimento.</p>
+                                        <Label className="text-base text-gray-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">Account Reminders</Label>
+                                        <p className="text-xs text-gray-500 dark:text-zinc-500 italic">Notify before the due date.</p>
                                     </div>
                                     <Switch name="notify_expiration" defaultChecked={profile?.notify_expiration ?? true} />
                                 </div>
                                 <div className="flex items-center justify-between group">
                                     <div className="space-y-0.5">
-                                        <Label className="text-base text-gray-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">Resumo Semanal</Label>
-                                        <p className="text-xs text-gray-500 dark:text-zinc-500 italic">Total de gastos da semana.</p>
+                                        <Label className="text-base text-gray-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">Weekly Summary</Label>
+                                        <p className="text-xs text-gray-500 dark:text-zinc-500 italic">Total spending for the week.</p>
                                     </div>
                                     <Switch name="notify_weekly_summary" defaultChecked={profile?.notify_weekly_summary ?? true} />
                                 </div>
                                 <div className="flex items-center justify-between group">
                                     <div className="space-y-0.5">
-                                        <Label className="text-base text-gray-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">Alertas de Valor</Label>
-                                        <p className="text-xs text-gray-500 dark:text-zinc-500 italic">Preços que aumentaram.</p>
+                                        <Label className="text-base text-gray-700 dark:text-zinc-200 group-hover:text-black dark:group-hover:text-white transition-colors">Price Alerts</Label>
+                                        <p className="text-xs text-gray-500 dark:text-zinc-500 italic">Prices that have increased.</p>
                                     </div>
                                     <Switch name="notify_price_change" defaultChecked={profile?.notify_price_change ?? true} />
                                 </div>
@@ -319,34 +319,34 @@ export default function AlertsPage() {
                         <div className={cardStyle}>
                             <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-3">
                                 <Clock size={20} className="text-purple-600 dark:text-purple-500" />
-                                Horário e Prazo
+                                Timing and Deadline
                             </h3>
                             <div className="space-y-5">
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-widest">Dias de Antecedência</Label>
+                                    <Label className="text-xs font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-widest">Days in Advance</Label>
                                     <Select name="notify_days_before" defaultValue={String(profile?.notify_days_before ?? "3")}>
                                         <SelectTrigger className="w-full bg-gray-50 dark:bg-zinc-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl h-12">
-                                            <SelectValue placeholder="Selecionar" />
+                                            <SelectValue placeholder="Select" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-white dark:bg-zinc-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white">
-                                            <SelectItem value="1">1 dia antes</SelectItem>
-                                            <SelectItem value="3">3 dias antes (Vantagem)</SelectItem>
-                                            <SelectItem value="5">5 dias antes</SelectItem>
-                                            <SelectItem value="7">1 semana antes</SelectItem>
+                                            <SelectItem value="1">1 day before</SelectItem>
+                                            <SelectItem value="3">3 days before (Recommended)</SelectItem>
+                                            <SelectItem value="5">5 days before</SelectItem>
+                                            <SelectItem value="7">1 week before</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-widest">Horário de Entrega</Label>
+                                    <Label className="text-xs font-bold text-gray-500 dark:text-zinc-500 uppercase tracking-widest">Delivery Time</Label>
                                     <Select name="notify_time" defaultValue={profile?.notify_time ?? "09"}>
                                         <SelectTrigger className="w-full bg-gray-50 dark:bg-zinc-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white rounded-xl h-12">
-                                            <SelectValue placeholder="Selecionar" />
+                                            <SelectValue placeholder="Select" />
                                         </SelectTrigger>
                                         <SelectContent className="bg-white dark:bg-zinc-900 border-gray-200 dark:border-white/10 text-gray-900 dark:text-white">
                                             <SelectItem value="08">08:00 AM</SelectItem>
                                             <SelectItem value="09">09:00 AM</SelectItem>
                                             <SelectItem value="10">10:00 AM</SelectItem>
-                                            <SelectItem value="12">Meio-dia</SelectItem>
+                                            <SelectItem value="12">Noon</SelectItem>
                                             <SelectItem value="18">06:00 PM</SelectItem>
                                         </SelectContent>
                                     </Select>
@@ -363,13 +363,13 @@ export default function AlertsPage() {
                             className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black font-black rounded-xl hover:bg-black dark:hover:bg-zinc-200 transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50 shadow-xl"
                         >
                             {isSaving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
-                            SALVAR CONFIGURAÇÕES
+                            SAVE SETTINGS
                         </motion.button>
 
                         {/* Info Tip */}
                         <div className="flex gap-3 bg-purple-500/10 border border-purple-500/20 p-4 rounded-xl text-[12px] text-purple-200 items-start">
                             <AlertCircle size={16} className="shrink-0 mt-0.5" />
-                            <p>As configurações de alerta são globais. Você receberá notificações em todos os canais ativos acima.</p>
+                            <p>Alert settings are global. You will receive notifications on all active channels above.</p>
                         </div>
                     </form>
                 </aside>

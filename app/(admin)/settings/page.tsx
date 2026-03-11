@@ -318,7 +318,7 @@ export default function SettingsPage() {
 
                 {/* Section 2: Avatar Selection */}
                 <BentoCard
-                    title="Escolhe o teu Avatar"
+                    title="Choose your Avatar"
                     icon={User}
                     description="Select a character that represents you"
                 >

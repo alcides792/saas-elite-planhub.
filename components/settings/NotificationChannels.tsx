@@ -30,9 +30,9 @@ export default function NotificationChannels({
         const res = await saveDiscordWebhook(discordWebhook)
         if (res.success) {
             setActiveDiscord(true)
-            setMessage({ type: 'success', text: 'Discord conectado!' })
+            setMessage({ type: 'success', text: 'Discord connected!' })
         } else {
-            setMessage({ type: 'error', text: res.error || 'Erro ao conectar' })
+            setMessage({ type: 'error', text: res.error || 'Error connecting' })
         }
         setIsLoading(prev => ({ ...prev, discord: false }))
     }
@@ -52,13 +52,13 @@ export default function NotificationChannels({
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-white tracking-tight">Telegram</h3>
-                            <p className="text-sm text-zinc-500 font-medium">Alertas instantâneos</p>
+                            <p className="text-sm text-zinc-500 font-medium">Instant alerts</p>
                         </div>
                     </div>
                     {activeTelegram && (
                         <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
                             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Ativo</span>
+                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Active</span>
                         </div>
                     )}
                 </div>
@@ -72,7 +72,7 @@ export default function NotificationChannels({
                                 onClick={() => setActiveTelegram(false)}
                                 className="w-full text-[10px] font-bold text-zinc-600 hover:text-red-400 transition-colors uppercase tracking-widest"
                             >
-                                Desconectar / Alterar Bot
+                                Disconnect / Change Bot
                             </button>
                         </div>
                     )}
@@ -93,21 +93,21 @@ export default function NotificationChannels({
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-white tracking-tight">Discord</h3>
-                            <p className="text-sm text-zinc-500 font-medium">Webhooks de canal</p>
+                            <p className="text-sm text-zinc-500 font-medium">Channel Webhooks</p>
                         </div>
                     </div>
                     {activeDiscord && (
                         <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
                             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Ativo</span>
+                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Active</span>
                         </div>
                     )}
                 </div>
 
                 <div className="space-y-4">
                     <p className="text-xs text-zinc-400 leading-relaxed">
-                        1. Vá nas <strong>Configurações do Canal</strong> &gt; <strong>Integrações</strong>.<br />
-                        2. Crie um <strong>Webhook</strong>, copie a URL e cole abaixo.
+                        1. Go to <strong>Channel Settings</strong> &gt; <strong>Integrations</strong>.<br />
+                        2. Create a <strong>Webhook</strong>, copy the URL and paste it below.
                     </p>
 
                     {!activeDiscord ? (
@@ -125,17 +125,17 @@ export default function NotificationChannels({
                                 className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white py-4 rounded-2xl font-black text-sm hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
                             >
                                 {isLoading.discord ? <Loader2 size={18} className="animate-spin" /> : <MessageSquare size={18} />}
-                                CONECTAR DISCORD
+                                CONNECT DISCORD
                             </button>
                         </div>
                     ) : (
                         <div className="p-4 bg-zinc-950/50 border border-white/5 rounded-2xl">
-                            <p className="text-[11px] text-zinc-500 text-center">Webhook configurado. Os logs de renovação serão enviados para o seu canal.</p>
+                            <p className="text-[11px] text-zinc-500 text-center">Webhook configured. Renewal logs will be sent to your channel.</p>
                             <button
                                 onClick={() => setActiveDiscord(false)}
                                 className="w-full mt-4 text-[10px] font-bold text-zinc-600 hover:text-red-400 transition-colors uppercase tracking-widest"
                             >
-                                Alterar Conexão
+                                Change Connection
                             </button>
                         </div>
                     )}
@@ -155,21 +155,21 @@ export default function NotificationChannels({
                             <Image src="/gmail-icon-v2.png" alt="Email" width={40} height={40} className="w-10 h-10 object-contain" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-white tracking-tight">E-mail</h3>
-                            <p className="text-sm text-zinc-500 font-medium">Alertas na sua caixa de entrada</p>
+                            <h3 className="text-xl font-bold text-white tracking-tight">Email</h3>
+                            <p className="text-sm text-zinc-500 font-medium">Alerts in your inbox</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="space-y-4">
                     <p className="text-xs text-zinc-400 leading-relaxed">
-                        Receba resumos semanais e alertas de renovação importantes diretamente no seu e-mail cadastrado.
+                        Receive weekly summaries and important renewal alerts directly to your registered email.
                     </p>
                     <div className="p-4 bg-zinc-950/50 border border-white/5 rounded-2xl flex items-center justify-between">
-                        <span className="text-sm font-bold text-zinc-300">Notificações por E-mail</span>
+                        <span className="text-sm font-bold text-zinc-300">Email Notifications</span>
                         <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
                             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Ativo</span>
+                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Active</span>
                         </div>
                     </div>
                 </div>
@@ -185,7 +185,7 @@ export default function NotificationChannels({
                 >
                     {message.type === 'success' ? <CheckCircle2 size={18} /> : <div className="w-4.5 h-4.5 rounded-full bg-red-500" />}
                     <span className="text-xs font-bold uppercase tracking-wider">{message.text}</span>
-                    <button onClick={() => setMessage(null)} className="ml-auto text-[10px] font-black opacity-50 hover:opacity-100">FECHAR</button>
+                    <button onClick={() => setMessage(null)} className="ml-auto text-[10px] font-black opacity-50 hover:opacity-100">CLOSE</button>
                 </motion.div>
             )}
         </div>

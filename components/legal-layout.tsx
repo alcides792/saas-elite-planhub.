@@ -19,7 +19,7 @@ export default function LegalLayout({ title, children }: LegalLayoutProps) {
                     <div className="p-1 rounded-full bg-white/5 border border-white/10 group-hover:bg-white/10 transition-colors">
                         <ChevronLeft size={16} />
                     </div>
-                    <span className="text-sm font-medium">Voltar ao Dashboard</span>
+                    <span className="text-sm font-medium">Back to Dashboard</span>
                 </Link>
 
                 {/* Content Container */}

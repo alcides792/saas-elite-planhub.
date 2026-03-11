@@ -47,10 +47,10 @@ export default function NotificationChannels() {
                     className="mb-16"
                 >
                     <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter text-[#1a1a1a] dark:text-white uppercase">
-                        SISTEMA DE <span className="text-[#1fe2c3] bg-[#1a1a1a] px-4">ALERTA</span>
+                        ALERT <span className="text-[#1fe2c3] bg-[#1a1a1a] px-4">SYSTEM</span>
                     </h2>
                     <p className="text-[#1a1a1a] dark:text-zinc-400 text-xl font-bold max-w-2xl mx-auto italic">
-                        ESCOLHE ONDE QUERES RECEBER OS TEUS AVISOS DE RENOVAÇÃO E ALERTAS DE POUPANÇA.
+                        CHOOSE WHERE YOU WANT TO RECEIVE YOUR RENEWAL NOTICES AND SAVINGS ALERTS.
                     </p>
                 </motion.div>
 
@@ -79,7 +79,7 @@ export default function NotificationChannels() {
                             <div className="space-y-4">
                                 <h3 className="text-2xl font-black text-[#1a1a1a] tracking-tight uppercase">{channel.name}</h3>
                                 <div className={`text-xs font-black uppercase tracking-widest px-4 py-2 border-2 border-[#1a1a1a] ${channel.statusColor} bg-white shadow-[2px_2px_0px_#1a1a1a]`}>
-                                    ● {channel.active ? 'ATIVO' : 'EM BREVE'}
+                                    ● {channel.active ? 'ACTIVE' : 'COMING SOON'}
                                 </div>
                             </div>
                         </motion.div>

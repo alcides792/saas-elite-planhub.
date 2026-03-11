@@ -37,7 +37,7 @@ export default function TelegramConnect() {
                 </div>
                 <div>
                     <h3 className="text-xl font-bold text-white">Telegram</h3>
-                    <p className="text-zinc-400 text-sm">Conexão instantânea em 1 clique.</p>
+                    <p className="text-zinc-400 text-sm">Instant 1-click connection.</p>
                 </div>
             </div>
 
@@ -45,8 +45,8 @@ export default function TelegramConnect() {
                 <div className="space-y-5 relative z-10">
                     <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
                         <p className="text-sm text-zinc-300 leading-relaxed">
-                            Receba alertas de vencimento direto no seu celular.
-                            Basta clicar abaixo e iniciar o bot <strong>@{BOT_USERNAME}</strong>.
+                            Receive renewal alerts directly on your phone.
+                            Just click below and start the bot <strong>@{BOT_USERNAME}</strong>.
                         </p>
                     </div>
 
@@ -59,7 +59,7 @@ export default function TelegramConnect() {
                             className="flex items-center justify-center gap-2 w-full py-4 bg-[#229ED9] hover:bg-[#1e8ubc] text-white font-bold text-lg rounded-xl transition shadow-xl shadow-[#229ED9]/20 hover:scale-[1.02]"
                         >
                             <Send size={20} />
-                            Conectar @{BOT_USERNAME} Agora
+                            Connect @{BOT_USERNAME} Now
                             <ExternalLink size={16} className="opacity-50" />
                         </a>
 
@@ -68,7 +68,7 @@ export default function TelegramConnect() {
                             className="text-xs text-zinc-500 hover:text-white flex items-center justify-center gap-2 mt-2 transition"
                         >
                             <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
-                            Já iniciei o bot, verificar conexão
+                            Already started the bot, verify connection
                         </button>
                     </div>
                 </div>
@@ -78,8 +78,8 @@ export default function TelegramConnect() {
                         <CheckCircle className="text-green-500" size={24} />
                     </div>
                     <div>
-                        <p className="text-green-400 font-bold text-lg">Conectado!</p>
-                        <p className="text-green-500/60 text-sm">Bot <strong>@{BOT_USERNAME}</strong> ativo.</p>
+                        <p className="text-green-400 font-bold text-lg">Connected!</p>
+                        <p className="text-green-500/60 text-sm">Bot <strong>@{BOT_USERNAME}</strong> active.</p>
                     </div>
                 </div>
             )}

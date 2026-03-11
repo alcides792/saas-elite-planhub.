@@ -19,28 +19,28 @@ export default function ProblemSection() {
                 >
                     <div className="inline-flex items-center gap-3 px-6 py-2 mb-8 text-sm font-black text-[#1a1a1a] uppercase bg-red-400 border-4 border-[#1a1a1a] shadow-[4px_4px_0px_#1a1a1a]">
                         <AlertTriangle size={18} />
-                        PARA DE PERDER DINHEIRO
+                        STOP LOSING MONEY
                     </div>
 
                     <h2 className="text-4xl md:text-7xl font-black text-zinc-900 dark:text-white mb-8 tracking-tighter uppercase leading-none">
-                        PROVAVELMENTE ESTÁS A PAGAR <br className="hidden md:block" />
-                        POR <span className="text-red-500 bg-white border-4 border-[#1a1a1a] px-2">3 COISAS</span> QUE JÁ NEM LEMBRAS
+                        YOU'RE PROBABLY PAYING <br className="hidden md:block" />
+                        FOR <span className="text-red-500 bg-white border-4 border-[#1a1a1a] px-2">3 THINGS</span> YOU DON'T EVEN REMEMBER
                     </h2>
 
                     <p className="max-w-3xl mx-auto text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 mb-12 font-bold italic">
-                        Aquele período gratuito de há 6 meses? Continua a cobrar.
-                        A app do ginásio que usaste duas vezes? Sim, essa também.
+                        That free trial from 6 months ago? It's still charging.
+                        The gym app you used twice? Yeah, that one too.
                     </p>
 
                     <div className="relative max-w-4xl mx-auto mb-16 p-10 md:p-14 bg-white border-[6px] border-[#1a1a1a] shadow-[12px_12px_0px_#1a1a1a]">
                         <h3 className="text-2xl md:text-5xl font-black text-[#1a1a1a] italic leading-tight uppercase tracking-tighter">
-                            "O teu extrato bancário é um cemitério de boas intenções."
+                            "Your bank statement is a cemetery of good intentions."
                         </h3>
                     </div>
 
                     <div className="space-y-4">
                         <p className="text-3xl font-black text-zinc-900 dark:text-white uppercase tracking-tighter">
-                            ACABA COM O CAOS DAS ASSINATURAS HOJE.
+                            END THE SUBSCRIPTION CHAOS TODAY.
                         </p>
                         <div className="w-48 h-2 bg-[#1fe2c3] border-2 border-[#1a1a1a] mx-auto" />
                     </div>

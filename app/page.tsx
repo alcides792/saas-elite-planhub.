@@ -4,8 +4,8 @@ import { createClient } from "@/lib/utils/supabase/server";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: "Kovr | O teu gestor inteligente de assinaturas",
-    description: "Gere as tuas subscrições, recebe alertas de renovação e descobre onde podes poupar dinheiro todos os meses. Nunca mais pagues por serviços que não usas.",
+    title: "Kovr | Your smart subscription manager",
+    description: "Manage your subscriptions, get renewal alerts and discover where you can save money every month. Never pay for services you don't use again.",
 };
 
 export default async function HomePage() {

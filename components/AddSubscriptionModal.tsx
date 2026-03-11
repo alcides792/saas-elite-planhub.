@@ -480,7 +480,7 @@ export default function AddSubscriptionModal({ isOpen, onClose, onAdd }: AddSubs
                                                 type="text"
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                                placeholder="Search Netflix, Spotify, ChatGPT, Globoplay..."
+                                                placeholder="Search Netflix, Spotify, ChatGPT, Disney+..."
                                                 className="w-full pl-14 pr-6 py-5 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl text-xl text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white dark:focus:bg-white/[0.08] transition-all shadow-sm"
                                                 autoFocus
                                             />

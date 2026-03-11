@@ -62,13 +62,13 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
         const error = params.get('error');
 
         if (status === 'deleted') {
-            toast.success('Assinatura excluída com sucesso!');
+            toast.success('Subscription deleted successfully!');
             router.replace('/dashboard');
         } else if (status === 'renewed') {
-            toast.success('Assinatura renovada com sucesso!');
+            toast.success('Subscription renewed successfully!');
             router.replace('/dashboard');
         } else if (status === 'error' || error === 'failed') {
-            toast.error('Erro: ' + (params.get('message') || 'Algo deu errado'));
+            toast.error('Error: ' + (params.get('message') || 'Something went wrong'));
             router.replace('/dashboard');
         }
     }, [router]);
@@ -78,9 +78,9 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
         startTransition(async () => {
             const { data, error } = await createSubscription(newSub);
             if (error) {
-                toast.error('Erro ao criar assinatura: ' + error);
+                toast.error('Error creating subscription: ' + error);
             } else {
-                toast.success('Assinatura criada!');
+                toast.success('Subscription created!');
                 router.refresh();
             }
         });
@@ -102,7 +102,7 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
         const grouped = subscriptions
             .filter(s => s.status === 'active')
             .reduce((acc, sub) => {
-                const cat = sub.category || 'Outros';
+                const cat = sub.category || 'Other';
                 const monthly = sub.billing_cycle === 'yearly' ? sub.amount / 12 : sub.amount;
                 acc[cat] = (acc[cat] || 0) + monthly;
                 return acc;
@@ -433,7 +433,7 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                         ))}
                     </div>
                 ) : (
-                    <p className="text-zinc-600 text-center py-8">Nenhuma renovação próxima.</p>
+                    <p className="text-zinc-600 text-center py-8">No upcoming renewals.</p>
                 )}
             </motion.div>
 

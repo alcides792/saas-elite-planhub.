@@ -276,7 +276,7 @@ export default function ExtensionPage() {
                                                 transition={{ delay: 0.5 }}
                                                 className="text-2xl font-black text-gray-900 dark:text-white mb-3 tracking-tight"
                                             >
-                                                Extensão conectada com sucesso!
+                                                Extension connected successfully!
                                             </motion.h3>
 
                                             <motion.p
@@ -285,7 +285,7 @@ export default function ExtensionPage() {
                                                 transition={{ delay: 0.65 }}
                                                 className="text-base text-gray-500 dark:text-zinc-400 max-w-md mx-auto leading-relaxed"
                                             >
-                                                Podes começar a guardar as tuas assinaturas.
+                                                You can now start saving your subscriptions.
                                             </motion.p>
 
                                             <motion.div
@@ -307,7 +307,7 @@ export default function ExtensionPage() {
                                                 className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 text-gray-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400 text-xs font-bold uppercase tracking-widest transition-colors disabled:opacity-50"
                                             >
                                                 <Unplug size={14} />
-                                                {disconnecting ? 'A desconectar...' : 'Desconectar Extensão'}
+                                                {disconnecting ? 'Disconnecting...' : 'Disconnect Extension'}
                                             </motion.button>
                                         </div>
                                     </motion.div>
@@ -350,7 +350,7 @@ export default function ExtensionPage() {
                                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                                                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-purple-500"></span>
                                             </span>
-                                            <span className="font-bold uppercase tracking-widest text-[10px]">Aguardando conexão da extensão...</span>
+                                            <span className="font-bold uppercase tracking-widest text-[10px]">Waiting for extension connection...</span>
                                         </div>
 
                                         <div className="flex items-start justify-between">

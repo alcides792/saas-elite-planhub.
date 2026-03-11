@@ -19,10 +19,10 @@ export default function ReportActions({ onExportClick }: ReportActionsProps) {
                     <Image src="/icons/pdf-3d.png" alt="PDF" fill className="object-contain" />
                 </div>
                 <div className="text-center sm:text-left flex-1">
-                    <p className="text-sm font-bold text-white uppercase tracking-tight">Relatório PDF</p>
-                    <p className="text-[10px] text-zinc-500 mb-2">Visão geral mensal</p>
+                    <p className="text-sm font-bold text-white uppercase tracking-tight">PDF Report</p>
+                    <p className="text-[10px] text-zinc-500 mb-2">Monthly overview</p>
                     <div className="flex items-center gap-1 text-[10px] font-bold text-purple-400">
-                        <Download size={12} /> EXPORTAR
+                        <Download size={12} /> EXPORT
                     </div>
                 </div>
             </button>
@@ -35,10 +35,10 @@ export default function ReportActions({ onExportClick }: ReportActionsProps) {
                     <Image src="/icons/csv-3d.png" alt="CSV" fill className="object-contain" />
                 </div>
                 <div className="text-center sm:text-left flex-1">
-                    <p className="text-sm font-bold text-white uppercase tracking-tight">Planilha CSV</p>
-                    <p className="text-[10px] text-zinc-500 mb-2">Dados brutos (.csv)</p>
+                    <p className="text-sm font-bold text-white uppercase tracking-tight">CSV Spreadsheet</p>
+                    <p className="text-[10px] text-zinc-500 mb-2">Raw data (.csv)</p>
                     <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-400">
-                        <Download size={12} /> EXPORTAR
+                        <Download size={12} /> EXPORT
                     </div>
                 </div>
             </button>

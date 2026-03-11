@@ -60,10 +60,10 @@ export default function ExportModal({ isOpen, onClose, onSelect, type, isLoading
                                     </div>
                                     <div>
                                         <h2 className="text-2xl font-black text-white">
-                                            Exportar Relatório {type}
+                                            Export {type} Report
                                         </h2>
                                         <p className="text-sm text-zinc-400 mt-0.5">
-                                            Escolha onde deseja receber o seu arquivo.
+                                            Choose where you want to receive your file.
                                         </p>
                                     </div>
                                 </div>
@@ -94,7 +94,7 @@ export default function ExportModal({ isOpen, onClose, onSelect, type, isLoading
 
                                         <div className="text-center">
                                             <p className="text-sm font-bold text-white mb-1">Telegram</p>
-                                            <p className="text-xs text-zinc-400">Enviar para Bot</p>
+                                            <p className="text-xs text-zinc-400">Send to Bot</p>
                                         </div>
 
                                         {isLoading && (
@@ -125,8 +125,8 @@ export default function ExportModal({ isOpen, onClose, onSelect, type, isLoading
                                         </div>
 
                                         <div className="text-center">
-                                            <p className="text-sm font-bold text-white mb-1">E-mail</p>
-                                            <p className="text-xs text-zinc-400">Enviar por E-mail</p>
+                                            <p className="text-sm font-bold text-white mb-1">Email</p>
+                                            <p className="text-xs text-zinc-400">Send via Email</p>
                                         </div>
 
                                         {isLoading && (
@@ -143,10 +143,10 @@ export default function ExportModal({ isOpen, onClose, onSelect, type, isLoading
                                         {isLoading ? (
                                             <span className="flex items-center justify-center gap-2">
                                                 <Loader2 size={14} className="animate-spin" />
-                                                Processando exportação...
+                                                Processing export...
                                             </span>
                                         ) : (
-                                            'O arquivo será enviado instantaneamente para o canal escolhido.'
+                                            'The file will be sent instantly to the chosen channel.'
                                         )}
                                     </p>
                                 </div>

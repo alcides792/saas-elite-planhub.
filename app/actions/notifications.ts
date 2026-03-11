@@ -9,12 +9,12 @@ const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN
 export async function saveTelegramId(chatId: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "Usuário não logado" }
+    if (!user) return { error: "User not logged in" }
 
     const { error } = await supabase.from('profiles').update({ telegram_chat_id: chatId }).eq('id', user.id)
-    if (error) return { error: "Erro ao salvar Telegram ID" }
+    if (error) return { error: "Error saving Telegram ID" }
 
-    await sendNotification(user.id, "🚀 **Kovr:** Telegram conectado com sucesso!", "telegram")
+    await sendNotification(user.id, "🚀 **Kovr:** Telegram connected successfully!", "telegram")
     return { success: true }
 }
 
@@ -23,24 +23,24 @@ export async function saveTelegramId(chatId: string) {
 export async function saveDiscordWebhook(url: string) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "Usuário não logado" }
+    if (!user) return { error: "User not logged in" }
 
-    if (!url.includes("discord.com/api/webhooks")) return { error: "URL inválida" }
+    if (!url.includes("discord.com/api/webhooks")) return { error: "Invalid URL" }
 
     const { error } = await supabase.from('profiles').update({ discord_webhook: url }).eq('id', user.id)
-    if (error) return { error: "Erro ao salvar Webhook" }
+    if (error) return { error: "Error saving Webhook" }
 
-    await sendNotification(user.id, "✅ **Kovr:** Webhook do Discord conectado!", "discord")
+    await sendNotification(user.id, "✅ **Kovr:** Discord Webhook connected!", "discord")
     return { success: true }
 }
 
 export async function disconnectDiscord() {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return { error: "Usuário não logado" }
+    if (!user) return { error: "User not logged in" }
 
     const { error } = await supabase.from('profiles').update({ discord_webhook: null }).eq('id', user.id)
-    if (error) return { error: "Erro ao desconectar Discord" }
+    if (error) return { error: "Error disconnecting Discord" }
 
     return { success: true }
 }

@@ -103,7 +103,7 @@ export default function FeedbackPage() {
                 <div className="space-y-1">
                     <div className="flex items-center gap-2 mb-2">
                         <span className="h-px w-8 bg-primary/40 block"></span>
-                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70">Communit Focus</span>
+                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70">Community Focus</span>
                     </div>
                     <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
                         Feedback
@@ -295,7 +295,7 @@ export default function FeedbackPage() {
                                                     )}
                                                 </div>
                                                 <span className="text-zinc-600 dark:text-zinc-300">
-                                                    {post.profiles?.full_name || 'Utilizador Kovr'}
+                                                    {post.profiles?.full_name || 'Kovr User'}
                                                 </span>
                                             </div>
                                             <span>•</span>

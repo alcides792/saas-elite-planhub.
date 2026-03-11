@@ -42,30 +42,30 @@ export default function Features() {
             <div className="container mx-auto px-6">
                 <div className="text-center mb-20 relative z-10">
                     <h2 className="text-4xl md:text-6xl font-black text-[#1a1a1a] dark:text-white mb-6 tracking-tighter uppercase">
-                        DOMINA AS TUAS <span className="text-[#1fe2c3]">FINANÇAS</span>
+                        MASTER YOUR <span className="text-[#1fe2c3]">FINANCES</span>
                     </h2>
                     <p className="text-[#1a1a1a]/70 dark:text-zinc-400 max-w-2xl mx-auto text-xl font-bold italic">
-                        CRIAMOS A TECNOLOGIA PARA QUE NUNCA MAIS PERCAS O CONTROLO DOS TEUS GASTOS DIGITAIS
+                        WE BUILT THE TECH SO YOU NEVER LOSE CONTROL OF YOUR DIGITAL SPENDING AGAIN
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                     {[
                         {
-                            title: "Extensão Chrome de Detecção Automática",
-                            description: "A nossa extensão identifica subscrições enquanto navegas, sem precisares de introduzir dados manualmente.",
+                            title: "Auto-Detection Chrome Extension",
+                            description: "Our extension identifies subscriptions as you browse, no manual entry required.",
                             icon: Layers,
                             color: "bg-[#1fe2c3]"
                         },
                         {
-                            title: "Alertas de Renovação",
-                            description: "Recebe notificações via Telegram ou Discord 3 dias antes de qualquer cobrança. Acabaram-se as surpresas.",
+                            title: "Renewal Alerts",
+                            description: "Get notifications via Telegram or Discord 3 days before any charge. No more surprises.",
                             icon: AlarmClock,
                             color: "bg-[#faed27]"
                         },
                         {
-                            title: "Controlo Financeiro Simples",
-                            description: "Um dashboard limpo e direto. Vê exatamente para onde vai o teu dinheiro todos os meses.",
+                            title: "Simple Financial Control",
+                            description: "A clean, direct dashboard. See exactly where your money goes every month.",
                             icon: ShieldCheck,
                             color: "bg-purple-500"
                         }
