@@ -8,8 +8,9 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight, ChevronLeft } from 'lucide-react';
 import { createClient } from '@/lib/utils/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
+import { Suspense } from 'react';
 
-export default function AuthPage() {
+function AuthForm() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -338,5 +339,17 @@ export default function AuthPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function AuthPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen w-full flex items-center justify-center bg-white dark:bg-[#0a0a0a]">
+                <div className="animate-spin h-8 w-8 border-4 border-black dark:border-white border-t-transparent rounded-full" />
+            </div>
+        }>
+            <AuthForm />
+        </Suspense>
     );
 }

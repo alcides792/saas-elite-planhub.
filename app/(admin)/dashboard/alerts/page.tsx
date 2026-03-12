@@ -18,8 +18,9 @@ import { saveAlertSettings, getProfile } from '@/app/actions/settings'
 import { disconnectDiscord } from '@/app/actions/notifications'
 import { toast } from "sonner"
 import UserMenu from '@/components/UserMenu'
+import { Suspense } from 'react'
 
-export default function AlertsPage() {
+function AlertsContent() {
     const [profile, setProfile] = React.useState<any>(null)
     const [isLoading, setIsLoading] = React.useState(true)
     const [isSaving, setIsSaving] = React.useState(false)
@@ -400,4 +401,16 @@ export default function AlertsPage() {
             />
         </div>
     );
+}
+
+export default function AlertsPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+            </div>
+        }>
+            <AlertsContent />
+        </Suspense>
+    )
 }
