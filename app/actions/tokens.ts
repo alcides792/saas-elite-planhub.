@@ -18,7 +18,7 @@ export async function generateExtensionToken() {
         const supabase = await createClient()
         const { data: { user } } = await supabase.auth.getUser()
 
-        if (!user) return { error: "Não autorizado." }
+        if (!user) return { error: "Not authorized." }
 
         // Logic to generate token (similar to generateApiKey in api-keys.ts)
         const newToken = crypto.randomUUID()
@@ -33,6 +33,6 @@ export async function generateExtensionToken() {
         return { success: true, token: newToken }
     } catch (error: any) {
         console.error('Error generating token:', error)
-        return { error: "Erro ao gerar token." }
+        return { error: "Error generating token." }
     }
 }

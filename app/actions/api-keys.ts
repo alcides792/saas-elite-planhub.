@@ -28,7 +28,7 @@ export async function generateApiKey(): Promise<{
         if (authError || !user) {
             return {
                 success: false,
-                error: 'Você precisa estar autenticado para gerar uma API Key.',
+                error: 'You must be authenticated to generate an API Key.',
             };
         }
 
@@ -41,14 +41,13 @@ export async function generateApiKey(): Promise<{
             console.error('Error generating API key:', keyError);
             return {
                 success: false,
-                error: 'Erro ao gerar a chave. Tente novamente.',
+                error: 'Error generating key. Please try again.',
             };
         }
 
         const newApiKey = keyData as string;
 
         // Update the user's profile with the new API key
-        // Type assertion needed because extension_api_key column is added via migration
         const { error: updateError } = await (supabase as any)
             .from('profiles')
             .update({ extension_api_key: newApiKey })
@@ -58,7 +57,7 @@ export async function generateApiKey(): Promise<{
             console.error('Error updating profile with API key:', updateError);
             return {
                 success: false,
-                error: 'Erro ao salvar a chave. Tente novamente.',
+                error: 'Error saving key. Please try again.',
             };
         }
 
@@ -74,7 +73,7 @@ export async function generateApiKey(): Promise<{
         console.error('Unexpected error in generateApiKey:', error);
         return {
             success: false,
-            error: 'Erro inesperado. Tente novamente.',
+            error: 'Unexpected error. Please try again.',
         };
     }
 }
@@ -96,7 +95,7 @@ export async function getApiKey(): Promise<{
         if (authError || !user) {
             return {
                 success: false,
-                error: 'Você precisa estar autenticado.',
+                error: 'You must be authenticated.',
             };
         }
 
@@ -111,7 +110,7 @@ export async function getApiKey(): Promise<{
             console.error('Error fetching API key:', profileError);
             return {
                 success: false,
-                error: 'Erro ao buscar a chave.',
+                error: 'Error fetching key.',
             };
         }
 
@@ -123,7 +122,7 @@ export async function getApiKey(): Promise<{
         console.error('Unexpected error in getApiKey:', error);
         return {
             success: false,
-            error: 'Erro inesperado.',
+            error: 'Unexpected error.',
         };
     }
 }
@@ -144,12 +143,11 @@ export async function revokeApiKey(): Promise<{
         if (authError || !user) {
             return {
                 success: false,
-                error: 'Você precisa estar autenticado.',
+                error: 'You must be authenticated.',
             };
         }
 
         // Remove the API key from the user's profile
-        // Type assertion needed because extension_api_key column is added via migration
         const { error: updateError } = await (supabase as any)
             .from('profiles')
             .update({ extension_api_key: null })
@@ -159,7 +157,7 @@ export async function revokeApiKey(): Promise<{
             console.error('Error revoking API key:', updateError);
             return {
                 success: false,
-                error: 'Erro ao revogar a chave.',
+                error: 'Error revoking key.',
             };
         }
 

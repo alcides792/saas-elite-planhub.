@@ -3,6 +3,7 @@
 import React from "react"
 import { motion } from "framer-motion"
 import { Check } from "lucide-react"
+import Link from "next/link"
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -45,7 +46,12 @@ export default function Pricing() {
                                 <li key={i} className="flex items-center gap-3"><Check className="w-6 h-6 text-[#1a1a1a] stroke-[4px]" /><span>{f}</span></li>
                             ))}
                         </ul>
-                        <button className="w-full bg-[#1a1a1a] text-white py-6 border-4 border-[#1a1a1a] font-black text-2xl hover:bg-zinc-800 transition-colors mt-auto uppercase shadow-[4px_4px_0px_#ffffff]">Start Free Trial ⚡</button>
+                        <Link 
+                            href="/login?mode=signup&plan=trial"
+                            className="w-full bg-[#1a1a1a] text-white py-6 border-4 border-[#1a1a1a] font-black text-2xl hover:bg-zinc-800 transition-colors mt-auto uppercase shadow-[4px_4px_0px_#ffffff] flex items-center justify-center"
+                        >
+                            Start Free Trial ⚡
+                        </Link>
                     </motion.div>
                 </div>
             </div>

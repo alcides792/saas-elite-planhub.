@@ -127,7 +127,6 @@ export async function GET(request: Request) {
                         console.error(`[cron/alerts] Auth admin error for user ${sub.user_id}:`, authErr.message)
                     }
                     userEmail = authUser?.user?.email || null
-                    console.log(`[cron/alerts] Sub ${sub.name}: user_id=${sub.user_id}, userEmail=${userEmail}`)
                 } catch (e: any) {
                     console.error(`[cron/alerts] Failed to fetch email for user ${sub.user_id}:`, e.message)
                 }
@@ -195,7 +194,6 @@ export async function GET(request: Request) {
                     await dispatchToUser(profile, messageHTML, messageMD, telegramButtons)
 
                     // Email notification
-                    console.log(`[cron/alerts] Rule A email check: notifyEmails=${notifyEmails}, userEmail=${userEmail}, RESEND_KEY_SET=${!!process.env.RESEND_API_KEY}`)
                     if (notifyEmails && userEmail) {
                         try {
                             const emailHtml = getExpiringEmailHtml(
@@ -205,14 +203,12 @@ export async function GET(request: Request) {
                                 cancelLink,
                                 (sub as any).website || null
                             )
-                            console.log(`[cron/alerts] Sending email to ${userEmail} for sub ${sub.name}...`)
                             const emailResult = await resend.emails.send({
                                 from: 'Kovr <noreply@kovr.space>',
                                 to: [userEmail],
                                 subject: `🚨 Kovr Alert: Your ${sub.name} subscription renews in ${daysLabel}!`,
                                 html: emailHtml,
                             })
-                            console.log(`[cron/alerts] Email sent successfully:`, JSON.stringify(emailResult))
                         } catch (emailErr: any) {
                             console.error(`[cron/alerts] Email FAILED for sub ${sub.id}:`, emailErr.message, emailErr)
                         }
@@ -239,7 +235,6 @@ export async function GET(request: Request) {
                     await dispatchToUser(profile, messageHTML, messageMD, telegramButtons)
 
                     // Email notification
-                    console.log(`[cron/alerts] Rule B email check: notifyEmails=${notifyEmails}, userEmail=${userEmail}, RESEND_KEY_SET=${!!process.env.RESEND_API_KEY}`)
                     if (notifyEmails && userEmail) {
                         try {
                             const emailHtml = getExpiringEmailHtml(
@@ -249,14 +244,12 @@ export async function GET(request: Request) {
                                 cancelLink,
                                 (sub as any).website || null
                             )
-                            console.log(`[cron/alerts] Sending email to ${userEmail} for sub ${sub.name} (today)...`)
                             const emailResult = await resend.emails.send({
                                 from: 'Kovr <noreply@kovr.space>',
                                 to: [userEmail],
                                 subject: `⚠️ Kovr Alert: Your ${sub.name} subscription expires today!`,
                                 html: emailHtml,
                             })
-                            console.log(`[cron/alerts] Email sent successfully:`, JSON.stringify(emailResult))
                         } catch (emailErr: any) {
                             console.error(`[cron/alerts] Email FAILED for sub ${sub.id}:`, emailErr.message, emailErr)
                         }

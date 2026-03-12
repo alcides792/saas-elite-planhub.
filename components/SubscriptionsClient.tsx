@@ -113,73 +113,66 @@ export default function SubscriptionsClient({ initialSubscriptions }: Subscripti
     }, [subscriptions]);
 
     return (
-        <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 py-8">
             {/* Header & Ações */}
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
+            {/* Header & Actions */}
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
                 <div>
-                    <h1 className="text-4xl font-bold text-zinc-900 dark:text-white mb-2">My Subscriptions</h1>
-                    <p className="text-zinc-400">Manage your recurring expenses and never miss a due date.</p>
+                    <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white mb-0.5">My Subscriptions</h1>
+                    <p className="text-gray-500 text-sm">Manage your recurring expenses and never miss a due date.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <UserMenu />
                     <button
                         onClick={() => setIsModalOpen(true)}
                         disabled={isPending}
-                        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold hover:from-purple-500 hover:to-indigo-500 transition-all shadow-lg shadow-purple-500/20 active:scale-95 disabled:opacity-50"
+                        className="flex items-center gap-2 px-4 py-2 rounded-md bg-gray-900 dark:bg-white text-white dark:text-black font-medium text-sm transition-opacity hover:opacity-90 disabled:opacity-50"
                     >
-                        <Plus size={20} strokeWidth={2.5} />
-                        <span>New Subscription</span>
+                        <Plus size={16} />
+                        <span>Add Subscription</span>
                     </button>
                 </div>
             </header>
 
             {/* KPIs */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-                <div className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-md border border-gray-200 dark:border-white/5 p-6 rounded-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform text-gray-900 dark:text-white">
-                        <Wallet size={64} />
-                    </div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-neutral-400 mb-2 flex items-center gap-2">
-                        <Wallet size={16} className="text-emerald-500" /> Monthly Spending
+            {/* KPIs */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none">
+                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-2 uppercase tracking-wider">
+                        <Wallet size={14} className="text-gray-400" /> Monthly Spending
                     </p>
-                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
                         {formatMoney(stats.monthly)}
                     </h3>
                 </div>
-                <div className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-md border border-gray-200 dark:border-white/5 p-6 rounded-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform text-gray-900 dark:text-white">
-                        <TrendingUp size={64} />
-                    </div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-neutral-400 mb-2 flex items-center gap-2">
-                        <Wallet size={16} className="text-purple-500" /> Yearly Spending
+                <div className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none">
+                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-2 uppercase tracking-wider">
+                        <TrendingUp size={14} className="text-gray-400" /> Yearly Spending
                     </p>
-                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
                         {formatMoney(stats.yearly)}
                     </h3>
                 </div>
-                <div className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-md border border-gray-200 dark:border-white/5 p-6 rounded-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform text-gray-900 dark:text-white">
-                        <Layers size={64} />
-                    </div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-neutral-400 mb-2 flex items-center gap-2">
-                        <Layers size={16} className="text-blue-500" /> Total Subscriptions
+                <div className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none">
+                    <p className="text-[11px] font-medium text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-2 uppercase tracking-wider">
+                        <Layers size={14} className="text-gray-400" /> Total Items
                     </p>
-                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
                         {stats.total}
                     </h3>
                 </div>
             </div>
 
-            {/* Barra de Controle (Filtros) */}
-            <div className="flex flex-col lg:flex-row gap-4 mb-8">
+            {/* Control Bar (Filters) */}
+            <div className="flex flex-col lg:flex-row gap-4 mb-6">
                 <div className="flex-1 relative group">
-                    <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-neutral-400 group-focus-within:text-purple-500 transition-colors" />
+                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-900 dark:group-focus-within:text-white transition-colors" />
                     <input
                         type="search"
-                        placeholder="Search subscriptions..."
+                        placeholder="Search items..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-black/5 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl py-3 pl-12 pr-4 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all"
+                        className="w-full bg-transparent border border-gray-200 dark:border-[#333] rounded-md py-2 pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:focus:ring-white transition-all"
                     />
                 </div>
                 <div className="flex gap-4">

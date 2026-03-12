@@ -46,7 +46,7 @@ export default function PremiumSelect({
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex items-center justify-between px-4 py-3 bg-black/5 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white transition-all hover:bg-black/10 dark:hover:bg-white/10 focus:ring-2 focus:ring-purple-500/50 outline-none"
+                className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-gray-900 dark:text-white transition-all hover:bg-gray-100 dark:hover:bg-white/10 focus:ring-2 focus:ring-[#1fe2c3]/50 outline-none"
             >
                 <div className="flex items-center gap-3">
                     {Icon && <Icon size={18} className="text-gray-400 dark:text-zinc-500" />}

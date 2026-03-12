@@ -2,50 +2,33 @@
 
 import OnlineStatusTracker from '@/components/OnlineStatusTracker';
 import Sidebar from '@/components/Sidebar';
+import OnboardingWrapper from '@/components/OnboardingWrapper';
 import { LayoutProvider } from '@/contexts/LayoutContext';
 import { UserProvider } from '@/contexts/UserContext';
 import { ReactNode } from 'react';
 
+// Forced rebuild for Turbopack
 export default function AdminClientLayout({ children }: { children: ReactNode }) {
     return (
         <UserProvider>
             <LayoutProvider>
-                <div className="flex h-screen w-full bg-gray-50 dark:bg-black relative overflow-hidden transition-colors duration-300">
-                    {/* BACKGROUND GRID INTELIGENTE */}
-                    <div
-                        className="absolute inset-0 z-0 pointer-events-none"
-                        style={{
-                            backgroundImage: `
-                                linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
-                                linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px)
-                            `,
-                            backgroundSize: "40px 40px",
-                        }}
-                    >
-                        <style jsx>{`
-                            div {
-                                --grid-color: rgba(0, 0, 0, 0.05);
-                            }
-                            :global(.dark) div {
-                                --grid-color: rgba(255, 255, 255, 0.1);
-                            }
-                        `}</style>
-                    </div>
+                <OnboardingWrapper>
+                    <div className="flex h-screen w-full bg-gray-50 text-gray-900 dark:bg-[#0a0a0a] dark:text-white relative overflow-hidden transition-colors duration-200">
+                        <OnlineStatusTracker />
 
-                    <OnlineStatusTracker />
-
-                    {/* 2. SIDEBAR (Acima do bg) */}
-                    <div className="relative z-20 h-full">
-                        <Sidebar />
-                    </div>
-
-                    {/* 3. CONTEÚDO PRINCIPAL (Acima do bg) */}
-                    <main className="flex-1 relative z-10 overflow-y-auto h-full text-neutral-900 dark:text-white">
-                        <div className="mx-auto max-w-7xl p-4 md:p-8">
-                            {children}
+                        {/* 2. SIDEBAR (Acima do bg) */}
+                        <div className="relative z-20 h-full">
+                            <Sidebar />
                         </div>
-                    </main>
-                </div>
+
+                        {/* 3. CONTEÚDO PRINCIPAL (Acima do bg) */}
+                        <main className="flex-1 relative z-10 overflow-y-auto h-full">
+                            <div className="mx-auto max-w-7xl p-4 md:p-8">
+                                {children}
+                            </div>
+                        </main>
+                    </div>
+                </OnboardingWrapper>
             </LayoutProvider>
         </UserProvider>
     );

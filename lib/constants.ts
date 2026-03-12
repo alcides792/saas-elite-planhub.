@@ -1,0 +1,17 @@
+export const AVATARS = [
+    '/avatars/avatar.png',
+    '/avatars/avatar-de-perfil.png',
+    '/avatars/menina.png',
+    '/avatars/menina (1).png',
+    '/avatars/menina (2).png',
+    '/avatars/garoto.png',
+    '/avatars/garoto (1).png',
+    '/avatars/163814.png',
+    '/avatars/921027.png',
+    '/avatars/1466118.png',
+    '/avatars/3554891.png',
+    '/avatars/4134138.png',
+    '/avatars/4134198.png',
+    '/avatars/4202840.png',
+    '/avatars/9541360.png',
+];

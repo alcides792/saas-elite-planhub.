@@ -33,7 +33,7 @@ export default function CancelButton({ subscriptionId }: { subscriptionId: strin
         <button
             onClick={handleCancel}
             disabled={loading}
-            className="w-full group relative flex justify-center py-3 px-4 border border-red-900/30 text-sm font-medium rounded-md text-red-500 bg-red-500/5 hover:bg-red-500/10 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-2.5 px-4 text-sm font-medium rounded-md text-red-600 border border-red-200 hover:bg-red-50 dark:text-red-500 dark:border-red-900/50 dark:hover:bg-red-950/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest"
         >
             {loading ? (
                 <span className="flex items-center gap-2">

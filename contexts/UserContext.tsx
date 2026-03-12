@@ -10,6 +10,8 @@ interface UserPreferences {
     full_name: string;
     avatar_url: string;
     email: string;
+    plan_name: string;
+    billing_status: string;
 }
 
 interface UserContextType {
@@ -26,7 +28,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         language: 'en-US',
         full_name: '',
         avatar_url: '',
-        email: ''
+        email: '',
+        plan_name: 'Free',
+        billing_status: 'inactive'
     });
 
     const refreshPreferences = useCallback(async () => {
@@ -41,7 +45,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
                     language: res.profile.language || 'en-US',
                     full_name: res.profile.full_name || '',
                     avatar_url: res.profile.avatar_url || '',
-                    email: user?.email || ''
+                    email: user?.email || '',
+                    plan_name: res.profile.plan_name || 'Free',
+                    billing_status: res.profile.billing_status || 'inactive'
                 });
             } else {
                 console.warn('[UserContext] Failed to load profile:', res.error);

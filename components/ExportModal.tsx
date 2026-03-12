@@ -31,21 +31,22 @@ export default function ExportModal({ isOpen, onClose, onSelect, type, isLoading
 
                     {/* Modal */}
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            transition={{ type: 'spring', duration: 0.5 }}
-                            className="relative w-full max-w-lg bg-[#0A0A0A]/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
-                        >
-                            {/* Close Button */}
-                            <button
-                                onClick={onClose}
-                                disabled={isLoading}
-                                className="absolute top-4 right-4 p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-50 z-10"
+                            <motion.div
+                                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                                animate={{ scale: 1, opacity: 1, y: 0 }}
+                                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                                transition={{ type: 'spring', duration: 0.5 }}
+                                className="relative w-full max-w-lg bg-white dark:bg-[#0A0A0A]/95 backdrop-blur-xl rounded-[2.5rem] border border-slate-200 dark:border-white/10 shadow-2xl p-8 overflow-hidden"
+                                onClick={(e) => e.stopPropagation()}
                             >
-                                <X size={20} className="text-white" />
-                            </button>
+                            {/* Close Button */}
+                                <button
+                                    onClick={onClose}
+                                    disabled={isLoading}
+                                    className="absolute top-4 right-4 p-2 rounded-lg bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-50 z-10"
+                                >
+                                    <X size={20} className="text-gray-900 dark:text-white" />
+                                </button>
 
                             {/* Header */}
                             <div className="p-8 pb-6 border-b border-white/5">
@@ -59,10 +60,10 @@ export default function ExportModal({ isOpen, onClose, onSelect, type, isLoading
                                         />
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-black text-white">
+                                        <h2 className="text-2xl font-black text-gray-900 dark:text-white">
                                             Export {type} Report
                                         </h2>
-                                        <p className="text-sm text-zinc-400 mt-0.5">
+                                        <p className="text-sm text-gray-500 dark:text-zinc-400 mt-0.5">
                                             Choose where you want to receive your file.
                                         </p>
                                     </div>
@@ -93,8 +94,8 @@ export default function ExportModal({ isOpen, onClose, onSelect, type, isLoading
                                         </div>
 
                                         <div className="text-center">
-                                            <p className="text-sm font-bold text-white mb-1">Telegram</p>
-                                            <p className="text-xs text-zinc-400">Send to Bot</p>
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">Telegram</p>
+                                            <p className="text-xs text-gray-500 dark:text-zinc-400">Send to Bot</p>
                                         </div>
 
                                         {isLoading && (
@@ -125,8 +126,8 @@ export default function ExportModal({ isOpen, onClose, onSelect, type, isLoading
                                         </div>
 
                                         <div className="text-center">
-                                            <p className="text-sm font-bold text-white mb-1">Email</p>
-                                            <p className="text-xs text-zinc-400">Send via Email</p>
+                                            <p className="text-sm font-bold text-gray-900 dark:text-white mb-1">Email</p>
+                                            <p className="text-xs text-gray-500 dark:text-zinc-400">Send via Email</p>
                                         </div>
 
                                         {isLoading && (

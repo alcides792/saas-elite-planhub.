@@ -169,12 +169,13 @@ export function formatCurrency(amount: number, currency: string = 'EUR'): string
     }).format(amount);
 }
 
-export function formatDate(dateString: string): string {
-    return new Intl.DateTimeFormat('pt-PT', {
+export function formatDate(date: string | Date, options?: Intl.DateTimeFormatOptions): string {
+    const defaultOptions: Intl.DateTimeFormatOptions = {
         day: '2-digit',
         month: 'short',
         year: 'numeric',
-    }).format(new Date(dateString));
+    };
+    return new Intl.DateTimeFormat('pt-PT', options || defaultOptions).format(new Date(date));
 }
 
 export function getCategoryColor(category: string): string {

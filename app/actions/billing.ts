@@ -4,7 +4,7 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
 const DODO_API_URL = 'https://live.dodopayments.com'
-// CORREÇÃO: Usando o nome exato que está no .env do usuário
+// FIX: Using the exact name from the user's .env
 const DODO_API_KEY = process.env.DODO_PAYMENTS_API_KEY
 
 export async function cancelSubscription(subscriptionId: string | null) {
@@ -12,7 +12,7 @@ export async function cancelSubscription(subscriptionId: string | null) {
         return { success: false, message: "Error: Subscription ID not found." }
     }
 
-    // Debug de Segurança (apenas para ver se a chave foi carregada)
+    // Security Debug (checking if key is loaded)
     if (!DODO_API_KEY) {
         console.error("CRITICAL ERROR: DODO_PAYMENTS_API_KEY not found in environment variables.")
         return { success: false, message: "Server configuration error (Missing Key)." }
@@ -20,7 +20,7 @@ export async function cancelSubscription(subscriptionId: string | null) {
 
     try {
         const response = await fetch(`${DODO_API_URL}/subscriptions/${subscriptionId}`, {
-            method: 'PATCH', // Mantendo o método PATCH correto
+            method: 'PATCH', // Keeping the correct PATCH method
             headers: {
                 'Authorization': `Bearer ${DODO_API_KEY}`,
                 'Content-Type': 'application/json',

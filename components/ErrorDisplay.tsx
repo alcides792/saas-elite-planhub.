@@ -24,13 +24,13 @@ export default function ErrorDisplay({ error }: ErrorDisplayProps) {
                         <line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
                 </div>
-                <h3 className="text-xl font-black mb-2 text-white">Erro ao Carregar Subscrições</h3>
+                <h3 className="text-xl font-black mb-2 text-white">Error Loading Subscriptions</h3>
                 <p className="text-sm text-zinc-300 font-medium mb-4">{error}</p>
                 <button
                     onClick={() => window.location.reload()}
                     className="px-6 py-2 rounded-xl bg-indigo-500 text-white font-bold text-sm hover:bg-indigo-600 transition-all"
                 >
-                    Tentar Novamente
+                    Try Again
                 </button>
             </div>
         </div>

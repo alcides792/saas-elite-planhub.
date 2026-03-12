@@ -161,9 +161,12 @@ export default function LandingClient() {
                             Join thousands of users who save an average of €300/year. Get started today.
                         </p>
                         <div className="flex flex-col md:flex-row justify-center gap-6">
-                            <motion.button whileHover={{ scale: 1.02 }} className="bg-[#1a1a1a] text-white px-12 py-6 font-black text-2xl border-4 border-[#1a1a1a] hover:bg-zinc-800 transition-all">
+                            <Link 
+                                href="/login?mode=signup&plan=trial"
+                                className="bg-[#1a1a1a] text-white px-12 py-6 font-black text-2xl border-4 border-[#1a1a1a] hover:bg-zinc-800 transition-all flex items-center justify-center"
+                            >
                                 Try Kovr for Free
-                            </motion.button>
+                            </Link>
                         </div>
                     </div>
                 </section>

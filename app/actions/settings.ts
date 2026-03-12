@@ -22,6 +22,8 @@ export async function getProfile(): Promise<{
         notify_days_before: number;
         telegram_chat_id: string | null;
         discord_webhook: string | null;
+        plan_name: string;
+        billing_status: string;
     };
     error?: string;
 }> {
@@ -109,6 +111,8 @@ export async function getProfile(): Promise<{
                 notify_days_before: profile.notify_days_before ?? 3,
                 telegram_chat_id: profile.telegram_chat_id || null,
                 discord_webhook: profile.discord_webhook || null,
+                plan_name: profile.plan_name || 'Free',
+                billing_status: profile.billing_status || 'inactive',
             },
         };
     } catch (error) {

@@ -35,7 +35,7 @@ export default function RootLayout({
           <main className="relative z-10 min-h-screen">
             {children}
           </main>
-          <Toaster position="bottom-right" theme="dark" richColors closeButton />
+          <Toaster position="top-right" theme="dark" richColors closeButton />
         </ThemeProvider>
       </body>
     </html>

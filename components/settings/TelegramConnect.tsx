@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/utils/supabase/client'
-import { CheckCircle, RefreshCw, ExternalLink, Send } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 
 export default function TelegramConnect() {
     const [userId, setUserId] = useState('')
@@ -10,8 +10,8 @@ export default function TelegramConnect() {
     const [loading, setLoading] = useState(false)
     const supabase = createClient()
 
-    // --- CORREÇÃO FINAL E FORÇADA ---
-    // Forçamos o username correto aqui para evitar problemas de cache/env
+    // --- FINAL FORCED FIX ---
+    // We force the correct username here to avoid cache/env issues
     const BOT_USERNAME = "KovrAppBot"
 
     useEffect(() => {
@@ -30,59 +30,48 @@ export default function TelegramConnect() {
     }
 
     return (
-        <div className="relative group overflow-hidden h-full">
-            <div className="flex items-center gap-4 mb-6 relative z-10">
-                <div className="w-14 h-14 relative shrink-0">
-                    <Image src="/icons/telegram-3d-v2.png" alt="Telegram" fill className="object-contain" />
+        <div className="h-full bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none transition-all duration-300 flex flex-col justify-between">
+            <div className="flex flex-col gap-4">
+                <div className="flex items-start justify-between">
+                    <div className="w-12 h-12 bg-blue-50 dark:bg-white/5 rounded-lg flex items-center justify-center relative shrink-0">
+                        <Image src="/icons/telegram-3d-v2.png" alt="Telegram" fill className="object-contain p-2" />
+                    </div>
+                    {isConnected ? (
+                        <div className="bg-gray-100 text-gray-600 dark:bg-white/5 dark:text-gray-400 border border-gray-200 dark:border-white/10 rounded px-2 py-0.5 text-[10px] font-bold">
+                            ACTIVE
+                        </div>
+                    ) : (
+                        <div className="bg-gray-100 text-gray-600 dark:bg-white/5 dark:text-gray-400 border border-gray-200 dark:border-white/10 rounded px-2 py-0.5 text-[10px] font-bold">
+                            AVAILABLE
+                        </div>
+                    )}
                 </div>
                 <div>
-                    <h3 className="text-xl font-bold text-white">Telegram</h3>
-                    <p className="text-zinc-400 text-sm">Instant 1-click connection.</p>
+                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-tight">Telegram</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Direct alerts via Kovr Bot.</p>
                 </div>
             </div>
 
-            {!isConnected ? (
-                <div className="space-y-5 relative z-10">
-                    <div className="bg-zinc-900/50 p-4 rounded-xl border border-white/5">
-                        <p className="text-sm text-zinc-300 leading-relaxed">
-                            Receive renewal alerts directly on your phone.
-                            Just click below and start the bot <strong>@{BOT_USERNAME}</strong>.
-                        </p>
-                    </div>
-
+            <div className="mt-6">
+                {!isConnected ? (
                     <div className="flex flex-col gap-3">
-                        {/* Link Gerado Dinamicamente - FORÇADO KovrAppBot */}
                         <a
                             href={`https://t.me/${BOT_USERNAME}?start=${userId}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 w-full py-4 bg-[#229ED9] hover:bg-[#1e8ubc] text-white font-bold text-lg rounded-xl transition shadow-xl shadow-[#229ED9]/20 hover:scale-[1.02]"
+                            className="w-full py-2 bg-gray-900 text-white dark:bg-white dark:text-black font-medium rounded-md text-center text-sm hover:opacity-90 transition-opacity"
                         >
-                            <Send size={20} />
-                            Connect @{BOT_USERNAME} Now
-                            <ExternalLink size={16} className="opacity-50" />
+                            Connect Telegram
                         </a>
-
-                        <button
-                            onClick={checkConnection}
-                            className="text-xs text-zinc-500 hover:text-white flex items-center justify-center gap-2 mt-2 transition"
-                        >
-                            <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
-                            Already started the bot, verify connection
-                        </button>
                     </div>
-                </div>
-            ) : (
-                <div className="bg-green-500/10 border border-green-500/20 p-5 rounded-xl flex items-center gap-4 relative z-10 animate-in fade-in zoom-in">
-                    <div className="bg-green-500/20 p-2 rounded-full">
-                        <CheckCircle className="text-green-500" size={24} />
-                    </div>
-                    <div>
-                        <p className="text-green-400 font-bold text-lg">Connected!</p>
-                        <p className="text-green-500/60 text-sm">Bot <strong>@{BOT_USERNAME}</strong> active.</p>
-                    </div>
-                </div>
-            )}
+                ) : (
+                    <button
+                        className="w-full py-2 bg-transparent border border-gray-200 dark:border-[#333] hover:bg-gray-100 dark:hover:bg-white/5 font-medium rounded-md text-center text-xs text-gray-600 dark:text-gray-400 transition-colors"
+                    >
+                        Configure
+                    </button>
+                )}
+            </div>
         </div>
     )
 }

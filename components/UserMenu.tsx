@@ -34,8 +34,8 @@ export default function UserMenu() {
             <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className={cn(
-                    "w-10 h-10 md:w-11 md:h-11 rounded-full overflow-hidden border-2 border-black dark:border-white transition-transform active:scale-90 flex items-center justify-center shrink-0 bg-purple-600 shadow-[2px_2px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_rgba(255,255,255,0.2)]",
-                    showUserMenu && "scale-110"
+                    "w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden border border-gray-200 dark:border-[#333] transition-all hover:ring-2 hover:ring-gray-100 dark:hover:ring-white/10 flex items-center justify-center shrink-0 bg-gray-100 dark:bg-zinc-800",
+                    showUserMenu && "ring-2 ring-gray-900 dark:ring-white"
                 )}
             >
                 {preferences.avatar_url ? (
@@ -47,7 +47,7 @@ export default function UserMenu() {
                         className="w-full h-full object-cover"
                     />
                 ) : (
-                    <span className="font-bold text-white text-base uppercase">
+                    <span className="font-medium text-gray-500 text-sm uppercase">
                         {preferences.full_name?.charAt(0) || preferences.email?.charAt(0)}
                     </span>
                 )}
@@ -63,59 +63,63 @@ export default function UserMenu() {
                             onClick={() => setShowUserMenu(false)}
                         />
                         <motion.div
-                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            initial={{ opacity: 0, y: 8, scale: 0.98 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute top-14 right-0 z-50 w-72 bg-white dark:bg-zinc-900 border-4 border-black dark:border-white p-6 shadow-[8px_8px_0px_#1fe2c3] space-y-6"
+                            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                            className="absolute top-12 right-0 z-50 w-72 bg-white dark:bg-black border border-gray-200 dark:border-[#222] p-5 shadow-lg space-y-5 rounded-lg"
                         >
                             {/* Menu Header */}
                             <div className="flex items-center gap-4">
-                                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-black dark:border-white bg-purple-600 flex items-center justify-center shrink-0">
+                                <div className="w-12 h-12 rounded-full overflow-hidden border border-gray-100 dark:border-white/10 bg-gray-50 dark:bg-zinc-800 flex items-center justify-center shrink-0">
                                     {preferences.avatar_url ? (
-                                        <Image src={preferences.avatar_url} alt="User" width={64} height={64} className="w-full h-full object-cover" />
+                                        <Image src={preferences.avatar_url} alt="User" width={48} height={48} className="w-full h-full object-cover" />
                                     ) : (
-                                        <span className="font-bold text-white text-2xl uppercase">
+                                        <span className="font-medium text-gray-500 text-xl uppercase">
                                             {preferences.full_name?.charAt(0) || preferences.email?.charAt(0)}
                                         </span>
                                     )}
                                 </div>
                                 <div className="min-w-0">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <p className="font-black text-lg truncate tracking-tight">{preferences.full_name}</p>
-                                        <span className="bg-[#1fe2c3] text-black text-[10px] font-black px-2 py-0.5 border border-black uppercase whitespace-nowrap">
-                                            PRO
-                                        </span>
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                        <p className="font-semibold text-sm truncate tracking-tight text-gray-900 dark:text-white">
+                                            {preferences.full_name}
+                                        </p>
+                                        {preferences.plan_name === 'Pro' && preferences.billing_status === 'active' && (
+                                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#1fe2c3]/10 text-[#1fe2c3] border border-[#1fe2c3]/20 uppercase ml-2">
+                                                PRO
+                                            </span>
+                                        )}
                                     </div>
-                                    <p className="text-xs text-zinc-500 truncate">{preferences.email}</p>
+                                    <p className="text-[11px] text-gray-500 truncate">{preferences.email}</p>
                                 </div>
                             </div>
 
-                            <div className="border-b-2 border-black dark:border-white/20" />
+                            <div className="border-b border-gray-100 dark:border-white/10" />
 
                             {/* Action Links */}
-                            <div className="space-y-3">
+                            <div className="space-y-1">
                                 <Link
                                     href="/settings"
                                     onClick={() => setShowUserMenu(false)}
-                                    className="flex items-center gap-3 p-3 font-bold text-sm bg-zinc-50 dark:bg-white/5 border-2 border-black dark:border-white hover:bg-[#1fe2c3] hover:text-black transition-colors"
+                                    className="flex items-center gap-3 px-3 py-2 font-medium text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 rounded-md transition-colors"
                                 >
-                                    <Settings size={18} />
+                                    <Settings size={14} className="opacity-70" />
                                     Settings
                                 </Link>
 
                                 <button
                                     onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
-                                    className="flex items-center gap-3 p-3 font-bold text-sm bg-zinc-50 dark:bg-white/5 border-2 border-black dark:border-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors w-full"
+                                    className="flex items-center gap-3 px-3 py-2 font-medium text-xs text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5 rounded-md transition-colors w-full"
                                 >
-                                    {resolvedTheme === 'dark' ? <Sun size={18} className="text-amber-500" /> : <Moon size={18} className="text-purple-600" />}
+                                    {resolvedTheme === 'dark' ? <Sun size={14} className="text-amber-500" /> : <Moon size={14} className="text-purple-600" />}
                                     Toggle Theme
                                 </button>
 
                                 <button
                                     onClick={handleLogout}
-                                    className="w-full flex items-center gap-3 p-3 font-bold text-sm bg-zinc-900 dark:bg-white text-white dark:text-black border-2 border-black dark:border-white hover:bg-red-500 hover:text-white transition-colors"
+                                    className="w-full flex items-center gap-3 px-3 py-2 mt-2 font-medium text-xs text-gray-900 dark:text-white hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 rounded-md transition-colors"
                                 >
-                                    <LogOut size={18} />
+                                    <LogOut size={14} className="opacity-70" />
                                     Sign Out
                                 </button>
                             </div>

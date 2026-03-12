@@ -29,49 +29,35 @@ import { useUser } from '@/contexts/UserContext';
 import PremiumSelect from '@/components/ui/PremiumSelect';
 import UserMenu from '@/components/UserMenu';
 import { createClient } from '@/lib/utils/supabase/client';
-const AVATARS = [
-    '/avatars/avatar.png',
-    '/avatars/avatar-de-perfil.png',
-    '/avatars/menina.png',
-    '/avatars/menina (1).png',
-    '/avatars/menina (2).png',
-    '/avatars/garoto.png',
-    '/avatars/garoto (1).png',
-    '/avatars/163814.png',
-    '/avatars/921027.png',
-    '/avatars/1466118.png',
-    '/avatars/3554891.png',
-    '/avatars/4134138.png',
-    '/avatars/4134198.png',
-    '/avatars/4202840.png',
-    '/avatars/9541360.png',
-];
+import { AVATARS } from '@/lib/constants';
+import { toast } from 'sonner';
 
+// Custom UI Components
 // Custom UI Components
 const BentoCard = ({ children, className = "", title, icon: Icon, description, badge }: any) => (
     <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`bg-white dark:bg-black border border-gray-200 dark:border-white/10 p-8 transition-all duration-300 group relative rounded-3xl ${className}`}
+        className={`bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-8 transition-all duration-300 group relative rounded-lg ${className}`}
     >
         <div className="relative z-10">
             <div className="flex items-start justify-between mb-8">
                 <div className="flex items-center gap-4">
                     {Icon && (
-                        <div className="text-zinc-400 dark:text-zinc-500 group-hover:text-black dark:group-hover:text-white transition-colors duration-300">
-                            <Icon size={20} />
+                        <div className="text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-300">
+                            <Icon size={18} />
                         </div>
                     )}
                     <div>
                         <div className="flex items-center gap-2">
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">{title}</h3>
+                            <h3 className="text-sm font-semibold text-gray-900 dark:text-white tracking-tight uppercase">{title}</h3>
                             {badge && (
-                                <span className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 text-[9px] font-black uppercase tracking-widest rounded-md border border-zinc-200 dark:border-zinc-700">
+                                <span className="px-2 py-0.5 bg-gray-50 dark:bg-white/5 text-gray-500 dark:text-gray-400 text-[10px] font-medium uppercase tracking-wider rounded-md border border-gray-100 dark:border-white/10">
                                     {badge}
                                 </span>
                             )}
                         </div>
-                        {description && <p className="text-xs text-gray-500 dark:text-zinc-500 font-medium">{description}</p>}
+                        {description && <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">{description}</p>}
                     </div>
                 </div>
             </div>
@@ -81,21 +67,21 @@ const BentoCard = ({ children, className = "", title, icon: Icon, description, b
 );
 
 const CustomSwitch = ({ checked, onChange, label, description, icon: Icon }: any) => (
-    <div className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-900/50 border border-gray-100 dark:border-white/5 rounded-2xl transition-colors group">
+    <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg transition-colors group">
         <div className="flex items-center gap-3">
-            {Icon && <Icon size={18} className="text-gray-400 dark:text-zinc-600 transition-colors" />}
+            {Icon && <Icon size={16} className="text-gray-400 transition-colors" />}
             <div>
-                <p className="text-sm font-bold text-gray-900 dark:text-zinc-200">{label}</p>
-                {description && <p className="text-[11px] text-gray-500 dark:text-zinc-500">{description}</p>}
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{label}</p>
+                {description && <p className="text-[10px] text-gray-500 dark:text-gray-400">{description}</p>}
             </div>
         </div>
         <button
             onClick={() => onChange(!checked)}
-            className={`relative w-10 h-5 rounded-full transition-all duration-300 focus:outline-none ${checked ? 'bg-black dark:bg-white' : 'bg-gray-200 dark:bg-zinc-800'}`}
+            className={`relative w-9 h-5 rounded-full transition-all duration-300 focus:outline-none ${checked ? 'bg-gray-900 dark:bg-white' : 'bg-gray-200 dark:bg-white/10'}`}
         >
             <motion.div
-                animate={{ x: checked ? 22 : 4 }}
-                className={`absolute top-1 w-3 h-3 rounded-full shadow-sm ${checked ? 'bg-white dark:bg-black' : 'bg-white dark:bg-zinc-400'}`}
+                animate={{ x: checked ? 18 : 4 }}
+                className={`absolute top-1 w-3 h-3 rounded-full shadow-sm ${checked ? 'bg-white dark:bg-black' : 'bg-white dark:bg-gray-400'}`}
             />
         </button>
     </div>
@@ -103,18 +89,18 @@ const CustomSwitch = ({ checked, onChange, label, description, icon: Icon }: any
 
 const CustomInput = ({ label, value, onChange, placeholder, readOnly, type = "text", icon: Icon }: any) => (
     <div className="space-y-2">
-        {label && <label className="text-[10px] font-black text-gray-400 dark:text-zinc-600 uppercase tracking-widest ml-1 block">{label}</label>}
-        <div className={`relative group ${readOnly ? 'opacity-50' : ''}`}>
-            {Icon && <Icon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-600 transition-colors" />}
+        {label && <label className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1 block">{label}</label>}
+        <div className={`relative group ${readOnly ? 'opacity-60' : ''}`}>
+            {Icon && <Icon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors" />}
             <input
                 type={type}
                 value={value}
                 onChange={onChange}
                 readOnly={readOnly}
                 placeholder={placeholder}
-                className={`flex-1 w-full bg-zinc-50 dark:bg-zinc-900/30 border border-gray-200 dark:border-white/5 rounded-xl px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-zinc-700 focus:outline-none focus:border-black dark:focus:border-white transition-all text-sm ${Icon ? 'pl-11' : ''}`}
+                className={`flex-1 w-full bg-transparent border border-gray-200 dark:border-[#333] rounded-md px-4 py-2 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:focus:ring-white transition-all text-sm ${Icon ? 'pl-9' : ''}`}
             />
-            {readOnly && <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-zinc-700" size={12} />}
+            {readOnly && <Lock className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={10} />}
         </div>
     </div>
 );
@@ -124,7 +110,6 @@ export default function SettingsPage() {
     const [profile, setProfile] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
-    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
     const [formData, setFormData] = useState({
         full_name: '',
@@ -150,20 +135,16 @@ export default function SettingsPage() {
         setIsLoading(false);
     };
 
-    const showToast = (message: string, type: 'success' | 'error' = 'success') => {
-        setToast({ message, type });
-        setTimeout(() => setToast(null), 3000);
-    };
 
     const handleSave = async () => {
         setIsSaving(true);
         const res = await updateProfile(formData);
         if (res.success) {
-            showToast('Settings saved!');
+            toast.success('Settings saved!');
             setProfile({ ...profile, ...formData });
             await refreshPreferences();
         } else {
-            showToast(res.error || 'Failed to save', 'error');
+            toast.error(res.error || 'Failed to save');
         }
         setIsSaving(false);
     };
@@ -178,10 +159,10 @@ export default function SettingsPage() {
             .eq('id', profile.id);
 
         if (error) {
-            showToast('Failed to update avatar', 'error');
+            toast.error('Failed to update avatar');
         } else {
             setProfile({ ...profile, avatar_url: avatarUrl });
-            showToast('Avatar updated!');
+            toast.success('Avatar updated!');
             await refreshPreferences();
         }
     };
@@ -190,37 +171,36 @@ export default function SettingsPage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[70vh] gap-4">
                 <div className="relative">
-                    <div className="w-16 h-16 border-4 border-purple-500/10 border-t-purple-500 rounded-full animate-spin" />
-                    <Settings2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-purple-400/50" size={24} />
+                    <div className="w-10 h-10 border-2 border-gray-200 dark:border-white/10 border-t-gray-900 dark:border-t-white rounded-full animate-spin" />
                 </div>
-                <p className="text-gray-500 dark:text-zinc-600 font-black uppercase tracking-[0.3em] text-[10px]">Accessing Control Panel...</p>
+                <p className="text-gray-400 font-medium uppercase tracking-[0.2em] text-[10px]">Accessing Control Panel...</p>
             </div>
         );
     }
 
     return (
-        <div className="max-w-5xl mx-auto px-6 py-20">
+        <div className="max-w-5xl mx-auto px-6 py-12">
 
             {/* Page Header */}
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16"
+                className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-16"
             >
                 <div>
-                    <h1 className="text-4xl font-bold text-zinc-900 dark:text-white tracking-tight mb-2">
+                    <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white tracking-tight">
                         Settings
                     </h1>
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400">Manage your account preferences and regional settings.</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage your account preferences and regional settings.</p>
                 </div>
                 <div className="flex items-center gap-4">
                     <UserMenu />
                     <button
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="flex items-center gap-2 bg-black dark:bg-white text-white dark:text-black px-8 py-3 rounded-2xl font-bold text-sm transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 shadow-lg shadow-black/5"
+                        className="flex items-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2 rounded-md font-medium text-sm transition-opacity hover:opacity-90 disabled:opacity-50"
                     >
-                        {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                        {isSaving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                         Save Changes
                     </button>
                 </div>
@@ -238,25 +218,25 @@ export default function SettingsPage() {
                         description="Your personal information"
                     >
                         <div className="mt-6 space-y-8">
-                            <div className="flex items-center gap-6 p-6 bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-100 dark:border-white/5 rounded-3xl">
-                                <div className="w-20 h-20 rounded-2xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center border border-zinc-300 dark:border-white/10 relative overflow-hidden shrink-0">
+                            <div className="flex items-center gap-6 p-6 bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-lg">
+                                <div className="w-16 h-16 rounded-lg bg-gray-200 dark:bg-white/10 flex items-center justify-center border border-gray-100 dark:border-white/10 relative overflow-hidden shrink-0">
                                     {profile?.avatar_url ? (
                                         <Image
                                             src={profile.avatar_url}
                                             alt="Profile"
-                                            width={80}
-                                            height={80}
+                                            width={64}
+                                            height={64}
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
-                                        <span className="text-2xl font-bold text-zinc-400 dark:text-zinc-600">
+                                        <span className="text-xl font-bold text-gray-400">
                                             {formData.full_name?.charAt(0).toUpperCase() || "U"}
                                         </span>
                                     )}
                                 </div>
                                 <div>
-                                    <button className="text-[10px] font-black text-zinc-500 hover:text-black dark:hover:text-white tracking-widest transition-colors uppercase">Change Avatar</button>
-                                    <p className="text-[10px] text-zinc-400 mt-1 uppercase tracking-tight">JPG or PNG. Max 2MB.</p>
+                                    <button className="text-[10px] font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white tracking-widest transition-colors uppercase">Change Avatar</button>
+                                    <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-tight">JPG or PNG. Max 2MB.</p>
                                 </div>
                             </div>
 
@@ -286,7 +266,7 @@ export default function SettingsPage() {
                     >
                         <div className="mt-6 space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 dark:text-zinc-600 uppercase tracking-widest ml-1 block">Main Currency</label>
+                                <label className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1 block">Main Currency</label>
                                 <PremiumSelect
                                     value={formData.currency}
                                     onChange={(val) => setFormData({ ...formData, currency: val })}
@@ -301,7 +281,7 @@ export default function SettingsPage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-gray-400 dark:text-zinc-600 uppercase tracking-widest ml-1 block">Base Language</label>
+                                <label className="text-[10px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-widest ml-1 block">Base Language</label>
                                 <PremiumSelect
                                     value={formData.language}
                                     onChange={(val) => setFormData({ ...formData, language: val })}
@@ -330,10 +310,10 @@ export default function SettingsPage() {
                                     key={avatar}
                                     onClick={() => handleAvatarSelect(avatar)}
                                     className={classNames(
-                                        "relative aspect-square rounded-2xl overflow-hidden transition-all duration-300 group bg-zinc-50 dark:bg-zinc-900/50 border-4",
+                                        "relative aspect-square rounded-lg overflow-hidden transition-all duration-300 group bg-gray-50 dark:bg-white/5 border",
                                         isSelected
-                                            ? "border-black dark:border-[#1fe2c3] shadow-[4px_4px_0px_#1fe2c3] scale-105 z-10"
-                                            : "border-transparent hover:border-zinc-200 dark:hover:border-zinc-800"
+                                            ? "border-gray-900 dark:border-white scale-105 z-10 shadow-md"
+                                            : "border-gray-100 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/30"
                                     )}
                                 >
                                     <Image
@@ -346,8 +326,8 @@ export default function SettingsPage() {
                                         )}
                                     />
                                     {isSelected && (
-                                        <div className="absolute top-1 right-1 bg-[#1fe2c3] border border-black p-0.5 rounded-full z-20">
-                                            <Check size={10} className="text-black" />
+                                        <div className="absolute top-1 right-1 bg-gray-900 dark:bg-white p-0.5 rounded-full z-20">
+                                            <Check size={8} className="text-white dark:text-black" />
                                         </div>
                                     )}
                                 </button>
@@ -357,23 +337,6 @@ export default function SettingsPage() {
                 </BentoCard>
             </div>
 
-            {/* Toast Notification Container */}
-            <AnimatePresence>
-                {toast && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                        className={`fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] flex items-center gap-4 px-6 py-3 rounded-2xl font-bold text-xs backdrop-blur-xl border shadow-2xl ${toast.type === 'success'
-                            ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400'
-                            : 'bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400'
-                            }`}
-                    >
-                        <div className={`w-2 h-2 rounded-full ${toast.type === 'success' ? 'bg-emerald-500' : 'bg-red-500'}`} />
-                        {toast.message.toUpperCase()}
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </div>
     );
 }

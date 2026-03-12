@@ -50,7 +50,7 @@ export async function createSubscription(
     subscriptionData: Omit<Subscription, 'id' | 'user_id' | 'created_at' | 'updated_at'>
 ): Promise<{ data: Subscription | null; error: string | null }> {
     try {
-        // 🔒 TRAVA DE SEGURANÇA
+        // 🔒 SECURITY GATE
         const isPro = await requireProPlan();
         if (!isPro) {
             return { data: null, error: "Blocked: You need a Pro plan to add subscriptions." };

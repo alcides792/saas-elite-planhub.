@@ -111,19 +111,41 @@ export default function AnalyticsClient({
         return Math.round((essential / total) * 100);
     }, [necessityData]);
 
-    // 2. Logic for Heatmap Grid (1-31)
+    // 2. Logic for Heatmap Grid (Dynamic Month alignment)
     const heatmapData = useMemo(() => {
-        const days = Array.from({ length: 31 }, (_, i) => ({ day: i + 1, count: 0, subs: [] as any[] }));
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
 
-        analytics.nextRenewals.forEach((sub: any) => {
-            const day = new Date(sub.renewal_date).getDate();
-            if (day >= 1 && day <= 31) {
-                days[day - 1].count += 1;
-                days[day - 1].subs.push(sub);
-            }
-        });
+        // Get first day of current month (0 = Sunday, 1 = Monday ...)
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        // Get number of days in current month
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        return days;
+        // Create the grid: empty slots for offset + actual days
+        const grid = [];
+
+        // Add empty slots for the offset
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            grid.push({ day: null, count: 0, subs: [] });
+        }
+
+        // Add actual days
+        for (let i = 1; i <= daysInMonth; i++) {
+            const daySubs = analytics.nextRenewals.filter((sub: any) => {
+                if (!sub.next_payment) return false;
+                const d = new Date(sub.next_payment);
+                return d.getDate() === i && d.getMonth() === month && d.getFullYear() === year;
+            });
+
+            grid.push({
+                day: i,
+                count: daySubs.length,
+                subs: daySubs
+            });
+        }
+
+        return grid;
     }, [analytics.nextRenewals]);
 
     // 3. Trends calculation
@@ -162,9 +184,10 @@ export default function AnalyticsClient({
             variants={containerVariants}
         >
             {/* Executive Header */}
-            <header className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+            <header className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
                 <div>
-                    <h1 className="text-5xl font-black text-zinc-900 dark:text-white tracking-tighter">Finance Analytics</h1>
+                    <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">Finance Analytics</h1>
+                    <p className="text-gray-500 text-sm mt-0.5">Deep insights into your spending patterns and projections.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <UserMenu />
@@ -172,43 +195,37 @@ export default function AnalyticsClient({
             </header>
 
             {/* Section 1: KPI Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                 {[
-                    { label: 'Monthly Run Rate', value: formatMoney(analytics.monthlyTotal), detail: `${mrrTrend >= 0 ? '+' : ''}${formatMoney(mrrTrend)} vs last month`, icon: Wallet, color: 'text-emerald-500', trend: mrrTrend >= 0 ? 'up' : 'down' },
-                    { label: 'Annual Run Rate', value: formatMoney(analytics.annualProjection), detail: 'Projection for the next 12 months', icon: TrendingUp, color: 'text-purple-500' },
-                    { label: 'Active Services', value: subscriptionsCount, detail: `${subscriptionsCount > 5 ? 'Above average' : 'Controlled'} usage`, icon: ShieldCheck, color: 'text-blue-500' },
-                    { label: 'Avg. Cost per Sub', value: formatMoney(avgCostPerSub), detail: 'Average cost per active service', icon: Zap, color: 'text-amber-500' }
+                    { label: 'Monthly Run Rate', value: formatMoney(analytics.monthlyTotal), detail: `${mrrTrend >= 0 ? '+' : ''}${formatMoney(mrrTrend)} vs last month`, icon: Wallet },
+                    { label: 'Annual Projection', value: formatMoney(analytics.annualProjection), detail: 'Next 12 months forecast', icon: TrendingUp },
+                    { label: 'Active Services', value: subscriptionsCount, detail: 'Total active subscriptions', icon: ShieldCheck },
+                    { label: 'Avg. Cost per Sub', value: formatMoney(avgCostPerSub), detail: 'Average per active service', icon: Zap }
                 ].map((kpi, i) => (
-                    <motion.div key={i} variants={itemVariants} className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-6 rounded-3xl group relative overflow-hidden">
-                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/[0.02] rounded-full blur-2xl group-hover:bg-white/[0.05] transition-all" />
+                    <motion.div key={i} variants={itemVariants} className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none">
                         <div className="flex items-center justify-between mb-4">
-                            <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center ${kpi.color}`}>
-                                <kpi.icon size={20} strokeWidth={2.5} />
+                            <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{kpi.label}</span>
+                            <div className="p-2 bg-gray-50 dark:bg-white/5 rounded-md text-gray-400">
+                                <kpi.icon size={14} />
                             </div>
-                            {kpi.trend && (
-                                <div className={`text-[10px] font-black px-2 py-1 rounded-lg ${kpi.trend === 'up' ? 'text-rose-500 bg-rose-500/10' : 'text-emerald-500 bg-emerald-500/10'}`}>
-                                    {kpi.trend === 'up' ? 'INCREASE' : 'STABLE'}
-                                </div>
-                            )}
                         </div>
-                        <p className="text-[10px] uppercase tracking-widest text-gray-500 dark:text-neutral-400 font-black mb-1">{kpi.label}</p>
-                        <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight mb-1">{kpi.value}</h3>
-                        <p className="text-[10px] text-gray-500 dark:text-neutral-400 font-bold">{kpi.detail}</p>
+                        <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-1">{kpi.value}</h3>
+                        <p className="text-[11px] text-gray-400 font-medium uppercase">{kpi.detail}</p>
                     </motion.div>
                 ))}
             </div>
 
             {/* Section 2: Main Evolution Chart */}
-            <motion.div variants={itemVariants} className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2.5rem] mb-10 overflow-hidden relative">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <motion.div variants={itemVariants} className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 lg:p-8 rounded-lg mb-10 shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                     <div>
-                        <h4 className="text-xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Financial Evolution</h4>
-                        <p className="text-xs text-gray-500 dark:text-neutral-400 font-bold mt-1">Spending history for the last 6 months.</p>
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white tracking-tight uppercase">Financial Evolution</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Monthly spending history and momentum.</p>
                     </div>
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-purple-500" />
-                            <span className="text-[10px] text-zinc-400 font-black uppercase">Spending</span>
+                            <div className="w-1.5 h-1.5 rounded-full bg-gray-900 dark:bg-white" />
+                            <span className="text-[11px] text-gray-400 font-medium uppercase tracking-wider">Historical Spending</span>
                         </div>
                     </div>
                 </div>
@@ -243,12 +260,12 @@ export default function AnalyticsClient({
                             <Area
                                 type="monotone"
                                 dataKey="total"
-                                stroke={NEON_PURPLE}
-                                strokeWidth={4}
+                                stroke={isDark ? "#fff" : "#111"}
+                                strokeWidth={2}
                                 fillOpacity={1}
                                 fill="url(#colorValue)"
                                 animationDuration={1000}
-                                activeDot={{ r: 6, strokeWidth: 0, fill: NEON_PURPLE }}
+                                activeDot={{ r: 4, strokeWidth: 0, fill: isDark ? '#fff' : '#111' }}
                                 name="Spending"
                             />
                         </AreaChart>
@@ -260,10 +277,10 @@ export default function AnalyticsClient({
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
 
                 {/* Insights: Category & Necessity */}
-                <motion.div variants={itemVariants} className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2.5rem]">
+                <motion.div variants={itemVariants} className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 lg:p-8 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none">
                     <div className="flex justify-between items-center mb-8">
-                        <h4 className="text-xs uppercase tracking-widest text-gray-500 dark:text-neutral-400 font-black">Necessity Breakdown</h4>
-                        <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] text-blue-400 font-black">
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white tracking-tight uppercase">Necessity</h4>
+                        <div className="px-2 py-0.5 rounded-md bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 text-[10px] text-gray-500 dark:text-gray-400 font-medium">
                             {essentialPercentage}% ESSENTIAL
                         </div>
                     </div>
@@ -289,8 +306,8 @@ export default function AnalyticsClient({
                                 </PieChart>
                             </ResponsiveContainer>
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="text-[10px] text-gray-500 dark:text-zinc-500 font-black uppercase">Core</span>
-                                <span className="text-3xl font-black text-gray-900 dark:text-white">{essentialPercentage}%</span>
+                                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium uppercase">Essential</span>
+                                <span className="text-2xl font-semibold text-gray-900 dark:text-white">{essentialPercentage}%</span>
                             </div>
                         </div>
                         <div className="w-full md:w-1/2 space-y-6">
@@ -319,37 +336,47 @@ export default function AnalyticsClient({
                 </motion.div>
 
                 {/* Insights: Calendar Heatmap */}
-                <motion.div variants={itemVariants} className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2.5rem]">
+                <motion.div variants={itemVariants} className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 lg:p-8 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none">
                     <div className="flex justify-between items-center mb-8">
-                        <h4 className="text-xs uppercase tracking-widest text-gray-500 dark:text-neutral-400 font-black">Payment Distribution</h4>
-                        <span className="text-[10px] text-zinc-400 font-bold">FEBRUARY 2026</span>
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white tracking-tight uppercase">Payment Calendar</h4>
+                        <span className="text-[10px] text-gray-400 font-medium tracking-widest uppercase">{formatDate(new Date(), { month: 'long', year: 'numeric' })}</span>
                     </div>
 
                     <div className="grid grid-cols-7 gap-3 mb-6">
                         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-                            <div key={`${day}-${i}`} className="text-center text-[10px] text-zinc-600 font-black">{day}</div>
+                            <div key={`${day}-${i}`} className="text-center text-[10px] text-gray-400 font-medium">{day}</div>
                         ))}
                         {heatmapData.map((d, i) => {
+                            if (d.day === null) {
+                                return <div key={i} className="aspect-square" />;
+                            }
+
                             let intensity = 'bg-white/5';
-                            let glow = '';
                             if (d.count === 1) {
-                                intensity = 'bg-purple-500/30 border border-purple-500/20';
+                                intensity = 'bg-[#1fe2c3]/10 border border-[#1fe2c3]/20';
                             } else if (d.count >= 2) {
-                                intensity = 'bg-purple-500 border border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]';
-                                glow = 'animate-pulse';
+                                intensity = 'bg-[#1fe2c3] text-black';
                             }
 
                             return (
                                 <div
                                     key={i}
-                                    className={`aspect-square rounded-lg flex items-center justify-center text-[10px] font-black transition-all group relative ${intensity} ${glow}`}
+                                    className={`aspect-square rounded-lg flex items-center justify-center text-[10px] font-black transition-all group relative ${intensity}`}
                                 >
-                                    <span className={d.count >= 2 ? 'text-white' : 'text-gray-400 dark:text-zinc-500'}>{d.day}</span>
+                                    <span className={d.count >= 2 ? 'text-black' : 'text-gray-400 dark:text-zinc-500'}>{d.day}</span>
                                     {d.count > 0 && (
-                                        <div className="absolute bottom-[-40px] left-[50%] translate-x-[-50%] p-2 bg-black border border-white/10 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 whitespace-nowrap">
-                                            {d.subs.map((s: any, idx: number) => (
-                                                <p key={idx} className="text-[8px] text-zinc-300">{s.name}: {formatMoney(s.amount)}</p>
-                                            ))}
+                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-white dark:bg-[#0D0D0D] border border-gray-100 dark:border-white/10 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-50 min-w-[150px]">
+                                            <p className="text-[10px] font-black text-gray-400 dark:text-zinc-500 uppercase tracking-widest mb-2 pb-1 border-b border-gray-50 dark:border-white/5">
+                                                Payments ({d.count})
+                                            </p>
+                                            <div className="space-y-2">
+                                                {d.subs.map((s: any, idx: number) => (
+                                                    <div key={idx} className="flex items-center justify-between gap-4">
+                                                        <span className="text-[10px] font-bold text-gray-900 dark:text-white truncate max-w-[80px]">{s.name}</span>
+                                                        <span className="text-[10px] font-black text-[#1fe2c3]">{formatMoney(s.amount)}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -358,29 +385,29 @@ export default function AnalyticsClient({
                     </div>
                     <div className="flex items-center gap-4 pt-4 border-t border-white/5">
                         <div className="flex items-center gap-1.5">
-                            <div className="w-2 h-2 rounded-sm bg-white/5" />
-                            <span className="text-[8px] text-zinc-500 font-black">NO PAYMENTS</span>
+                            <div className="w-1.5 h-1.5 rounded-sm bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10" />
+                            <span className="text-[9px] text-gray-400 font-medium">NO PAYMENTS</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-2 h-2 rounded-sm bg-purple-500/30" />
-                            <span className="text-[8px] text-zinc-500 font-black">1 PAYMENT</span>
+                            <div className="w-1.5 h-1.5 rounded-sm bg-gray-100 dark:bg-white/10" />
+                            <span className="text-[9px] text-gray-400 font-medium">1 PAYMENT</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-2 h-2 rounded-sm bg-purple-500 shadow-[0_0_5px_rgba(168,85,247,0.5)]" />
-                            <span className="text-[8px] text-zinc-500 font-black">HIGH DENSITY</span>
+                            <div className="w-1.5 h-1.5 rounded-sm bg-gray-900 dark:bg-white" />
+                            <span className="text-[9px] text-gray-400 font-medium uppercase">Multiple</span>
                         </div>
                     </div>
                 </motion.div>
             </div>
 
             {/* Section 4: Opportunities Table */}
-            <motion.div variants={itemVariants} className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2.5rem] overflow-hidden">
+            <motion.div variants={itemVariants} className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 lg:p-8 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none">
                 <div className="flex justify-between items-center mb-8">
                     <div>
-                        <h4 className="text-xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Economy Opportunities</h4>
-                        <p className="text-xs text-gray-500 dark:text-neutral-400 font-bold mt-1">Services identified for potential budget optimization.</p>
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white tracking-tight uppercase">Opportunities</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Audit suggestions for potential optimization.</p>
                     </div>
-                    <div className="px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs font-bold text-emerald-400">
+                    <div className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
                         Optimization Available
                     </div>
                 </div>
@@ -388,35 +415,34 @@ export default function AnalyticsClient({
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="border-b border-white/5">
-                                <th className="pb-4 text-[10px] uppercase font-black text-zinc-500 tracking-widest">Service</th>
-                                <th className="pb-4 text-[10px] uppercase font-black text-zinc-500 tracking-widest">Monthly Impact</th>
-                                <th className="pb-4 text-[10px] uppercase font-black text-zinc-500 tracking-widest">Annual Saving</th>
-                                <th className="pb-4 text-right text-[10px] uppercase font-black text-zinc-500 tracking-widest">Suggested Action</th>
+                            <tr className="border-b border-gray-100 dark:border-[#222]">
+                                <th className="pb-4 text-[10px] uppercase font-medium text-gray-400 tracking-wider">Service</th>
+                                <th className="pb-4 text-[10px] uppercase font-medium text-gray-400 tracking-wider text-right">Impact</th>
+                                <th className="pb-4 text-[10px] uppercase font-medium text-gray-400 tracking-wider text-right">Est. Save</th>
+                                <th className="pb-4 text-right text-[10px] uppercase font-medium text-gray-400 tracking-wider">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {analytics.nextRenewals.slice(0, 3).map((sub: any, i: number) => (
-                                <tr key={i} className="group hover:bg-white/[0.02] transition-all">
+                                <tr key={i} className="group hover:bg-gray-50/50 dark:hover:bg-white/5 transition-all">
                                     <td className="py-4">
                                         <div className="flex items-center gap-3">
                                             <SubscriptionLogo
                                                 name={sub.name}
                                                 domain={sub.website?.replace(/^https?:\/\//, '').split('/')[0]}
-                                                size="md"
+                                                size="sm"
                                             />
-                                            <span className="font-bold text-white group-hover:text-purple-400 transition-colors">{sub.name}</span>
+                                            <span className="font-medium text-xs text-gray-900 dark:text-white">{sub.name}</span>
                                         </div>
                                     </td>
-                                    <td className="py-4 font-bold text-zinc-300">{formatMoney(sub.amount)}</td>
-                                    <td className="py-4">
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-black text-emerald-400">-{formatMoney(sub.amount * 12)}</span>
-                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    <td className="py-4 text-right text-xs font-medium text-gray-500 dark:text-gray-400">{formatMoney(sub.amount)}</td>
+                                    <td className="py-4 text-right">
+                                        <div className="flex items-center justify-end gap-2">
+                                            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">{formatMoney(sub.amount * 12)}</span>
                                         </div>
                                     </td>
                                     <td className="py-4 text-right">
-                                        <button className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-zinc-400 hover:text-white hover:border-white/20 transition-all uppercase tracking-widest">
+                                        <button className="px-3 py-1.5 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-md text-[10px] font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all uppercase tracking-wider">
                                             Audit
                                         </button>
                                     </td>

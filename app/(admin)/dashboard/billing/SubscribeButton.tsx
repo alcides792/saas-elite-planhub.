@@ -12,12 +12,12 @@ export default function SubscribeButton() {
         try {
             const result = await createCheckoutSession()
             if (result.url) {
-                window.location.href = result.url // Redireciona para o Dodo
+                window.location.href = result.url // Redirect to Dodo
             } else {
-                toast.error("Erro ao iniciar pagamento: " + (result.error || "Desconhecido"))
+                toast.error("Error initiating payment: " + (result.error || "Unknown"))
             }
         } catch (err) {
-            toast.error("Erro de conexão.")
+            toast.error("Connection failure.")
         } finally {
             setLoading(false)
         }

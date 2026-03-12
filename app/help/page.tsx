@@ -55,7 +55,7 @@ function HelpCenterContent() {
                     {/* Top shimmer line */}
                     <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-violet-500 to-transparent opacity-50" />
 
-                    {/* Seção de Ícone */}
+                    {/* Icon Section */}
                     <div className="flex justify-center">
                         <div className="relative group">
                             <div className="absolute inset-0 bg-violet-500 blur-3xl opacity-20 group-hover:opacity-40 transition-opacity animate-pulse" />
@@ -68,7 +68,7 @@ function HelpCenterContent() {
                         </div>
                     </div>
 
-                    {/* Conteúdo de Texto */}
+                    {/* Text Content */}
                     <div className="space-y-6">
                         <div className="space-y-3">
                             <span className="text-xs font-black tracking-[0.3em] text-violet-500 uppercase opacity-80">Premium Support</span>
@@ -91,7 +91,7 @@ function HelpCenterContent() {
                         </div>
                     </div>
 
-                    {/* Botão de Chamada para Ação */}
+                    {/* Call to Action Button */}
                     <div className="pt-4">
                         <a
                             href="mailto:planhub.help@gmail.com"

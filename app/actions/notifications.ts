@@ -50,7 +50,7 @@ export async function disconnectDiscord() {
 export async function sendNotification(userId: string, message: string, channel: 'telegram' | 'discord' | 'all' = 'all', buttons?: any[]) {
     const supabase = await createClient()
 
-    // Busca as configs do usuário
+    // Fetch user configurations
     const { data: profile } = await supabase
         .from('profiles')
         .select('telegram_chat_id, discord_webhook')
@@ -59,7 +59,7 @@ export async function sendNotification(userId: string, message: string, channel:
 
     if (!profile) return
 
-    // Envia Telegram
+    // Send Telegram notification
     if ((channel === 'all' || channel === 'telegram') && profile.telegram_chat_id && TELEGRAM_TOKEN) {
         try {
             await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
@@ -77,7 +77,7 @@ export async function sendNotification(userId: string, message: string, channel:
         }
     }
 
-    // Envia Discord
+    // Send Discord notification
     if ((channel === 'all' || channel === 'discord') && profile.discord_webhook) {
         try {
             await fetch(profile.discord_webhook, {

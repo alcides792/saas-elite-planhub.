@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
-// Use a Service Role para ignorar RLS (Security) pois é uma ação do sistema
+// Use a Service Role to bypass RLS (Security) as it is a system action
 const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     try {
         const update = await request.json()
 
-        // Validação básica
+        // Basic validation
         if (!update.message || !update.message.text) {
             return NextResponse.json({ ok: true })
         }
@@ -21,12 +21,12 @@ export async function POST(request: Request) {
         const text = update.message.text
         const chatId = update.message.chat.id.toString()
 
-        // DETECÇÃO DO DEEP LINK: /start <USER_ID>
+        // DEEP LINK DETECTION: /start <USER_ID>
         if (text.startsWith('/start ') && text.length > 7) {
             const userId = text.split(' ')[1].trim()
 
 
-            // Salva no Supabase
+            // Save to Supabase
             const { error } = await supabase
                 .from('profiles')
                 .update({ telegram_chat_id: chatId })

@@ -193,7 +193,7 @@ export const POPULAR_SERVICES: Service[] = [
         ]
     },
 
-    // --- MÚSICA & ÁUDIO ---
+    // --- MUSIC & AUDIO ---
     {
         id: 'spotify',
         name: 'Spotify',
@@ -397,7 +397,7 @@ export const POPULAR_SERVICES: Service[] = [
         ]
     },
 
-    // --- IA & PRODUTIVIDADE ---
+    // --- AI & PRODUCTIVITY ---
     {
         id: 'chatgpt-plus',
         name: 'ChatGPT Plus',
@@ -544,7 +544,7 @@ export const POPULAR_SERVICES: Service[] = [
         ]
     },
 
-    // --- DESIGN & CRIAÇÃO ---
+    // --- DESIGN & CREATION ---
     {
         id: 'adobe-creative-cloud',
         name: 'Adobe Creative Cloud',
@@ -724,7 +724,7 @@ export const POPULAR_SERVICES: Service[] = [
         ]
     },
 
-    // --- SEGURANÇA & VPN ---
+    // --- SECURITY & VPN ---
     {
         id: 'nordvpn',
         name: 'NordVPN',

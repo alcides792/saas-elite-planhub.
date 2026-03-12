@@ -101,32 +101,28 @@ export default function FeedbackPage() {
             {/* STICKY HEADER AREA */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                 <div className="space-y-1">
-                    <div className="flex items-center gap-2 mb-2">
-                        <span className="h-px w-8 bg-primary/40 block"></span>
-                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary/70">Community Focus</span>
-                    </div>
-                    <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
-                        Feedback
+                    <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                        Feedback Center
                     </h1>
-                    <p className="text-zinc-500 dark:text-zinc-400 text-sm max-w-md">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm max-w-md">
                         Your input drives our development. Vote on features or suggest new ones.
                     </p>
                 </div>
 
                 <motion.button
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ opacity: 0.9 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setIsCreating(true)}
-                    className="h-12 px-6 bg-rose-500 hover:bg-rose-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-rose-500/20 flex items-center justify-center gap-2"
+                    className="h-10 px-4 bg-gray-900 dark:bg-white text-white dark:text-black font-medium rounded-md transition-all flex items-center justify-center gap-2 text-sm"
                 >
-                    <Plus size={18} />
+                    <Plus size={16} />
                     New Request
                 </motion.button>
             </div>
 
             {/* CATEGORY NAV */}
             <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
-                <div className="flex items-center gap-2 p-1 bg-zinc-100 dark:bg-white/5 rounded-2xl border border-zinc-200 dark:border-white/5">
+                <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/5">
                     {CATEGORIES.map((cat) => {
                         const isSelected = selectedCategory === cat.value;
                         const Icon = cat.icon;
@@ -134,12 +130,12 @@ export default function FeedbackPage() {
                             <button
                                 key={cat.value}
                                 onClick={() => setSelectedCategory(cat.value)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${isSelected
-                                    ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm ring-1 ring-zinc-200 dark:ring-white/10'
-                                    : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-300'
+                                className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-[11px] font-medium uppercase tracking-wider transition-all ${isSelected
+                                    ? 'bg-white dark:bg-white/10 text-gray-900 dark:text-white shadow-sm ring-1 ring-gray-200 dark:ring-white/10'
+                                    : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
                                     }`}
                             >
-                                <Icon size={14} className={isSelected ? 'text-primary' : 'opacity-50'} />
+                                <Icon size={12} className={isSelected ? 'text-gray-900 dark:text-white' : 'opacity-50'} />
                                 {cat.label}
                             </button>
                         );
@@ -158,44 +154,41 @@ export default function FeedbackPage() {
                                 exit={{ opacity: 0, height: 0, scale: 0.95 }}
                                 className="overflow-hidden mb-8"
                             >
-                                <div className="p-6 md:p-8 bg-white/90 dark:bg-zinc-900/70 backdrop-blur-2xl border border-zinc-200 dark:border-white/10 rounded-3xl shadow-2xl relative ring-1 ring-primary/10">
-                                    <div className="flex items-center justify-between mb-6">
-                                        <h3 className="text-xl font-bold flex items-center gap-2 text-zinc-900 dark:text-white">
-                                            <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                                                <Lightbulb size={18} />
-                                            </div>
+                                <div className="p-6 md:p-8 bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] rounded-lg shadow-xl relative">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <h3 className="text-lg font-semibold flex items-center gap-3 text-gray-900 dark:text-white uppercase tracking-tight">
                                             Share your thoughts
                                         </h3>
-                                        <button onClick={() => setIsCreating(false)} className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full transition-colors">
-                                            <X size={20} className="text-zinc-400" />
+                                        <button onClick={() => setIsCreating(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-md transition-colors">
+                                            <X size={18} className="text-gray-400" />
                                         </button>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-4">
                                             <div>
-                                                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-2 block ml-1">Subject</label>
+                                                <label className="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 block ml-1">Subject</label>
                                                 <input
                                                     type="text"
                                                     placeholder="A short, descriptive title"
                                                     value={newPost.title}
                                                     onChange={e => setNewPost({ ...newPost, title: e.target.value })}
-                                                    className="w-full h-12 bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl px-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all outline-none dark:text-white"
+                                                    className="w-full h-10 bg-transparent border border-gray-200 dark:border-[#333] rounded-md px-4 text-sm focus:ring-1 focus:ring-gray-900 dark:focus:ring-white transition-all outline-none text-gray-900 dark:text-white"
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-2 block ml-1">Category</label>
+                                                <label className="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 block ml-1">Category</label>
                                                 <div className="grid grid-cols-2 gap-2">
                                                     {['idea', 'issue'].map((type) => (
                                                         <button
                                                             key={type}
                                                             onClick={() => setNewPost({ ...newPost, category: type as any })}
-                                                            className={`h-11 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-2 ${newPost.category === type
-                                                                ? 'bg-primary/10 border-primary/50 text-primary'
-                                                                : 'bg-zinc-50 dark:bg-black/10 border-zinc-200 dark:border-white/5 text-zinc-500'
+                                                            className={`h-10 rounded-md text-[11px] font-semibold uppercase tracking-wider border transition-all flex items-center justify-center gap-2 ${newPost.category === type
+                                                                ? 'bg-gray-900 dark:bg-white text-white dark:text-black border-transparent'
+                                                                : 'bg-transparent border-gray-200 dark:border-[#333] text-gray-500 dark:text-gray-400'
                                                                 }`}
                                                         >
-                                                            {type === 'idea' ? <Lightbulb size={14} /> : <AlertCircle size={14} />}
+                                                            {type === 'idea' ? <Lightbulb size={12} /> : <AlertCircle size={12} />}
                                                             {type === 'idea' ? 'Idea' : 'Bug Report'}
                                                         </button>
                                                     ))}
@@ -203,13 +196,13 @@ export default function FeedbackPage() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-2 block ml-1">Context / Details</label>
+                                            <label className="text-[10px] font-semibold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-2 block ml-1">Context / Details</label>
                                             <textarea
                                                 placeholder="Tell us more about the impact of this request..."
                                                 value={newPost.content}
                                                 onChange={e => setNewPost({ ...newPost, content: e.target.value })}
                                                 rows={5}
-                                                className="w-full bg-zinc-50 dark:bg-black/20 border border-zinc-200 dark:border-white/10 rounded-xl p-4 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all outline-none resize-none dark:text-white"
+                                                className="w-full bg-transparent border border-gray-200 dark:border-[#333] rounded-md p-4 text-sm focus:ring-1 focus:ring-gray-900 dark:focus:ring-white transition-all outline-none resize-none text-gray-900 dark:text-white"
                                             />
                                         </div>
                                     </div>
@@ -218,10 +211,10 @@ export default function FeedbackPage() {
                                         <button
                                             onClick={handleCreatePost}
                                             disabled={isLoading}
-                                            className="px-8 h-12 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl flex items-center gap-2 disabled:opacity-50 transition-all hover:shadow-lg hover:shadow-rose-500/30"
+                                            className="px-6 h-10 bg-gray-900 dark:bg-white text-white dark:text-black font-medium rounded-md flex items-center gap-2 disabled:opacity-50 transition-all text-sm"
                                         >
-                                            {isLoading ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
-                                            Share
+                                            {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+                                            Submit
                                         </button>
                                     </div>
                                 </div>
@@ -237,8 +230,8 @@ export default function FeedbackPage() {
                     )}
 
                     {!isLoading && posts.length === 0 && (
-                        <div className="py-32 text-center bg-zinc-50 dark:bg-white/[0.02] border border-dashed border-zinc-200 dark:border-white/10 rounded-3xl">
-                            <p className="text-zinc-400 font-medium">Clear skies! No requests found for this filter.</p>
+                        <div className="py-24 text-center bg-transparent border border-dashed border-gray-200 dark:border-[#222] rounded-lg">
+                            <p className="text-gray-400 text-sm">Clear skies! No requests found for this filter.</p>
                         </div>
                     )}
 
@@ -251,37 +244,37 @@ export default function FeedbackPage() {
                             return (
                                 <motion.div
                                     layout
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: i * 0.05 }}
                                     key={post.id}
-                                    className="group flex gap-4 p-5 md:p-6 bg-white/80 dark:bg-zinc-900/60 backdrop-blur-xl border border-zinc-200 dark:border-white/10 rounded-2xl hover:border-primary/30 dark:hover:border-primary/30 transition-all shadow-lg hover:shadow-xl ring-1 ring-black/5 dark:ring-white/5"
+                                    className="group flex gap-5 p-5 bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none hover:border-gray-300 dark:hover:border-[#333] transition-all"
                                 >
                                     <button
                                         onClick={() => handleVote(post.id)}
                                         disabled={isVoting}
-                                        className={`shrink-0 h-16 w-14 rounded-xl border flex flex-col items-center justify-center transition-all ${isVoting
-                                            ? 'bg-primary text-white border-primary'
-                                            : 'bg-zinc-50 dark:bg-black/20 border-zinc-200 dark:border-white/10 text-zinc-400 hover:border-primary/50 group-hover:bg-primary/5'
+                                        className={`shrink-0 h-14 w-12 rounded-md border flex flex-col items-center justify-center transition-all ${isVoting
+                                            ? 'bg-gray-900 dark:bg-white text-white dark:text-black border-transparent'
+                                            : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10 text-gray-500 hover:border-gray-400 dark:hover:border-white/20'
                                             }`}
                                     >
-                                        <ChevronUp size={24} className={isVoting ? '' : 'group-hover:-translate-y-1 transition-transform'} />
-                                        <span className="text-sm font-bold">{post.votes}</span>
+                                        <ChevronUp size={18} className={isVoting ? '' : 'group-hover:-translate-y-0.5 transition-transform'} />
+                                        <span className="text-xs font-semibold">{post.votes}</span>
                                     </button>
 
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-3 mb-1 flex-wrap">
-                                            <h3 className="text-base md:text-lg font-bold text-zinc-900 dark:text-white truncate">
+                                        <div className="flex items-center gap-3 mb-1.5 flex-wrap">
+                                            <h3 className="text-sm md:text-base font-semibold text-gray-900 dark:text-white uppercase tracking-tight">
                                                 {post.title}
                                             </h3>
-                                            <div className={`px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-tight border ${cat.bg} ${cat.border} ${cat.color}`}>
+                                            <div className={`px-2 py-0.5 rounded-md text-[9px] font-semibold uppercase tracking-widest border ${cat.bg} ${cat.border} ${cat.color}`}>
                                                 {cat.label}
                                             </div>
                                         </div>
-                                        <p className="text-zinc-500 dark:text-zinc-400 text-sm leading-relaxed mb-4 line-clamp-2 group-hover:line-clamp-none transition-all duration-500">
+                                        <p className="text-gray-500 dark:text-gray-400 text-xs leading-relaxed mb-4 line-clamp-2">
                                             {post.content}
                                         </p>
-                                        <div className="flex items-center gap-4 text-[11px] font-bold text-zinc-400 border-t border-zinc-100 dark:border-white/5 pt-3 mt-auto">
+                                        <div className="flex items-center gap-4 text-[10px] font-medium text-gray-400 border-t border-gray-100 dark:border-white/5 pt-3 mt-auto uppercase tracking-wider">
                                             <div className="flex items-center gap-2">
                                                 <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] text-primary overflow-hidden border border-zinc-200 dark:border-white/10 shrink-0">
                                                     {post.profiles?.avatar_url ? (

@@ -21,7 +21,7 @@ export default function NotificationPreferences({ initialData }: NotificationPre
             </h3>
             <div className="space-y-6">
 
-                {/* 1. Alerta de Vencimento (O NOVO) */}
+                {/* 1. Expiration Alert */}
                 <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                         <Label className="text-base text-zinc-200 flex items-center gap-2">
@@ -33,7 +33,7 @@ export default function NotificationPreferences({ initialData }: NotificationPre
                     <Switch name="notify_expiration" defaultChecked={initialData?.notify_expiration ?? true} />
                 </div>
 
-                {/* 2. Resumo Semanal */}
+                {/* 2. Weekly Summary */}
                 <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                         <Label className="text-base text-zinc-200 flex items-center gap-2">
@@ -45,7 +45,7 @@ export default function NotificationPreferences({ initialData }: NotificationPre
                     <Switch name="notify_weekly_summary" defaultChecked={initialData?.notify_weekly_summary ?? true} />
                 </div>
 
-                {/* 3. Alertas Críticos */}
+                {/* 3. Critical Alerts */}
                 <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                         <Label className="text-base text-zinc-200 flex items-center gap-2">

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Send, MessageSquare, CheckCircle2, Loader2, ExternalLink, BellRing } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { toast } from 'sonner'
 import Image from 'next/image'
 import { saveDiscordWebhook } from '@/app/actions/notifications'
 import TelegramConnect from './TelegramConnect'
@@ -22,7 +23,6 @@ export default function NotificationChannels({
     const [activeTelegram, setActiveTelegram] = useState(!!initialTelegramId)
     const [activeDiscord, setActiveDiscord] = useState(!!initialDiscordWebhook)
     const [isLoading, setIsLoading] = useState({ discord: false })
-    const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
     const handleConnectDiscord = async () => {
         if (!discordWebhook) return
@@ -30,9 +30,9 @@ export default function NotificationChannels({
         const res = await saveDiscordWebhook(discordWebhook)
         if (res.success) {
             setActiveDiscord(true)
-            setMessage({ type: 'success', text: 'Discord connected!' })
+            toast.success('Discord connected!')
         } else {
-            setMessage({ type: 'error', text: res.error || 'Error connecting' })
+            toast.error(res.error || 'Error connecting')
         }
         setIsLoading(prev => ({ ...prev, discord: false }))
     }
@@ -175,19 +175,6 @@ export default function NotificationChannels({
                 </div>
             </motion.div>
 
-            {/* Toast Notification */}
-            {message && (
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    className={`col-span-1 md:col-span-2 flex items-center gap-3 p-4 rounded-2xl border ${message.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'
-                        }`}
-                >
-                    {message.type === 'success' ? <CheckCircle2 size={18} /> : <div className="w-4.5 h-4.5 rounded-full bg-red-500" />}
-                    <span className="text-xs font-bold uppercase tracking-wider">{message.text}</span>
-                    <button onClick={() => setMessage(null)} className="ml-auto text-[10px] font-black opacity-50 hover:opacity-100">CLOSE</button>
-                </motion.div>
-            )}
         </div>
     )
 }

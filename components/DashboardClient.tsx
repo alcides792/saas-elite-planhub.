@@ -157,20 +157,20 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                 className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10"
             >
                 <div>
-                    <h1 className="text-3xl md:text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
+                    <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-gray-900 dark:text-white">
                         Dashboard
                     </h1>
-                    <p className="text-zinc-500 text-sm mt-1">Overview of your financial panel.</p>
+                    <p className="text-gray-500 text-sm mt-0.5">Summary of your active subscriptions and spending.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <UserMenu />
                     <button
                         onClick={() => setIsModalOpen(true)}
                         disabled={isPending}
-                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-sm transition-all shadow-lg shadow-purple-600/30 disabled:opacity-50"
+                        className="flex items-center gap-2 px-4 py-2 rounded-md bg-gray-900 dark:bg-white text-white dark:text-black font-medium text-sm transition-opacity hover:opacity-90 disabled:opacity-50"
                     >
-                        <Plus size={18} strokeWidth={3} />
-                        New Subscription
+                        <Plus size={16} />
+                        Add Subscription
                     </button>
                 </div>
             </motion.header>
@@ -182,16 +182,16 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2rem] shadow-sm lg:col-span-1"
+                    className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none"
                 >
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-blue-500/10 dark:bg-blue-500/20 rounded-xl text-blue-600 dark:text-blue-400">
-                            <CreditCard size={20} />
+                    <div className="flex justify-between items-center mb-4">
+                        <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Monthly Spend</span>
+                        <div className="p-2 bg-gray-50 dark:bg-white/5 rounded-md text-gray-400">
+                            <CreditCard size={16} />
                         </div>
                     </div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-neutral-400 uppercase tracking-wider mb-1">Monthly Spend</p>
-                    <p className="text-4xl font-black text-gray-900 dark:text-white">{formatMoney(monthlySpend)}</p>
-                    <p className="text-xs text-zinc-600 mt-2">Based on {stats.activeCount} active subscriptions</p>
+                    <p className="text-2xl font-semibold text-gray-900 dark:text-white">{formatMoney(monthlySpend)}</p>
+                    <p className="text-[11px] text-gray-400 mt-2 uppercase font-medium">{stats.activeCount} active items</p>
                 </motion.div>
 
                 <motion.div
@@ -199,16 +199,16 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2rem] shadow-sm lg:col-span-1"
+                    className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none"
                 >
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-green-500/10 dark:bg-green-500/20 rounded-xl text-green-600 dark:text-green-400">
-                            <TrendingUp size={20} />
+                    <div className="flex justify-between items-center mb-4">
+                        <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Yearly Projection</span>
+                        <div className="p-2 bg-gray-50 dark:bg-white/5 rounded-md text-gray-400">
+                            <TrendingUp size={16} />
                         </div>
                     </div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-neutral-400 uppercase tracking-wider mb-1">Yearly Projection</p>
-                    <p className="text-4xl font-black text-gray-900 dark:text-white">{formatMoney(yearlyProjection)}</p>
-                    <p className="text-xs text-zinc-600 mt-2">Monthly x 12 months</p>
+                    <p className="text-2xl font-semibold text-gray-900 dark:text-white">{formatMoney(yearlyProjection)}</p>
+                    <p className="text-[11px] text-gray-400 mt-2 uppercase font-medium">Monthly x 12</p>
                 </motion.div>
 
                 <motion.div
@@ -216,16 +216,16 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2rem] shadow-sm lg:col-span-1"
+                    className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none"
                 >
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-orange-500/10 dark:bg-orange-500/20 rounded-xl text-orange-600 dark:text-orange-400">
-                            <Zap size={20} />
+                    <div className="flex justify-between items-center mb-4">
+                        <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Active Status</span>
+                        <div className="p-2 bg-gray-50 dark:bg-white/5 rounded-md text-gray-400">
+                            <Zap size={16} />
                         </div>
                     </div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-neutral-400 uppercase tracking-wider mb-1">Active Subscriptions</p>
-                    <p className="text-4xl font-black text-gray-900 dark:text-white">{stats.activeCount}</p>
-                    <p className="text-xs text-zinc-600 mt-2">of {stats.totalCount} registered</p>
+                    <p className="text-2xl font-semibold text-gray-900 dark:text-white">{stats.activeCount}</p>
+                    <p className="text-[11px] text-gray-400 mt-2 uppercase font-medium">of {stats.totalCount} items</p>
                 </motion.div>
             </div>
 
@@ -237,13 +237,11 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    className="lg:col-span-2 bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2.5rem] shadow-sm relative overflow-hidden"
+                    className="lg:col-span-2 bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 lg:p-8 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none"
                 >
-                    <div className="flex justify-between items-center mb-8">
-                        <div>
-                            <h4 className="text-xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Monthly Spending Projection</h4>
-                            <p className="text-xs text-gray-500 dark:text-neutral-400 font-bold mt-1">Spending evolution based on billings.</p>
-                        </div>
+                    <div className="mb-8">
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white tracking-tight uppercase">Spending Projection</h4>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Monthly spending evolution and forecasts.</p>
                     </div>
                     <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
@@ -282,12 +280,12 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                                 <Area
                                     type="monotone"
                                     dataKey="value"
-                                    stroke="#7c3aed"
-                                    strokeWidth={4}
+                                    stroke={isDark ? "#fff" : "#111"}
+                                    strokeWidth={2}
                                     fillOpacity={1}
                                     fill="url(#colorValue)"
                                     animationDuration={1000}
-                                    activeDot={{ r: 6, strokeWidth: 0, fill: '#7c3aed' }}
+                                    activeDot={{ r: 4, strokeWidth: 0, fill: isDark ? '#fff' : '#111' }}
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -299,13 +297,11 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2.5rem] shadow-sm flex flex-col"
+                    className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 lg:p-8 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none flex flex-col"
                 >
                     <div className="flex justify-between items-center mb-8">
-                        <h4 className="text-xl font-black text-gray-900 dark:text-white tracking-tight uppercase">Spending by Category</h4>
-                        <div className="p-2 bg-purple-500/10 rounded-lg">
-                            <PieChartIcon size={18} className="text-purple-500" />
-                        </div>
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white tracking-tight uppercase">By Category</h4>
+                        <PieChartIcon size={14} className="text-gray-400" />
                     </div>
 
                     <div className="flex flex-col flex-1 gap-8">
@@ -340,8 +336,8 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                                         </PieChart>
                                     </ResponsiveContainer>
                                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                        <span className="text-[10px] text-gray-500 dark:text-zinc-500 font-black uppercase">Total</span>
-                                        <span className="text-xl font-black text-gray-900 dark:text-white">
+                                        <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium uppercase">Total</span>
+                                        <span className="text-lg font-semibold text-gray-900 dark:text-white">
                                             {formatMoney(categoryData.reduce((acc, curr) => acc + curr.value, 0)).split(',')[0]}
                                         </span>
                                     </div>
@@ -357,15 +353,15 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                         <div className="space-y-4 max-h-[220px] overflow-y-auto pr-2 custom-scrollbar">
                             {categoryData.map((item, i) => (
                                 <div key={i} className="group cursor-default">
-                                    <div className="flex justify-between items-center mb-1.5">
+                                    <div className="flex justify-between items-center mb-1">
                                         <div className="flex items-center gap-2">
                                             <div
-                                                className="w-2 h-2 rounded-full"
+                                                className="w-1.5 h-1.5 rounded-full"
                                                 style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }}
                                             />
-                                            <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-tight">{item.name}</span>
+                                            <span className="text-[11px] font-medium text-gray-600 dark:text-gray-400 uppercase tracking-tight">{item.name}</span>
                                         </div>
-                                        <span className="text-[10px] text-gray-400 dark:text-zinc-500 font-black tracking-widest leading-none">
+                                        <span className="text-[10px] text-gray-400 font-medium tracking-widest">
                                             {item.percentage.toFixed(0)}%
                                         </span>
                                     </div>
@@ -391,23 +387,19 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
-                className="bg-white/70 dark:bg-[#0A0A0A]/60 backdrop-blur-xl border border-gray-200 dark:border-white/5 p-8 rounded-[2rem] shadow-sm lg:col-span-1"
+                className="bg-white dark:bg-[#111] border border-gray-200 dark:border-[#222] p-6 lg:p-8 rounded-lg shadow-[0_1px_2px_rgba(0,0,0,0.03)] dark:shadow-none"
             >
-                <div className="flex justify-between items-start mb-4">
-                    <div className="p-3 bg-purple-500/10 dark:bg-purple-500/20 rounded-xl text-purple-600 dark:text-purple-400">
-                        <CalendarDays size={20} />
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-2">
+                        <CalendarDays size={14} className="text-gray-400" />
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white tracking-tight uppercase">Upcoming Renewals</h3>
                     </div>
-                </div>
-                <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight">Upcoming Renewals</h3>
-                        <Link
-                            href="/subscriptions"
-                            className="text-xs font-black text-purple-500 hover:text-purple-600 uppercase tracking-widest flex items-center gap-2 transition-colors"
-                        >
-                            View All <ArrowRight size={14} />
-                        </Link>
-                    </div>
+                    <Link
+                        href="/subscriptions"
+                        className="text-[11px] font-medium text-gray-400 hover:text-gray-900 dark:hover:text-white uppercase tracking-wider flex items-center gap-1.5 transition-colors"
+                    >
+                        View All <ArrowRight size={12} />
+                    </Link>
                 </div>
 
                 {upcomingRenewals.length > 0 ? (
@@ -415,18 +407,18 @@ export default function DashboardClient({ subscriptions, stats, userCreatedAt }:
                         {upcomingRenewals.map((sub) => (
                             <div
                                 key={sub.id}
-                                className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-purple-500/20 transition-colors"
+                                className="flex items-center gap-3 p-3 rounded-md bg-gray-50/50 dark:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-[#333] transition-all"
                             >
                                 <SubscriptionLogo
                                     name={sub.name}
                                     domain={sub.website?.replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]}
-                                    size="md"
+                                    size="sm"
                                 />
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-bold text-sm truncate">{sub.name}</p>
-                                    <p className="text-xs text-zinc-500">{formatRenewalDate(sub.next_payment!)}</p>
+                                    <p className="font-medium text-xs truncate text-gray-900 dark:text-white">{sub.name}</p>
+                                    <p className="text-[10px] text-gray-400 font-medium uppercase">{formatRenewalDate(sub.next_payment!)}</p>
                                 </div>
-                                <span className="text-sm font-black text-purple-400 shrink-0">
+                                <span className="text-xs font-semibold text-gray-900 dark:text-white shrink-0">
                                     {formatMoney(sub.amount)}
                                 </span>
                             </div>

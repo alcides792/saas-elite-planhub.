@@ -360,3 +360,51 @@
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
+/* Liquid Glass Notifications (Glassmorphism) */
+[data-sonner-toast] {
+  @apply !fixed !top-6 !right-6 !z-[9999] !rounded-xl !border !backdrop-blur-lg !transition-all;
+  font-family: var(--font-sans);
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(2rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.light [data-sonner-toast] {
+  @apply !bg-white/40 !border-white/40 !text-gray-900 !shadow-2xl !shadow-black/10;
+}
+
+.dark [data-sonner-toast] {
+  @apply !bg-black/40 !border-white/10 !text-white !shadow-2xl !shadow-black/40;
+}
+
+[data-sonner-toast] [data-title] {
+  @apply !text-sm !font-semibold;
+}
+
+[data-sonner-toast] [data-description] {
+  @apply !text-xs !text-gray-700 dark:!text-gray-300;
+}
+
+/* Success State */
+[data-sonner-toast][data-type="success"] [data-icon] {
+  @apply !text-emerald-500;
+}
+
+/* Error State */
+[data-sonner-toast][data-type="error"] [data-icon] {
+  @apply !text-red-500;
+}
+
+[data-sonner-toast] [data-icon] {
+  @apply !shrink-0;
+}

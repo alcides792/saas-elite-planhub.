@@ -39,14 +39,14 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
     return { success: false, error: "No subscriptions found." }
   }
 
-  // 3. Lógica de Totais por Moeda (Multi-Currency Support)
+  // 3. Totals by Currency Logic (Multi-Currency Support)
   const totalsByCurrency: Record<string, number> = {}
 
   subs.forEach(sub => {
     const currency = sub.currency || 'BRL'
     const amount = Number(sub.amount) || 0
 
-    // Usar billing_type de preferência
+    // Use billing_type preference
     const cycle = sub.billing_type || sub.billing_cycle || 'monthly'
 
     if (totalsByCurrency[currency]) {
@@ -56,7 +56,7 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
     }
   })
 
-  // Formata os totais para exibição
+  // Formats totals for display
   const formattedTotals = Object.entries(totalsByCurrency).map(([currency, value]) => {
     try {
       return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(value)
@@ -68,7 +68,7 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
   const totalDisplayHtml = formattedTotals.join('<br>')
   const totalDisplayText = formattedTotals.join(' + ')
 
-  const dataHoje = new Date().toLocaleDateString('en-US')
+  const todayDate = new Date().toLocaleDateString('en-US')
   let fileContent = ''
   let fileName = ''
   let mimeType = ''
@@ -111,7 +111,7 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
           </div>
           <div class="text-right">
             <p class="text-sm text-gray-400">Issue Date</p>
-            <p class="font-mono font-bold text-lg">${dataHoje}</p>
+            <p class="font-mono font-bold text-lg">${todayDate}</p>
           </div>
         </div>
 
@@ -167,14 +167,14 @@ export async function sendExportToTelegram(format: 'csv' | 'pdf') {
     `
   }
 
-  // Envio Telegram
+  // Telegram Sending
   try {
     const formData = new FormData()
     formData.append('chat_id', profile.telegram_chat_id)
 
     const caption = `📊 <b>Kovr Financial Report</b>\n\n` +
       `👤 ${userName}\n` +
-      `📅 ${dataHoje}\n\n` +
+      `📅 ${todayDate}\n\n` +
       `💰 <b>Estimated Totals:</b>\n${totalDisplayText}\n\n` +
       `<i>Download the file to view.</i>`
 
