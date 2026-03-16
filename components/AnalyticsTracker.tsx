@@ -1,100 +1,66 @@
-"use client";
+'use client'
 
-import { useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 
-// Interface for the analytics payload
-interface AnalyticsPayload {
-  id: string;
-  type: "view" | "click";
-  label: string;
-  referrer: string;
-  sessionId: string;
-}
-
-// Function to get or create a session ID
-const getSessionId = (): string => {
-  if (typeof window === "undefined") return "";
-  
-  let sessionId = sessionStorage.getItem("saas_analytics_session_id");
-  if (!sessionId) {
-    sessionId = crypto.randomUUID?.() || Math.random().toString(36).substring(2, 15);
-    sessionStorage.setItem("saas_analytics_session_id", sessionId);
-  }
-  return sessionId;
-};
-
-// Internal function to send the hit
-const sendHit = async (payload: AnalyticsPayload) => {
-  try {
-    const secretKey = process.env.NEXT_PUBLIC_ANALYTICS_SECRET_KEY;
-    
-    if (!secretKey) {
-      console.error("Analytics Tracker: NEXT_PUBLIC_ANALYTICS_SECRET_KEY is missing.");
-      return;
-    }
-
-    await fetch("https://meuadimin.netlify.app/api/analytics/hit", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-analytics-key": secretKey,
-      },
-      body: JSON.stringify(payload),
-    });
-  } catch (error) {
-    console.error("Analytics Tracker: Failed to send hit", error);
-  }
-};
-
-// Exported function for manual click tracking
-export const trackClick = (label: string) => {
-  // Only track on landing page
-  if (typeof window !== "undefined" && window.location.pathname !== "/") {
-    return;
-  }
-
-  const sessionId = getSessionId();
-  const payload: AnalyticsPayload = {
-    id: "global",
-    type: "click",
-    label: label,
-    referrer: document.referrer || "Acesso Direto",
-    sessionId: sessionId,
-  };
-  sendHit(payload);
-};
-
+/**
+ * Este componente envia um evento de "view" para o seu Admin cada vez que a rota muda.
+ * Restrito apenas à Landing Page (/).
+ */
 export function AnalyticsTracker() {
-  const pathname = usePathname();
-  const lastTrackedUrl = useRef<string | null>(null);
+  const pathname = usePathname()
+  const lastTrackedPath = useRef<string | null>(null)
 
   useEffect(() => {
-    // Only track on landing page
-    if (pathname !== "/") {
-      return;
+    // Restrição: monitorar APENAS a landing page
+    if (pathname !== '/') return
+
+    // Evitar tracking duplicado na mesma página em desenvolvimento
+    if (lastTrackedPath.current === pathname) return
+    
+    // Configurações (Ajuste para o domínio do seu Admin)
+    const ADMIN_API_URL = 'https://meu-admin-domain.netlify.app/api/analytics/hit'
+    const ANALYTICS_KEY = process.env.NEXT_PUBLIC_ANALYTICS_SECRET_KEY || 'your-secret-key-here12345'
+    const SITE_ID = 'meu-saas-id' // Identificador deste site
+
+    async function trackView() {
+      try {
+        await fetch(ADMIN_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-analytics-key': ANALYTICS_KEY
+          },
+          body: JSON.stringify({
+            id: SITE_ID,
+            type: 'view',
+            label: pathname,
+            sessionId: getSessionId(),
+            referrer: document.referrer || 'Acesso Direto'
+          }),
+          // Importante: modo CORS para cross-domain
+          mode: 'cors' 
+        })
+        lastTrackedPath.current = pathname
+      } catch (err) {
+        console.error('Falha ao enviar analytics:', err)
+      }
     }
 
-    // Avoid duplicate page views on the same URL
-    if (lastTrackedUrl.current === pathname) {
-      return;
-    }
+    trackView()
+  }, [pathname])
 
-    lastTrackedUrl.current = pathname;
-    const label = pathname === "/" ? "/" : pathname;
-    const sessionId = getSessionId();
-    const referrer = document.referrer || "Acesso Direto";
-
-    const payload: AnalyticsPayload = {
-      id: "global",
-      type: "view",
-      label: label,
-      referrer: referrer,
-      sessionId: sessionId,
-    };
-
-    sendHit(payload);
-  }, [pathname]);
-
-  return null;
+  return null
 }
+
+// Helper simples para ID de sessão (armazenado no sessionStore)
+function getSessionId() {
+  if (typeof window === 'undefined') return ''
+  let sid = sessionStorage.getItem('asid')
+  if (!sid) {
+    sid = Math.random().toString(36).substring(2) + Date.now().toString(36)
+    sessionStorage.setItem('asid', sid)
+  }
+  return sid
+}
+
