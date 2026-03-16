@@ -4,6 +4,7 @@ import React from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { ArrowRight, Play } from "lucide-react"
+import { trackClick } from "@/components/AnalyticsTracker"
 
 export default function Hero() {
     return (
@@ -31,6 +32,7 @@ export default function Hero() {
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                         <Link
                             href="/login?mode=signup&plan=trial"
+                            onClick={() => trackClick("/login?mode=signup&plan=trial")}
                             className="w-full sm:w-auto px-10 py-5 bg-[#1fe2c3] text-[#1a1a1a] font-black text-xl border-4 border-[#1a1a1a] hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_0px_rgba(26,26,26,1)] transition-all flex items-center justify-center gap-3 group"
                         >
                             Get Started Now
@@ -38,6 +40,7 @@ export default function Hero() {
                         </Link>
                         <Link
                             href="/login"
+                            onClick={() => trackClick("/login")}
                             className="w-full sm:w-auto px-10 py-5 bg-white text-[#1a1a1a] font-black text-xl border-4 border-[#1a1a1a] hover:bg-zinc-100 transition-all flex items-center justify-center gap-3"
                         >
                             Sign In

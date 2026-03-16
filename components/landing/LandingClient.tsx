@@ -12,6 +12,7 @@ import ProblemSection from "@/components/landing/ProblemSection";
 import Features from "@/components/landing/Features";
 import Pricing from "@/components/landing/Pricing";
 import NotificationChannels from "@/components/landing/NotificationChannels";
+import { trackClick } from "@/components/AnalyticsTracker";
 
 export default function LandingClient() {
 
@@ -163,6 +164,7 @@ export default function LandingClient() {
                         <div className="flex flex-col md:flex-row justify-center gap-6">
                             <Link 
                                 href="/login?mode=signup&plan=trial"
+                                onClick={() => trackClick("/login?mode=signup&plan=trial")}
                                 className="bg-[#1a1a1a] text-white px-12 py-6 font-black text-2xl border-4 border-[#1a1a1a] hover:bg-zinc-800 transition-all flex items-center justify-center"
                             >
                                 Try Kovr for Free

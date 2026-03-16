@@ -5,6 +5,8 @@ import { motion } from "framer-motion"
 import { Check } from "lucide-react"
 import Link from "next/link"
 
+import { trackClick } from "@/components/AnalyticsTracker"
+
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     whileInView: { opacity: 1, y: 0 },
@@ -48,6 +50,7 @@ export default function Pricing() {
                         </ul>
                         <Link 
                             href="/login?mode=signup&plan=trial"
+                            onClick={() => trackClick("/login?mode=signup&plan=trial")}
                             className="w-full bg-[#1a1a1a] text-white py-6 border-4 border-[#1a1a1a] font-black text-2xl hover:bg-zinc-800 transition-colors mt-auto uppercase shadow-[4px_4px_0px_#ffffff] flex items-center justify-center"
                         >
                             Start Free Trial ⚡

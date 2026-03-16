@@ -3,6 +3,7 @@ import { Zap } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/utils/supabase/server';
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { NavbarActions } from "./NavbarActions";
 
 export default async function Navbar() {
     const supabase = await createClient();
@@ -24,26 +25,7 @@ export default async function Navbar() {
 
                     <div className="flex items-center gap-4">
                         <ThemeToggle />
-                        {user ? (
-                            <Link
-                                href="/dashboard"
-                                className="bg-purple-600 hover:bg-purple-500 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-purple-600/20"
-                            >
-                                Dashboard
-                            </Link>
-                        ) : (
-                            <>
-                                <Link href="/login" className="text-white text-sm font-bold hover:text-purple-400 transition-colors">
-                                    Login
-                                </Link>
-                                <Link
-                                    href="/register"
-                                    className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-zinc-200 transition-all shadow-lg"
-                                >
-                                    Join Now
-                                </Link>
-                            </>
-                        )}
+                        <NavbarActions user={user} />
                     </div>
                 </div>
             </div>
