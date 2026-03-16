@@ -12,7 +12,7 @@ import ProblemSection from "@/components/landing/ProblemSection";
 import Features from "@/components/landing/Features";
 import Pricing from "@/components/landing/Pricing";
 import NotificationChannels from "@/components/landing/NotificationChannels";
-import { trackClick } from "@/components/AnalyticsTracker";
+import { trackClick } from "@/lib/utils/analytics-hits";
 
 export default function LandingClient() {
 

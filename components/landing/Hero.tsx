@@ -4,7 +4,7 @@ import React from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import { ArrowRight, Play } from "lucide-react"
-import { trackClick } from "@/components/AnalyticsTracker"
+import { trackClick } from "@/lib/utils/analytics-hits"
 
 export default function Hero() {
     return (

@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import { Check } from "lucide-react"
 import Link from "next/link"
 
-import { trackClick } from "@/components/AnalyticsTracker"
+import { trackClick } from "@/lib/utils/analytics-hits"
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },

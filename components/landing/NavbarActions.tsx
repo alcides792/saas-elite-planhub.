@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { trackClick } from "@/components/AnalyticsTracker";
+import { trackClick } from "@/lib/utils/analytics-hits";
 
 export function NavbarActions({ user }: { user: any }) {
   if (user) {
