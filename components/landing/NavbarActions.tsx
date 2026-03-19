@@ -26,8 +26,8 @@ export function NavbarActions({ user }: { user: any }) {
         Login
       </Link>
       <Link
-        href="/register"
-        onClick={() => trackClick("/register")}
+        href="/login?mode=signup"
+        onClick={() => trackClick("/login?mode=signup")}
         className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-bold hover:bg-zinc-200 transition-all shadow-lg"
       >
         Join Now

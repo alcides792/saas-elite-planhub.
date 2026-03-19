@@ -163,7 +163,7 @@ export function NavBar({ items, className, user }: NavBarProps) {
                                     <span className="hidden sm:inline">Login</span>
                                 </Link>
                                 <Link
-                                    href="/register"
+                                    href="/login?mode=signup"
                                     className="flex items-center gap-2 text-xs font-bold px-4 sm:px-6 py-2 rounded-full bg-white text-black hover:bg-zinc-200 transition-all shadow-lg active:scale-95 whitespace-nowrap"
                                 >
                                     <UserPlus size={14} />
