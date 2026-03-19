@@ -117,7 +117,7 @@ export default function LiveDashboardDemo() {
                         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                             <div>
                                 <h1 className="text-2xl md:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">Dashboard</h1>
-                                <p className="text-xs text-zinc-500 mt-0.5">Visão geral do seu painel financeiro.</p>
+                                <p className="text-xs text-zinc-500 mt-0.5">Overview of your financial dashboard.</p>
                             </div>
                             <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-600 text-white font-bold text-xs transition-all shadow-lg shadow-purple-600/20 cursor-default">
                                 <Plus size={16} strokeWidth={3} />

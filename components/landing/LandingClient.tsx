@@ -12,6 +12,7 @@ import ProblemSection from "@/components/landing/ProblemSection";
 import Features from "@/components/landing/Features";
 import Pricing from "@/components/landing/Pricing";
 import NotificationChannels from "@/components/landing/NotificationChannels";
+import Footer from "@/components/landing/Footer";
 import { trackClick } from "@/lib/utils/analytics-hits";
 
 export default function LandingClient() {
@@ -175,19 +176,7 @@ export default function LandingClient() {
             </main>
 
             {/* Footer */}
-            <footer className="py-12 border-t-4 border-[#1a1a1a] px-6 relative z-10 bg-white dark:bg-black">
-                <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="flex items-center gap-2 text-[#1a1a1a] dark:text-white">
-                        <Zap className="w-4 h-4 fill-current text-[#1a1a1a] dark:text-[#faed27]" />
-                        <span className="font-bold uppercase tracking-tighter">Kovr</span>
-                        <span className="text-xs ml-2 font-bold opacity-60">© 2025 Kovr AI. All rights reserved.</span>
-                    </div>
-                    <div className="flex gap-6 text-sm font-bold">
-                        <Link href="/terms-of-service" className="text-[#1a1a1a] dark:text-white hover:underline transition-colors uppercase">Terms of Service</Link>
-                        <Link href="/privacy-policy" className="text-[#1a1a1a] dark:text-white hover:underline transition-colors uppercase">Privacy</Link>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

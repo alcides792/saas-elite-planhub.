@@ -57,40 +57,40 @@ export const TestimonialsColumn = (props: {
 
 const testimonials: TestimonialData[] = [
     {
-        text: "Costumava esquecer-me de cancelar os trials da Adobe e LinkedIn todos os anos. O Kovr enviou-me um alerta 3 dias antes e poupei $400 facilmente!",
+        text: "I used to forget to cancel Adobe and LinkedIn trials every year. Kovr sent me an alert 3 days before and I saved $400 easily!",
         image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
         name: "Mariana Costa",
-        role: "Designer Freelance",
+        role: "Freelance Designer",
     },
     {
-        text: "O dashboard é viciante. Ver todos os meus gastos mensais num só lugar fez-me cancelar 4 serviços que já nem usava mais.",
+        text: "The dashboard is addictive. Seeing all my monthly expenses in one place made me cancel 4 services I wasn't even using anymore.",
         image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
         name: "Carlos Mendes",
-        role: "Engenheiro de Software",
+        role: "Software Engineer",
     },
     {
-        text: "A IA é inacreditável. Perguntei 'Onde posso cortar custos?' e ela listou subscrições duplicadas que eu tinha no Spotify e Apple Music.",
+        text: "The AI is unbelievable. I asked 'Where can I cut costs?' and it listed duplicate subscriptions I had on Spotify and Apple Music.",
         image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
         name: "Ana Julia",
-        role: "Marketing Digital",
+        role: "Digital Marketing",
     },
     {
-        text: "Simples, direto e paga-se a si mesmo no primeiro mês. Só de cancelar um plano premium do Tinder que me esqueci, a subscrição anual já valeu a pena.",
+        text: "Simple, straightforward and it pays for itself in the first month. Just by canceling a premium Tinder plan I forgot about, the annual subscription was already worth it.",
         image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
         name: "Pedro Henrique",
-        role: "Estudante",
+        role: "Student",
     },
     {
-        text: "Os melhores $27 que gastei este ano. A paz de espírito de saber que não vou ter cobranças surpresa no cartão vale muito mais.",
+        text: "The best $27 I spent this year. The peace of mind of knowing I won't have surprise credit card charges is worth much more.",
         image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
         name: "Sofia Lemos",
         role: "Product Manager",
     },
     {
-        text: "A funcionalidade de partilha familiar é ótima. Agora sei exatamente quem deve o quê pelo Netflix e Disney+.",
+        text: "The family sharing feature is great. Now I know exactly who owes what for Netflix and Disney+.",
         image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=100&h=100&fit=crop",
         name: "Lucas Ferreira",
-        role: "Pai de Família",
+        role: "Father",
     },
 ];
 
@@ -104,10 +104,10 @@ export const TestimonialsSection = () => {
             <div className="container mx-auto px-6 relative z-10">
                 <div className="text-center max-w-4xl mx-auto mb-20">
                     <h2 className="text-5xl md:text-8xl font-black mb-6 text-[#1a1a1a] uppercase tracking-tighter leading-none">
-                        AMADO POR <br /> <span className="text-white bg-[#1a1a1a] px-4">MILHARES.</span>
+                        LOVED BY <br /> <span className="text-white bg-[#1a1a1a] px-4">THOUSANDS.</span>
                     </h2>
                     <p className="text-[#1a1a1a] text-xl md:text-2xl font-bold uppercase italic opacity-80">
-                        JUNTA-TE A QUEM JÁ PAROU DE DEITAR DINHEIRO FORA COM ASSINATURAS INÚTEIS.
+                        JOIN THOSE WHO STOPPED THROWING MONEY AWAY ON USELESS SUBSCRIPTIONS.
                     </p>
                 </div>
 

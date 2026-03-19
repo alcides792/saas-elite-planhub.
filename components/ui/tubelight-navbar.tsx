@@ -81,7 +81,7 @@ export function NavBar({ items, className, user }: NavBarProps) {
                     className="hidden md:flex items-center gap-2 text-white font-bold text-lg tracking-wider overflow-hidden shrink-0 pl-8"
                 >
                     <Image
-                        src="/kovr-logo.png"
+                        src="/icons/kovr-3d.png"
                         alt="Kovr Logo"
                         width={32}
                         height={32}

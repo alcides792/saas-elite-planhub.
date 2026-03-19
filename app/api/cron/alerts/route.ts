@@ -160,35 +160,35 @@ export async function GET(request: Request) {
                     const formattedDate = format(renewalDate, 'dd/MM/yyyy')
 
                     // Telegram (HTML)
-                    const messageHTML = `🚨 <b>KOVR INSIGHT: Projeta a tua Poupança!</b>\n\n` +
-                        `A tua assinatura <b>${sub.name}</b> renova em <b>${daysLabel}</b>.\n\n` +
-                        `📊 <b>Resumo da Transação:</b>\n` +
-                        `• <b>Serviço:</b> ${sub.name}\n` +
-                        `• <b>Investimento:</b> <code>${sub.currency} ${sub.amount}</code>\n` +
-                        `• <b>Data Crítica:</b> ${formattedDate}\n\n` +
-                        `💡 <b>Dica Kovr:</b>\n` +
-                        `Não deixes o teu dinheiro no piloto automático. Se este serviço já não faz parte da tua rotina, cancela-o agora e poupa <b>${sub.currency} ${sub.amount}</b> este mês!\n\n` +
-                        `⚠️ <b>Ação Necessária:</b>\n` +
-                        `Para interromper a cobrança, o cancelamento deve ser feito no painel oficial da <a href="${sub.website || '#'}">${sub.name}</a>.\n\n` +
-                        `<i>Após cancelar no site, clica abaixo para atualizarmos o teu dashboard.</i>`
+                    const messageHTML = `🚨 <b>KOVR INSIGHT: Project Your Savings!</b>\n\n` +
+                        `Your <b>${sub.name}</b> subscription renews in <b>${daysLabel}</b>.\n\n` +
+                        `📊 <b>Transaction Summary:</b>\n` +
+                        `• <b>Service:</b> ${sub.name}\n` +
+                        `• <b>Investment:</b> <code>${sub.currency} ${sub.amount}</code>\n` +
+                        `• <b>Critical Date:</b> ${formattedDate}\n\n` +
+                        `💡 <b>Kovr Tip:</b>\n` +
+                        `Don't leave your money on autopilot. If this service is no longer part of your routine, cancel it now and save <b>${sub.currency} ${sub.amount}</b> this month!\n\n` +
+                        `⚠️ <b>Required Action:</b>\n` +
+                        `To stop the charge, the cancellation must be done on the official panel of <a href="${sub.website || '#'}">${sub.name}</a>.\n\n` +
+                        `<i>After canceling on the site, click below to update your dashboard.</i>`
 
                     // Discord (Markdown)
-                    const messageMD = `🚨 **KOVR INSIGHT: Projeta a tua Poupança!**\n\n` +
-                        `A tua assinatura **${sub.name}** renova em **${daysLabel}**.\n\n` +
-                        `📊 **Resumo da Transação:**\n` +
-                        `• **Serviço:** ${sub.name}\n` +
-                        `• **Investimento:** \`${sub.currency} ${sub.amount}\`\n` +
-                        `• **Data Crítica:** ${formattedDate}\n\n` +
-                        `💡 **Dica Kovr:**\n` +
-                        `Não deixes o teu dinheiro no piloto automático. Se este serviço já não faz parte da tua rotina, cancela-o agora e poupa **${sub.currency} ${sub.amount}** este mês!\n\n` +
-                        `⚠️ **Ação Necessária:**\n` +
-                        `Para interromper a cobrança, o cancelamento deve ser feito no painel oficial:\n` +
-                        `🔗 [Aceder ao site da ${sub.name}](${sub.website || 'https://google.com'})\n\n` +
-                        `*Após cancelar no site, clica abaixo para atualizarmos o teu dashboard.*`
+                    const messageMD = `🚨 **KOVR INSIGHT: Project Your Savings!**\n\n` +
+                        `Your **${sub.name}** subscription renews in **${daysLabel}**.\n\n` +
+                        `📊 **Transaction Summary:**\n` +
+                        `• **Service:** ${sub.name}\n` +
+                        `• **Investment:** \`${sub.currency} ${sub.amount}\`\n` +
+                        `• **Critical Date:** ${formattedDate}\n\n` +
+                        `💡 **Kovr Tip:**\n` +
+                        `Don't leave your money on autopilot. If this service is no longer part of your routine, cancel it now and save **${sub.currency} ${sub.amount}** this month!\n\n` +
+                        `⚠️ **Required Action:**\n` +
+                        `To stop the charge, the cancellation must be done on the official panel:\n` +
+                        `🔗 [Access ${sub.name} website](${sub.website || 'https://google.com'})\n\n` +
+                        `*After canceling on the site, click below to update your dashboard.*`
 
                     const telegramButtons = [
-                        { text: '✅ Vou Manter', url: renewLink },
-                        { text: '✂️ Já cancelei no site', url: cancelLink },
+                        { text: '✅ I\'ll Keep It', url: renewLink },
+                        { text: '✂️ Already Canceled', url: cancelLink },
                     ]
 
                     await dispatchToUser(profile, messageHTML, messageMD, telegramButtons)
@@ -228,8 +228,8 @@ export async function GET(request: Request) {
                     const messageMD = `⚠️ **Kovr Alert:** Your **${sub.name}** subscription (${sub.currency} ${sub.amount}) renews **TODAY**!`
 
                     const telegramButtons = [
-                        { text: '✅ Vou Manter', url: renewLink },
-                        { text: '✂️ Já cancelei no site', url: cancelLink },
+                        { text: '✅ I\'ll Keep It', url: renewLink },
+                        { text: '✂️ Already Canceled', url: cancelLink },
                     ]
 
                     await dispatchToUser(profile, messageHTML, messageMD, telegramButtons)
